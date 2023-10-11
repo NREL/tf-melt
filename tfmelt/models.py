@@ -62,7 +62,7 @@ class ArtificialNeuralNetwork(Model):
             if self.softmax
             else "sigmoid"
             if self.sigmoid
-            else "None",
+            else None,
             name="output",
         )
 
