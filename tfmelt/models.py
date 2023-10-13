@@ -40,9 +40,7 @@ class ArtificialNeuralNetwork(Model):
         )
         # Batch Normalization layer
         self.batch_norm_layer = BatchNormalization(name="batch_norm")
-        # One Dense input layer
-        self.input_layer = Dense(self.num_feat, activation=self.act_fun, name="input")
-        # Connecting layer from input to bulk
+        # One Dense layer connecting inputs to bulk layers
         self.dense_layer_in = Dense(
             self.width, activation=self.act_fun, name="input2bulk"
         )
@@ -62,14 +60,14 @@ class ArtificialNeuralNetwork(Model):
             if self.softmax
             else "sigmoid"
             if self.sigmoid
-            else "None",
+            else None,
             name="output",
         )
 
     @tf.function
     def call(self, inputs):
         """Call the ANN."""
-        x = self.input_layer(inputs)
+        x = inputs
 
         # Dropout after the inputs if requested
         if self.input_dropout:
@@ -158,9 +156,7 @@ class ResidualNeuralNetwork(Model):
         # Add layer
         self.add_layer = Add()
 
-        # One Dense input layer
-        self.input_layer = Dense(self.num_feat, activation=self.act_fun, name="input")
-        # Connecting layer from input to bulk
+        # One Dense layer connecting inputs to bulk layers
         self.dense_layer_in = Dense(
             self.width, activation=self.act_fun, name="input2bulk"
         )
@@ -183,7 +179,7 @@ class ResidualNeuralNetwork(Model):
     @tf.function
     def call(self, inputs):
         """Call the ResNet."""
-        x = self.input_layer(inputs)
+        x = inputs
         x = self.dense_layer_in(x)
 
         for i in range(self.depth):

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="tfmelt",
-    version="0.1.0",
+    version="0.1.1",
     description="TensorFlow Machine Learning Toolbox (TF-MELT)",
     url="https://github.com/NREL/tf-melt",
     author="Nicholas T. Wimer",
