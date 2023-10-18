@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow_probability as tfp
 from tensorflow.keras.layers import Activation, Add, BatchNormalization, Dense, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import register_keras_serializable
@@ -209,6 +210,119 @@ class ResidualNeuralNetwork(Model):
                 "dropout": self.dropout,
                 "input_dropout": self.input_dropout,
                 "batch_norm": self.batch_norm,
+            }
+        )
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
+
+
+@register_keras_serializable(package="tfmelt")
+class BayesianNeuralNetwork(Model):
+    def __init__(
+        self,
+        num_feat=None,
+        num_points=None,
+        width=None,
+        depth=None,
+        act_fun=None,
+        **kwargs,
+    ):
+        super(BayesianNeuralNetwork, self).__init__(**kwargs)
+
+        self.num_feat = num_feat
+        self.num_points = num_points
+        self.width = width
+        self.depth = depth
+        self.act_fun = act_fun
+
+        # kernel
+        self.kernel = lambda q, p, _: tfp.distributions.kl_divergence(q, p) / (
+            self.num_points * 1.0
+        )
+        # bias
+        self.bias = lambda q, p, _: tfp.distributions.kl_divergence(q, p) / (
+            self.num_points * 1.0
+        )
+        # normal distribution
+        self.distribution = lambda t: tfp.distributions.Normal(
+            loc=t[..., :1], scale=1e-3 + tf.math.softplus(0.05 * t[..., 1:])
+        )
+
+        # One Dense layer connecting inputs to bulk layers
+        self.dense_layer_in = tfp.layers.DenseFlipout(
+            self.width,
+            bias_posterior_fn=tfp.layers.util.default_mean_field_normal_fn(),
+            bias_prior_fn=tfp.layers.default_multivariate_normal_fn,
+            kernel_divergence_fn=self.kernel,
+            bias_divergence_fn=self.bias,
+            activation=self.act_fun,
+            name="input2bulk",
+        )
+
+        # Bulk layers
+        self.dense_layers_bulk = [
+            tfp.layers.DenseFlipout(
+                self.width,
+                bias_posterior_fn=tfp.layers.util.default_mean_field_normal_fn(),
+                bias_prior_fn=tfp.layers.default_multivariate_normal_fn,
+                kernel_divergence_fn=self.kernel,
+                bias_divergence_fn=self.bias,
+                activation=self.act_fun,
+                name=f"bulk_{i}",
+            )
+            for i in range(self.depth)
+        ]
+
+        # Layer creating inputs to final distribution
+        self.param_layer = tfp.layers.DenseFlipout(
+            2,
+            bias_posterior_fn=tfp.layers.util.default_mean_field_normal_fn(),
+            bias_prior_fn=tfp.layers.default_multivariate_normal_fn,
+            kernel_divergence_fn=self.kernel,
+            bias_divergence_fn=self.bias,
+            name="params",
+        )
+
+        # Final distribution layer
+        self.dist_layer = tfp.layers.DistributionLambda(
+            self.distribution,
+            name="dist",
+        )
+
+    def call(self, inputs):
+        """Call the BNN."""
+        x = inputs
+
+        # Dense layer connecting inputs to bulk
+        x = self.dense_layer_in(x)
+
+        # # Bulk layers that are repeated
+        for i in range(self.depth):
+            x = self.dense_layers_bulk[i](x)
+
+        # Parameter output
+        params = self.param_layer(x)
+
+        # Final distribution layer
+        dist = self.dist_layer(params)
+
+        return dist
+
+    def get_config(self):
+        config = super(BayesianNeuralNetwork, self).get_config()
+        config.update(
+            {
+                "num_feat": self.num_feat,
+                "num_points": self.num_points,
+                "width": self.width,
+                "depth": self.depth,
+                "act_fun": self.act_fun,
+                "kernel": self.kernel,
+                "bias": self.bias,
+                "distribution": self.distribution,
             }
         )
         return config
