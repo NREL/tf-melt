@@ -12,7 +12,7 @@ First, create a new conda environment and activate:
 
 `conda activate tf-melt`
 
-Next, install pip which will automatically install severl necessary packages:
+Next, install pip which will automatically install several necessary packages:
 
 `conda install pip`
 
