@@ -1,4 +1,3 @@
-# test_models.py
 import contextlib
 import io
 import sys
@@ -7,7 +6,7 @@ import pytest
 import tensorflow as tf
 from tensorflow.keras.models import model_from_json
 
-from tfmelt.models import ArtificialNeuralNetwork
+from tfmelt.models import ArtificialNeuralNetwork, MELTModel, ResidualNeuralNetwork
 
 # Define expected variables
 NUM_FEAT = 10
@@ -38,19 +37,86 @@ data = tf.random.uniform((DATA_SIZE, NUM_FEAT))
 
 
 @pytest.fixture
-def ann_model():
-    return ArtificialNeuralNetwork(
-        num_outputs=NUM_OUTPUTS,
-        width=WIDTH,
-        depth=DEPTH,
-        act_fun="relu",
-        dropout=0.5,
-        input_dropout=0.5,
-        batch_norm=True,
-        softmax=False,
-        sigmoid=False,
-        initializer="glorot_uniform",
-    )
+def model_config():
+    return {
+        "num_outputs": NUM_OUTPUTS,
+        "width": WIDTH,
+        "depth": DEPTH,
+        "act_fun": "relu",
+        "dropout": 0.5,
+        "input_dropout": 0.5,
+        "batch_norm": True,
+        "output_activation": None,
+        "initializer": "glorot_uniform",
+        "l1_reg": 0.0,
+        "l2_reg": 0.0,
+    }
+
+
+@pytest.fixture
+def melt_model(model_config):
+    """Create an instance of the MELTModel class."""
+    return MELTModel(**model_config)
+
+
+@pytest.fixture
+def ann_model(model_config):
+    """Create an instance of the ArtificialNeuralNetwork class."""
+    return ArtificialNeuralNetwork(**model_config)
+
+
+@pytest.fixture
+def resnet_model(model_config):
+    """Create an instance of the ResidualNeuralNetwork class."""
+    resnet_config = model_config.copy()
+    resnet_config["layers_per_block"] = 2
+    resnet_config["pre_activation"] = True
+    resnet_config["post_add_activation"] = False
+    return ResidualNeuralNetwork(**model_config)
+
+
+class TestMELTModel:
+    def test_initialize_layers(self, melt_model):
+        """Test the initialize_layers method."""
+        melt_model.initialize_layers()
+
+        # Check that the regularizer and activations have been initialized correctly
+        assert hasattr(melt_model, "regularizer")
+        assert hasattr(melt_model, "activation_in")
+
+        # Check that the layers have been initialized correctly
+        assert hasattr(melt_model, "dense_layer_in")
+        assert hasattr(melt_model, "output_layer")
+
+        # Check that dropout and batch norm layers have been initialized correctly
+        assert hasattr(melt_model, "dropout_layers")
+        assert hasattr(melt_model, "input_dropout_layer")
+        assert hasattr(melt_model, "batch_norm_layers")
+
+    def test_get_config(self, melt_model, model_config):
+        """Test the get_config method."""
+        config = melt_model.get_config()
+
+        # Check that the config dictionary is correct
+        assert config == model_config
+
+    def test_from_config(self, model_config):
+        """Test the from_config method."""
+        model = MELTModel.from_config(model_config)
+
+        # Check that the model has been created correctly
+        assert isinstance(model, MELTModel)
+        assert model.num_outputs == NUM_OUTPUTS
+        assert model.width == WIDTH
+        assert model.depth == DEPTH
+        assert model.act_fun == "relu"
+        assert model.dropout == 0.5
+        assert model.input_dropout == 0.5
+        assert model.batch_norm == True
+        assert model.output_activation == None
+        assert model.initializer == "glorot_uniform"
+        assert model.l1_reg == 0.0
+        assert model.l2_reg == 0.0
 
 
 class TestArtificialNeuralNetwork:
@@ -105,12 +171,12 @@ class TestArtificialNeuralNetwork:
         if ann_model.batch_norm:
             assert hasattr(ann_model, "batch_norm_layers")
 
-    def test_get_config(self, ann_model):
+    def test_get_config(self, ann_model, model_config):
         """Test the get_config method."""
         # Call the get_config method
         config = ann_model.get_config()
         # Check that the config dictionary is correct
-        assert config == ann_model.config
+        assert config == model_config
 
     def test_unused_layers(self, ann_model):
         """Test that there are no unused layers in the model."""
@@ -128,7 +194,7 @@ class TestArtificialNeuralNetwork:
 
     def test_sigmoid_output(self, ann_model):
         """Test the output of the model with sigmoid activation."""
-        ann_model.sigmoid = True
+        ann_model.output_activation = "sigmoid"
         # Build the model with sigmoid activation
         ann_model.build((None, NUM_FEAT))
         # Call the model and get the output
@@ -139,7 +205,7 @@ class TestArtificialNeuralNetwork:
 
     def test_softmax_output(self, ann_model):
         """Test the output of the model with softmax activation."""
-        ann_model.softmax = True
+        ann_model.output_activation = "softmax"
         # Build the model with softmax activation
         ann_model.build((None, NUM_FEAT))
         # Call the model and get the output
@@ -148,14 +214,6 @@ class TestArtificialNeuralNetwork:
         assert tf.reduce_sum(output).numpy() == pytest.approx(
             DATA_SIZE * 1, sys.float_info.epsilon
         )
-
-    def test_softmax_sigmoid_output(self, ann_model):
-        """Test that a ValueError is raised when both softmax and sigmoid are True."""
-        ann_model.softmax = True
-        ann_model.sigmoid = True
-        # Check that a ValueError is raised when both softmax and sigmoid are True
-        with pytest.raises(ValueError):
-            ann_model.build((None, NUM_FEAT))
 
     def test_serialization(self, ann_model):
         """Test that the model can be serialized and deserialized."""
@@ -178,3 +236,32 @@ class TestArtificialNeuralNetwork:
         # Check that the deserialized model is the same as the original model
         assert ann_model.get_config() == deserialized_model.get_config()
         assert ann_model.count_params() == deserialized_model.count_params()
+
+
+class TestResidualNeuralNetwork:
+    def test_initialize_layers(self, resnet_model):
+        """Test the initialize_layers method."""
+        resnet_model.initialize_layers()
+
+        # Check that the layers have been initialized correctly
+        assert hasattr(resnet_model, "dense_layers_bulk")
+        assert hasattr(resnet_model, "activation_layers_bulk")
+        assert hasattr(resnet_model, "add_layers")
+        if resnet_model.post_add_activation:
+            assert hasattr(resnet_model, "post_add_activations")
+
+    def test_build(self, resnet_model):
+        """Test the build method."""
+        # Call the build method
+        resnet_model.build((None, NUM_FEAT))
+        # Check that the model has been built correctly
+        assert resnet_model.built
+
+    def test_call(self, resnet_model):
+        """Test the call method."""
+        # Build the model
+        resnet_model.build((None, NUM_FEAT))
+        # Call the model and get the output
+        output = resnet_model.call(data)
+        # Check that the output has the right shape
+        assert output.shape == (DATA_SIZE, NUM_OUTPUTS)

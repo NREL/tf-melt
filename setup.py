@@ -17,7 +17,7 @@ elif platform.system() == "Darwin":
 
 setup(
     name="tfmelt",
-    version="0.2.1",
+    version="0.2.2",
     description="TensorFlow Machine Learning Toolbox (TF-MELT)",
     url="https://github.com/NREL/tf-melt",
     author="Nicholas T. Wimer",

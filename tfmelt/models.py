@@ -169,12 +169,12 @@ class ArtificialNeuralNetwork(MELTModel):
 
     def build(self, input_shape):
         """Build the ANN."""
-        super(ArtificialNeuralNetwork, self).initialize_layers()
         self.initialize_layers()
         super(ArtificialNeuralNetwork, self).build(input_shape)
 
     def initialize_layers(self):
         """Initialize the layers of the ANN."""
+        super(ArtificialNeuralNetwork, self).initialize_layers()
 
         # Bulk layers
         self.dense_layers_bulk = [
@@ -253,12 +253,13 @@ class ResidualNeuralNetwork(MELTModel):
                 f"Warning: depth ({self.depth}) is not divisible by layers_per_block ({self.layers_per_block}), "
                 f"so the last block will have {self.depth % self.layers_per_block} layers."
             )
-        super(ResidualNeuralNetwork, self).initialize_layers()
+
         self.initialize_layers()
         super(ResidualNeuralNetwork, self).build(input_shape)
 
     def initialize_layers(self):
         """Initialize the layers of the ResNet."""
+        super(ResidualNeuralNetwork, self).initialize_layers()
 
         # ResNet Bulk layers
         self.dense_layers_bulk = [
