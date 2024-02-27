@@ -193,6 +193,7 @@ class ResidualNeuralNetwork(Model):
         num_outputs: int,
         width: Optional[int] = 32,
         depth: Optional[int] = 2,
+        layers_per_block: Optional[int] = 2,
         act_fun: Optional[str] = "relu",
         dropout: Optional[float] = 0.0,
         input_dropout: Optional[float] = 0.0,
@@ -203,14 +204,38 @@ class ResidualNeuralNetwork(Model):
         l1_reg: Optional[float] = 0.0,
         l2_reg: Optional[float] = 0.0,
         pre_activation: Optional[bool] = True,
-        post_add_activation: Optional[bool] = True,
+        post_add_activation: Optional[bool] = False,
         **kwargs,
     ):
+        """
+        Initialize the ResidualNeuralNetwork model.
+
+        Args:
+            num_outputs (int): Number of output units.
+            width (int, optional): Width of the network.
+            depth (int, optional): Depth of the network.
+            layers_per_block (int, optional): Number of layers in each block.
+            act_fun (str, optional): Activation function to use.
+            dropout (float, optional): Dropout rate.
+            input_dropout (float, optional): Dropout rate for the input layer.
+            batch_norm (bool, optional): Whether to use batch normalization.
+            softmax (bool, optional): Whether to use softmax activation for the output layer
+            sigmoid (bool, optional): Whether to use sigmoid activation for the output layer.
+            initializer (str, optional): Weight initializer to use.
+            l1_reg (float, optional): L1 regularization strength.
+            l2_reg (float, optional): L2 regularization strength.
+            pre_activation (bool, optional): Whether to use pre-activation in residual blocks.
+            post_add_activation (bool, optional): Whether to apply activation after
+                                                  adding the residual connection.
+            **kwargs: Additional keyword arguments.
+
+        """
         super(ResidualNeuralNetwork, self).__init__(**kwargs)
 
         self.num_outputs = num_outputs
         self.width = width
         self.depth = depth
+        self.layers_per_block = layers_per_block
         self.act_fun = act_fun
         self.dropout = dropout
         self.input_dropout = input_dropout
@@ -233,6 +258,7 @@ class ResidualNeuralNetwork(Model):
             "num_outputs": self.num_outputs,
             "width": self.width,
             "depth": self.depth,
+            "layers_per_block": self.layers_per_block,
             "act_fun": self.act_fun,
             "dropout": self.dropout,
             "input_dropout": self.input_dropout,
@@ -250,6 +276,11 @@ class ResidualNeuralNetwork(Model):
         """Build the ResNet."""
         if self.softmax and self.sigmoid:
             raise ValueError("Both softmax and sigmoid cannot be True.")
+        if self.depth % self.layers_per_block != 0:
+            print(
+                f"Warning: depth ({self.depth}) is not divisible by layers_per_block ({self.layers_per_block}), "
+                f"so the last block will have {self.depth % self.layers_per_block} layers."
+            )
         self.initialize_layers()
         super(ResidualNeuralNetwork, self).build(input_shape)
 
@@ -288,31 +319,27 @@ class ResidualNeuralNetwork(Model):
         )
         self.activation_in = Activation(self.act_fun, name="input2bulk_act")
         # ResNet Bulk layers
-        self.dense_layers_bulk1 = [
+        self.dense_layers_bulk = [
             Dense(
                 self.width,
                 activation=None,
                 kernel_initializer=self.initializer,
                 kernel_regularizer=regularizer,
-                name=f"bulk1_{i}",
+                name=f"bulk_{i}",
             )
-            for i in range(self.depth // 2)
-        ]
-        self.dense_layers_bulk2 = [
-            Dense(
-                self.width,
-                activation=None,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=regularizer,
-                name=f"bulk2_{i}",
-            )
-            for i in range(self.depth // 2)
+            for i in range(self.depth)
         ]
         self.activation_layers_bulk = [
             Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
         ]
-        # Add layers for residual connections (Add layer for every 2 bulk layers)
-        self.add_layers = [Add(name=f"add_{i}") for i in range(self.depth // 2)]
+        # Add layers for residual connections (Add layer for every "layers per block")
+        # with remainder if depth is not divisible by layers per block
+        self.add_layers = [
+            Add(name=f"add_{i}")
+            for i in range(
+                (self.depth + self.layers_per_block - 1) // self.layers_per_block
+            )
+        ]
         # One Dense output layer with activation if requested
         self.output_layer = Dense(
             self.num_outputs,
@@ -348,32 +375,24 @@ class ResidualNeuralNetwork(Model):
         x = self.activation_in(x) if not self.pre_activation else x
 
         # Apply bulk layers with residual connections
-        for i in range(self.depth // 2):
+        for i in range(0, self.depth):
             y = x
 
-            # Apply first bulk layer
-            x = self.dense_layers_bulk1[i](x)
-            x = self.activation_layers_bulk[i * 2](x) if self.pre_activation else x
-            x = self.batch_norm_layers[i * 2 + 1](x) if self.has_batch_norm else x
-            x = self.dropout_layers[i * 2](x) if self.has_dropout else x
-            x = self.activation_layers_bulk[i * 2](x) if not self.pre_activation else x
+            # Apply bulk layers
+            x = self.dense_layers_bulk[i](x)
+            x = self.activation_layers_bulk[i](x) if self.pre_activation else x
+            x = self.batch_norm_layers[i + 1](x) if self.has_batch_norm else x
+            x = self.dropout_layers[i](x) if self.has_dropout else x
+            x = self.activation_layers_bulk[i](x) if not self.pre_activation else x
 
-            # Apply second bulk layer
-            x = self.dense_layers_bulk2[i](x)
-            x = self.activation_layers_bulk[i * 2 + 1](x) if self.pre_activation else x
-            x = self.batch_norm_layers[i * 2 + 2](x) if self.has_batch_norm else x
-            x = self.dropout_layers[i * 2 + 1](x) if self.has_dropout else x
-            x = (
-                self.activation_layers_bulk[i * 2 + 1](x)
-                if not self.pre_activation
-                else x
-            )
-
-            # Add residual connection
-            x = self.add_layers[i]([y, x])
-
-            # Apply optional post-add activation
-            x = self.post_add_activations[i](x) if self.post_add_activation else x
+            # Add residual connection when reaching the end of a block
+            if (i + 1) % self.layers_per_block == 0 or i == self.depth - 1:
+                x = self.add_layers[i // self.layers_per_block]([y, x])
+                x = (
+                    self.post_add_activations[i // self.layers_per_block](x)
+                    if self.post_add_activation
+                    else x
+                )
 
         # Return output layer output with activation built in
         return self.output_layer(x)
