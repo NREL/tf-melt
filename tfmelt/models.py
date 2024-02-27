@@ -190,19 +190,24 @@ class ArtificialNeuralNetwork(Model):
 class ResidualNeuralNetwork(Model):
     def __init__(
         self,
-        num_feat=None,
-        num_outputs=None,
-        width=None,
-        depth=None,
-        act_fun=None,
-        dropout=None,
-        input_dropout=None,
-        batch_norm=None,
+        num_outputs: int,
+        width: Optional[int] = 32,
+        depth: Optional[int] = 2,
+        act_fun: Optional[str] = "relu",
+        dropout: Optional[float] = 0.0,
+        input_dropout: Optional[float] = 0.0,
+        batch_norm: Optional[bool] = False,
+        softmax: Optional[bool] = False,
+        sigmoid: Optional[bool] = False,
+        initializer: Optional[str] = "glorot_uniform",
+        l1_reg: Optional[float] = 0.0,
+        l2_reg: Optional[float] = 0.0,
+        pre_activation: Optional[bool] = True,
+        post_add_activation: Optional[bool] = True,
         **kwargs,
     ):
         super(ResidualNeuralNetwork, self).__init__(**kwargs)
 
-        self.num_feat = num_feat
         self.num_outputs = num_outputs
         self.width = width
         self.depth = depth
@@ -210,67 +215,173 @@ class ResidualNeuralNetwork(Model):
         self.dropout = dropout
         self.input_dropout = input_dropout
         self.batch_norm = batch_norm
+        self.softmax = softmax
+        self.sigmoid = sigmoid
+        self.initializer = initializer
+        self.l1_reg = l1_reg
+        self.l2_reg = l2_reg
+        self.pre_activation = pre_activation
+        self.post_add_activation = post_add_activation
 
-        # Activation layer
-        self.activation_layer = Activation(self.act_fun)
-        # Add layer
-        self.add_layer = Add()
+        # Initialize flags for layers (to be set in build method)
+        self.has_batch_norm = False
+        self.has_dropout = False
+        self.has_input_dropout = False
 
+        # Create config dictionary for serialization
+        self.config = {
+            "num_outputs": self.num_outputs,
+            "width": self.width,
+            "depth": self.depth,
+            "act_fun": self.act_fun,
+            "dropout": self.dropout,
+            "input_dropout": self.input_dropout,
+            "batch_norm": self.batch_norm,
+            "softmax": self.softmax,
+            "sigmoid": self.sigmoid,
+            "initializer": self.initializer,
+            "l1_reg": self.l1_reg,
+            "l2_reg": self.l2_reg,
+            "pre_activation": self.pre_activation,
+            "post_add_activation": self.post_add_activation,
+        }
+
+    def build(self, input_shape):
+        """Build the ResNet."""
+        if self.softmax and self.sigmoid:
+            raise ValueError("Both softmax and sigmoid cannot be True.")
+        self.initialize_layers()
+        super(ResidualNeuralNetwork, self).build(input_shape)
+
+    def initialize_layers(self):
+        """Initialize the layers of the ResNet."""
+        # Create regularizer
+        regularizer = (
+            regularizers.L1L2(l1=self.l1_reg, l2=self.l2_reg)
+            if (self.l1_reg > 0 or self.l2_reg > 0)
+            else None
+        )
+
+        # Dropout layers
+        if self.dropout > 0:
+            self.dropout_layers = [
+                Dropout(rate=self.dropout, name=f"dropout_{i}")
+                for i in range(self.depth)
+            ]
+        if self.input_dropout > 0:
+            self.input_dropout_layer = Dropout(
+                rate=self.input_dropout, name="input_dropout"
+            )
+        # Batch Normalization layers
+        if self.batch_norm:
+            self.batch_norm_layers = [
+                BatchNormalization(name=f"batch_norm_{i}")
+                for i in range(self.depth + 1)
+            ]
         # One Dense layer connecting inputs to bulk layers
         self.dense_layer_in = Dense(
-            self.width, activation=self.act_fun, name="input2bulk"
+            self.width,
+            activation=None,
+            kernel_initializer=self.initializer,
+            kernel_regularizer=regularizer,
+            name="input2bulk",
         )
-        # Bulk layers
-        self.linear_layers_bulk1 = [
-            Dense(self.width, activation=None, name=f"bulk1_{i}")
-            for i in range(self.depth)
+        self.activation_in = Activation(self.act_fun, name="input2bulk_act")
+        # ResNet Bulk layers
+        self.dense_layers_bulk1 = [
+            Dense(
+                self.width,
+                activation=None,
+                kernel_initializer=self.initializer,
+                kernel_regularizer=regularizer,
+                name=f"bulk1_{i}",
+            )
+            for i in range(self.depth // 2)
         ]
-        self.linear_layers_bulk2 = [
-            Dense(self.width, activation=None, name=f"bulk2_{i}")
-            for i in range(self.depth)
+        self.dense_layers_bulk2 = [
+            Dense(
+                self.width,
+                activation=None,
+                kernel_initializer=self.initializer,
+                kernel_regularizer=regularizer,
+                name=f"bulk2_{i}",
+            )
+            for i in range(self.depth // 2)
         ]
-        # Connecting layer from bulk to output
-        self.dense_layer_out = Dense(
-            self.width, activation=self.act_fun, name="bulk2output"
+        self.activation_layers_bulk = [
+            Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
+        ]
+        # Add layers for residual connections (Add layer for every 2 bulk layers)
+        self.add_layers = [Add(name=f"add_{i}") for i in range(self.depth // 2)]
+        # One Dense output layer with activation if requested
+        self.output_layer = Dense(
+            self.num_outputs,
+            activation=(self.get_ouput_activation()),
+            kernel_initializer=self.initializer,
+            kernel_regularizer=regularizer,
+            name="output",
         )
-        # One Dense output layer with no activation
-        self.output_layer = Dense(self.num_outputs, activation=None, name="output")
+        # Optional activation after the Add layers
+        if self.post_add_activation:
+            self.post_add_activations = [
+                Activation(self.act_fun, name=f"post_add_act_{i}")
+                for i in range(self.depth // 2)
+            ]
+
+        # Set attribute flags based on which layers are present
+        self.has_batch_norm = hasattr(self, "batch_norm_layers")
+        self.has_dropout = hasattr(self, "dropout_layers")
+        self.has_input_dropout = hasattr(self, "input_dropout_layer")
+
+    def get_ouput_activation(self):
+        """Get the activation function for the output layer."""
+        return "softmax" if self.softmax else "sigmoid" if self.sigmoid else None
 
     @tf.function
     def call(self, inputs):
         """Call the ResNet."""
-        x = inputs
-        x = self.dense_layer_in(x)
+        # Apply input layer
+        x = self.dense_layer_in(inputs)
+        x = self.activation_in(x) if self.pre_activation else x
+        x = self.batch_norm_layers[0](x) if self.has_batch_norm else x
+        x = self.input_dropout_layer(x) if self.has_input_dropout else x
+        x = self.activation_in(x) if not self.pre_activation else x
 
-        for i in range(self.depth):
+        # Apply bulk layers with residual connections
+        for i in range(self.depth // 2):
             y = x
 
-            x = self.linear_layers_bulk1[i](x)
-            x = self.activation_layer(x)
-            x = self.linear_layers_bulk2[i](x)
+            # Apply first bulk layer
+            x = self.dense_layers_bulk1[i](x)
+            x = self.activation_layers_bulk[i * 2](x) if self.pre_activation else x
+            x = self.batch_norm_layers[i * 2 + 1](x) if self.has_batch_norm else x
+            x = self.dropout_layers[i * 2](x) if self.has_dropout else x
+            x = self.activation_layers_bulk[i * 2](x) if not self.pre_activation else x
 
-            x = self.add_layer([y, x])
-            x = self.activation_layer(x)
+            # Apply second bulk layer
+            x = self.dense_layers_bulk2[i](x)
+            x = self.activation_layers_bulk[i * 2 + 1](x) if self.pre_activation else x
+            x = self.batch_norm_layers[i * 2 + 2](x) if self.has_batch_norm else x
+            x = self.dropout_layers[i * 2 + 1](x) if self.has_dropout else x
+            x = (
+                self.activation_layers_bulk[i * 2 + 1](x)
+                if not self.pre_activation
+                else x
+            )
 
-        x = self.dense_layer_out(x)
-        xout = self.output_layer(x)
+            # Add residual connection
+            x = self.add_layers[i]([y, x])
 
-        return xout
+            # Apply optional post-add activation
+            x = self.post_add_activations[i](x) if self.post_add_activation else x
+
+        # Return output layer output with activation built in
+        return self.output_layer(x)
 
     def get_config(self):
-        config = super(ResidualNeuralNetwork, self).get_config()
-        config.update(
-            {
-                "num_feat": self.num_feat,
-                "num_outputs": self.num_outputs,
-                "width": self.width,
-                "depth": self.depth,
-                "act_fun": self.act_fun,
-                "dropout": self.dropout,
-                "input_dropout": self.input_dropout,
-                "batch_norm": self.batch_norm,
-            }
-        )
+        """Get the config dictionary."""
+        config = super(ArtificialNeuralNetwork, self).get_config()
+        config.update(self.config)
         return config
 
     @classmethod
