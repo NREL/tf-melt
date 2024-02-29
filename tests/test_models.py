@@ -1,4 +1,5 @@
 import contextlib
+import copy
 import io
 import sys
 
@@ -6,7 +7,12 @@ import pytest
 import tensorflow as tf
 from tensorflow.keras.models import model_from_json
 
-from tfmelt.models import ArtificialNeuralNetwork, MELTModel, ResidualNeuralNetwork
+from tfmelt.models import (
+    ArtificialNeuralNetwork,
+    BayesianNeuralNetwork,
+    MELTModel,
+    ResidualNeuralNetwork,
+)
 
 # Define expected variables
 NUM_FEAT = 10
@@ -46,6 +52,7 @@ def model_config():
         "dropout": 0.5,
         "input_dropout": 0.5,
         "batch_norm": True,
+        "use_batch_renorm": False,
         "output_activation": None,
         "initializer": "glorot_uniform",
         "l1_reg": 0.0,
@@ -68,11 +75,21 @@ def ann_model(model_config):
 @pytest.fixture
 def resnet_model(model_config):
     """Create an instance of the ResidualNeuralNetwork class."""
-    resnet_config = model_config.copy()
+    resnet_config = copy.deepcopy(model_config)
     resnet_config["layers_per_block"] = 2
     resnet_config["pre_activation"] = True
     resnet_config["post_add_activation"] = False
-    return ResidualNeuralNetwork(**model_config)
+    return ResidualNeuralNetwork(**resnet_config)
+
+
+@pytest.fixture
+def bnn_model(model_config):
+    """Create an instance of the BayesianNeuralNetwork class."""
+    bnn_config = copy.deepcopy(model_config)
+    bnn_config["num_points"] = DATA_SIZE
+    bnn_config["num_bayesian_layers"] = model_config["depth"] + 1
+    bnn_config["do_aleatoric"] = False
+    return BayesianNeuralNetwork(**bnn_config)
 
 
 class TestMELTModel:
@@ -112,8 +129,8 @@ class TestMELTModel:
         assert model.act_fun == "relu"
         assert model.dropout == 0.5
         assert model.input_dropout == 0.5
-        assert model.batch_norm == True
-        assert model.output_activation == None
+        assert model.batch_norm is True
+        assert model.output_activation is None
         assert model.initializer == "glorot_uniform"
         assert model.l1_reg == 0.0
         assert model.l2_reg == 0.0
@@ -265,3 +282,67 @@ class TestResidualNeuralNetwork:
         output = resnet_model.call(data)
         # Check that the output has the right shape
         assert output.shape == (DATA_SIZE, NUM_OUTPUTS)
+
+
+class TestBayesianNeuralNetwork:
+    def test_initialize_layers(self, bnn_model):
+        """Test the initialize_layers method."""
+        bnn_model.initialize_layers()
+
+        # Check that the layers have been initialized correctly
+        assert hasattr(bnn_model, "dense_layers_bulk")
+        assert hasattr(bnn_model, "activations_bulk")
+        assert hasattr(bnn_model, "dropout_layers")
+        assert hasattr(bnn_model, "output_layer")
+        assert hasattr(bnn_model, "bayesian_layers")
+        assert not hasattr(bnn_model, "pre_aleatoric_layer_flipout")
+        assert not hasattr(bnn_model, "pre_aleatoric_layer_dense")
+
+        bnn_model.do_aleatoric = True
+        bnn_model.initialize_layers()
+        assert hasattr(bnn_model, "pre_aleatoric_layer_flipout")
+
+    def test_build(self, bnn_model):
+        """Test the build method."""
+        # Call the build method
+        bnn_model.build((None, NUM_FEAT))
+        # Check that the model has been built correctly
+        assert bnn_model.built
+
+    def test_call(self, bnn_model):
+        """Test the call method."""
+        # Build the model
+        bnn_model.build((None, NUM_FEAT))
+        # Call the model and get the output
+        output = bnn_model.call(data)
+        # Check that the output has the right shape
+        assert output.shape == (DATA_SIZE, NUM_OUTPUTS)
+
+    def test_num_layers(self, bnn_model):
+        """Test the number of layers in the model."""
+        # Build the model with all the layers
+        bnn_model.build((None, NUM_FEAT))
+        # Check that the number of layers is as expected
+        assert len(bnn_model.layers) == NUM_LAYERS + 1
+
+    def test_serialization(self, bnn_model):
+        """Test that the model can be serialized and deserialized."""
+        # Build the model
+        bnn_model.build((None, NUM_FEAT))
+        # Serialize the model
+        serialized_model = bnn_model.to_json()
+        assert serialized_model
+
+        # Deserialize the model
+        deserialized_model = model_from_json(
+            serialized_model,
+            custom_objects={"BayesianNeuralNetwork": BayesianNeuralNetwork},
+        )
+        assert deserialized_model
+
+        # Build the deserialized model
+        deserialized_model.build((None, NUM_FEAT))
+
+        # Check that the deserialized model is the same as the original model
+        assert bnn_model.get_config() == deserialized_model.get_config()
+        assert bnn_model.count_params() == deserialized_model.count_params()
