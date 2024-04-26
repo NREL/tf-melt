@@ -1,6 +1,7 @@
 import warnings
 from typing import Optional
 
+import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.keras import regularizers
@@ -155,6 +156,18 @@ class MELTModel(Model):
             kernel_regularizer=self.regularizer,
             name="output",
         )
+
+    def compute_jacobian(self, x):
+        """Compute the jacobian of the model outputs with respect to inputs."""
+        if isinstance(x, np.ndarray):
+            x = tf.convert_to_tensor(x)
+        elif not isinstance(x, tf.Tensor):
+            raise ValueError("x must be a tf.Tensor or np.ndarray")
+
+        with tf.GradientTape() as tape:
+            tape.watch(x)
+            y_pred = self(x)
+        return tape.jacobian(y_pred, x)
 
     def get_config(self):
         """Get the config dictionary."""

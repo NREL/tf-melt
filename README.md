@@ -1,8 +1,8 @@
 # tf-melt
+
 TF-MELT (TensorFlow Machine Learning Toolbox) is a collection of architectures, processing, and utilities that are transferable over a range of ML applications.
 
 A toolbox for researchers to use for machine learning applications in the TensorFlow language. The goal of this software is to enable fast start-up of machine learning tasks and to provide a reliable and flexible framework for development and deployment. The toolbox contains generalized methods for every aspect of the machine learning workflow while simultaneously providing routines that can be tailored to specific application spaces.
-
 
 ## Environment
 
@@ -37,7 +37,6 @@ If you want to run the example notebooks, they require a couple additional packa
 1. `scikit-learn`
 2. `ipykernel`
 3. `matplotlib`
-
 
 ## Contributing
 
