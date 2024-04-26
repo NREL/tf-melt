@@ -8,13 +8,9 @@ A toolbox for researchers to use for machine learning applications in the Tensor
 
 First, create a new conda environment and activate:
 
-`conda create -n tf-melt`
+`conda create -n tf-melt python=3.11`
 
 `conda activate tf-melt`
-
-Next, install pip which will automatically install several necessary packages:
-
-`conda install pip`
 
 Finally, install the `tfmelt` as a package through pip either through a local install from a git clone
 
@@ -33,6 +29,14 @@ If you want to update the pip install to make sure dependencies are current:
 To install the `tfmelt` package directly from github simply type:
 
 pip install git+https://github.com/NREL/tf-melt.git
+
+### Example Notebooks
+
+If you want to run the example notebooks, they require a couple additional packages which can all be pip installed:
+
+1. `scikit-learn`
+2. `ipykernel`
+3. `matplotlib`
 
 
 ## Contributing

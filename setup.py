@@ -12,8 +12,8 @@ if platform.system() == "Linux":
     install_requires.append("tensorflow-probability==0.20")
 elif platform.system() == "Darwin":
     # Install TensorFlow for Mac
-    install_requires.append("tensorflow")
-    install_requires.append("tensorflow-probability")
+    install_requires.append("tensorflow<2.16")
+    install_requires.append("tensorflow-probability<0.24")
 
 setup(
     name="tfmelt",
@@ -30,4 +30,5 @@ setup(
         "Intended Audience :: Science/Research",
         "Programming Language :: Python :: 3.11",
     ],
+    python_requires=">=3.8, <3.12",
 )
