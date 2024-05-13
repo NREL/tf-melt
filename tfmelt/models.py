@@ -220,7 +220,6 @@ class ArtificialNeuralNetwork(MELTModel):
             Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
         ]
 
-    @tf.function
     def call(self, inputs):
         """Call the ANN."""
         # Apply input layer: dense -> batch norm -> activation -> input dropout
@@ -321,7 +320,6 @@ class ResidualNeuralNetwork(MELTModel):
                 for i in range(self.depth // 2)
             ]
 
-    @tf.function
     def call(self, inputs):
         """Call the ResNet."""
         # Apply input layer:
@@ -394,10 +392,6 @@ class BayesianNeuralNetwork(MELTModel):
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
-
-        # Wrap call function with tf.function if do_aleatoric if False
-        if not self.do_aleatoric:
-            self.call = tf.function(self.call)
 
         # Update config with new attributes
         self.config.update(
