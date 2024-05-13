@@ -1,6 +1,7 @@
 import warnings
 from typing import Optional
 
+import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.keras import regularizers
@@ -156,6 +157,18 @@ class MELTModel(Model):
             name="output",
         )
 
+    def compute_jacobian(self, x):
+        """Compute the jacobian of the model outputs with respect to inputs."""
+        if isinstance(x, np.ndarray):
+            x = tf.convert_to_tensor(x)
+        elif not isinstance(x, tf.Tensor):
+            raise ValueError("x must be a tf.Tensor or np.ndarray")
+
+        with tf.GradientTape() as tape:
+            tape.watch(x)
+            y_pred = self(x)
+        return tape.jacobian(y_pred, x)
+
     def get_config(self):
         """Get the config dictionary."""
         config = super(MELTModel, self).get_config()
@@ -207,7 +220,6 @@ class ArtificialNeuralNetwork(MELTModel):
             Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
         ]
 
-    @tf.function
     def call(self, inputs):
         """Call the ANN."""
         # Apply input layer: dense -> batch norm -> activation -> input dropout
@@ -308,7 +320,6 @@ class ResidualNeuralNetwork(MELTModel):
                 for i in range(self.depth // 2)
             ]
 
-    @tf.function
     def call(self, inputs):
         """Call the ResNet."""
         # Apply input layer:
@@ -381,10 +392,6 @@ class BayesianNeuralNetwork(MELTModel):
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
-
-        # Wrap call function with tf.function if do_aleatoric if False
-        if not self.do_aleatoric:
-            self.call = tf.function(self.call)
 
         # Update config with new attributes
         self.config.update(
