@@ -26,6 +26,7 @@ class MELTModel(Model):
         initializer: Optional[str] = "glorot_uniform",
         l1_reg: Optional[float] = 0.0,
         l2_reg: Optional[float] = 0.0,
+        do_aleatoric: Optional[bool] = False,
         **kwargs,
     ):
         """
@@ -44,6 +45,7 @@ class MELTModel(Model):
             initializer (str, optional): Initializer for the weights.
             l1_reg (float, optional): L1 regularization for the weights.
             l2_reg (float, optional): L2 regularization for the weights.
+            do_aleatoric (bool, optional): Flag to perform aleatoric UQ.
             **kwargs: Additional keyword arguments.
 
         """
@@ -61,6 +63,7 @@ class MELTModel(Model):
         self.initializer = initializer
         self.l1_reg = l1_reg
         self.l2_reg = l2_reg
+        self.do_aleatoric = do_aleatoric
 
         # Initialize flags for layers (to be set in build method)
         self.has_batch_norm = False
@@ -81,6 +84,7 @@ class MELTModel(Model):
             "initializer": self.initializer,
             "l1_reg": self.l1_reg,
             "l2_reg": self.l2_reg,
+            "do_aleatoric": self.do_aleatoric,
         }
 
     def initialize_layers(self):
@@ -149,13 +153,47 @@ class MELTModel(Model):
 
     def create_output_layer(self):
         """Create the output layer with activation from function."""
-        self.output_layer = Dense(
-            self.num_outputs,
-            activation=self.output_activation,
-            kernel_initializer=self.initializer,
-            kernel_regularizer=self.regularizer,
-            name="output",
+
+        if self.do_aleatoric:
+            # Output layer for predicting the mean
+            self.mean_output_layer = Dense(
+                self.num_outputs,
+                activation=self.output_activation,
+                kernel_initializer=self.initializer,
+                kernel_regularizer=self.regularizer,
+                name="mean_output",
+            )
+
+            # Output layer for predicting the log-variance
+            self.log_var_output_layer = Dense(
+                self.num_outputs,
+                activation=None,  # No activation for log-variance
+                kernel_initializer=self.initializer,
+                kernel_regularizer=self.regularizer,
+                name="log_var_output",
+            )
+
+        else:
+            self.output_layer = Dense(
+                self.num_outputs,
+                activation=self.output_activation,
+                kernel_initializer=self.initializer,
+                kernel_regularizer=self.regularizer,
+                name="output",
+            )
+
+    def aleatoric_loss(self, y_true, y_pred):
+        """Loss function for aleatoric UQ predictions"""
+        # mean_pred, log_var_pred = y_pred
+        mean_pred = y_pred[0]
+        log_var_pred = y_pred[1]
+
+        # Compute the negative log likelihood
+        nll = (
+            0.5 * tf.math.exp(-log_var_pred) * tf.math.square(y_true - mean_pred)
+            + 0.5 * log_var_pred
         )
+        return tf.reduce_mean(nll)
 
     def compute_jacobian(self, x):
         """Compute the Jacobian of the model outputs with respect to inputs."""
@@ -168,6 +206,17 @@ class MELTModel(Model):
             tape.watch(x)
             y_pred = self(x)
         return tape.jacobian(y_pred, x)
+
+    def compile(self, optimizer="adam", loss="mse", metrics=None, **kwargs):
+        """Compile the model with the appropriate loss function."""
+        if self.do_aleatoric:
+            warnings.warn(
+                "Loss function is overridden when using aleatoric uncertainty. "
+                "Using the aleatoric loss function."
+            )
+            loss = self.aleatoric_loss
+
+        super(MELTModel, self).compile(optimizer, loss, metrics, **kwargs)
 
     def get_config(self):
         """Get the config dictionary."""
@@ -247,8 +296,16 @@ class ArtificialNeuralNetwork(MELTModel):
             x = self.activations_bulk[i](x)
             x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
 
-        # Return output layer output with activation built in
-        return self.output_layer(x, training=training)
+        # Apply the output layer(s) and return
+        if self.do_aleatoric:
+            # Predict mean and log-variance
+            mean_output = self.mean_output_layer(x, training=training)
+            log_var_output = self.log_var_output_layer(x, training=training)
+
+            # return mean_output, log_var_output
+            return tf.stack([mean_output, log_var_output])
+        else:
+            return self.output_layer(x, training=training)
 
 
 @register_keras_serializable(package="tfmelt")
@@ -375,8 +432,16 @@ class ResidualNeuralNetwork(MELTModel):
                     else x
                 )
 
-        # Return output layer output with activation built in
-        return self.output_layer(x, training=training)
+        # Apply the output layer(s) and return
+        if self.do_aleatoric:
+            # Predict mean and log-variance
+            mean_output = self.mean_output_layer(x, training=training)
+            log_var_output = self.log_var_output_layer(x, training=training)
+
+            # return mean_output, log_var_output
+            return tf.stack([mean_output, log_var_output])
+        else:
+            return self.output_layer(x, training=training)
 
 
 @register_keras_serializable(package="tfmelt")
@@ -385,7 +450,6 @@ class BayesianNeuralNetwork(MELTModel):
         self,
         num_points: Optional[int] = 1,
         num_bayesian_layers: Optional[int] = None,
-        do_aleatoric: Optional[bool] = False,
         aleatoric_scale_factor: Optional[float] = 5e-2,
         scale_epsilon: Optional[float] = 1e-3,
         use_batch_renorm: Optional[bool] = True,
@@ -399,7 +463,6 @@ class BayesianNeuralNetwork(MELTModel):
             num_bayesian_layers (int, optional): Number of layers to make Bayesian.
                                                 Layers are counted from the output
                                                  layer backwards.
-            do_aleatoric (bool, optional): Whether to include aleatoric uncertainty.
             aleatoric_scale_factor (float, optional): Scale factor for aleatoric
                                                       uncertainty.
             scale_epsilon (float, optional): Epsilon value for the scale of the
@@ -412,7 +475,6 @@ class BayesianNeuralNetwork(MELTModel):
 
         self.num_points = num_points
         self.num_bayesian_layers = num_bayesian_layers
-        self.do_aleatoric = do_aleatoric
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
@@ -422,7 +484,6 @@ class BayesianNeuralNetwork(MELTModel):
             {
                 "num_points": self.num_points,
                 "num_bayesian_layers": self.num_bayesian_layers,
-                "do_aleatoric": self.do_aleatoric,
                 "aleatoric_scale_factor": self.aleatoric_scale_factor,
                 "scale_epsilon": self.scale_epsilon,
                 "use_batch_renorm": self.use_batch_renorm,

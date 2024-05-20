@@ -3,7 +3,9 @@ import warnings
 import numpy as np
 
 
-def make_predictions(model, x_data, y_normalizer=None, unnormalize=False):
+def make_predictions(
+    model, x_data, y_normalizer=None, unnormalize=False, aleatoric=False
+):
     """
     Make predictions using the provided model and optionally unscale the results.
 
@@ -11,13 +13,18 @@ def make_predictions(model, x_data, y_normalizer=None, unnormalize=False):
     model: The trained model to use for making predictions.
     x_data (array-like): Data features to make predictions on.
     y_normalizer: The normalizer used for the target variable, to unscale the predictions (optional).
-    unnormalize (bool): Whether to unscale the predictions using the y_normalizer. Defaults to False.
+    unnormalize (bool): Whether to unscale the predictions using the y_normalizer.
+    aleatoric (bool): If we want to extract aleatoric predictions
 
     Returns:
     array-like: Predictions (unnormalized if specified).
     """
     # Make predictions
-    predictions = model(x_data, training=False)
+    if aleatoric:
+        predictions, log_var_pred = model(x_data, training=False)
+        std_pred = np.sqrt(np.exp(log_var_pred))
+    else:
+        predictions = model(x_data, training=False)
 
     # Unscale the results if required
     if unnormalize and y_normalizer is not None:
@@ -32,7 +39,10 @@ def make_predictions(model, x_data, y_normalizer=None, unnormalize=False):
             "Set unnormalize to True to unnormalize the predictions."
         )
 
-    return predictions
+    if aleatoric:
+        return predictions, std_pred
+    else:
+        return predictions
 
 
 def ensemble_predictions(
