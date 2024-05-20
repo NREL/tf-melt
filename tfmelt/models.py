@@ -158,7 +158,7 @@ class MELTModel(Model):
         )
 
     def compute_jacobian(self, x):
-        """Compute the jacobian of the model outputs with respect to inputs."""
+        """Compute the Jacobian of the model outputs with respect to inputs."""
         if isinstance(x, np.ndarray):
             x = tf.convert_to_tensor(x)
         elif not isinstance(x, tf.Tensor):
@@ -220,23 +220,35 @@ class ArtificialNeuralNetwork(MELTModel):
             Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
         ]
 
-    def call(self, inputs):
+    def call(self, inputs, training=False):
         """Call the ANN."""
         # Apply input layer: dense -> batch norm -> activation -> input dropout
-        x = self.dense_layer_in(inputs)
-        x = self.batch_norm_layers[0](x) if self.has_batch_norm else x
+        x = self.dense_layer_in(inputs, training=training)
+        x = (
+            self.batch_norm_layers[0](x, training=training)
+            if self.has_batch_norm
+            else x
+        )
         x = self.activation_in(x)
-        x = self.input_dropout_layer(x) if self.has_input_dropout else x
+        x = (
+            self.input_dropout_layer(x, training=training)
+            if self.has_input_dropout
+            else x
+        )
 
         # Apply bulk layers: dense -> batch norm -> activation -> dropout
         for i in range(self.depth):
-            x = self.dense_layers_bulk[i](x)
-            x = self.batch_norm_layers[i + 1](x) if self.has_batch_norm else x
+            x = self.dense_layers_bulk[i](x, training=training)
+            x = (
+                self.batch_norm_layers[i + 1](x, training=training)
+                if self.has_batch_norm
+                else x
+            )
             x = self.activations_bulk[i](x)
-            x = self.dropout_layers[i](x) if self.has_dropout else x
+            x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
 
         # Return output layer output with activation built in
-        return self.output_layer(x)
+        return self.output_layer(x, training=training)
 
 
 @register_keras_serializable(package="tfmelt")
@@ -320,14 +332,22 @@ class ResidualNeuralNetwork(MELTModel):
                 for i in range(self.depth // 2)
             ]
 
-    def call(self, inputs):
+    def call(self, inputs, training=False):
         """Call the ResNet."""
         # Apply input layer:
         # dense -> (pre-activation) -> batch norm -> input dropout -> (post-activation)
-        x = self.dense_layer_in(inputs)
+        x = self.dense_layer_in(inputs, training=training)
         x = self.activation_in(x) if self.pre_activation else x
-        x = self.batch_norm_layers[0](x) if self.has_batch_norm else x
-        x = self.input_dropout_layer(x) if self.has_input_dropout else x
+        x = (
+            self.batch_norm_layers[0](x, training=training)
+            if self.has_batch_norm
+            else x
+        )
+        x = (
+            self.input_dropout_layer(x, training=training)
+            if self.has_input_dropout
+            else x
+        )
         x = self.activation_in(x) if not self.pre_activation else x
 
         # Apply bulk layers with residual connections
@@ -336,10 +356,14 @@ class ResidualNeuralNetwork(MELTModel):
 
             # Apply bulk layer:
             # dense -> (pre-activation) -> batch norm -> dropout -> (post-activation)
-            x = self.dense_layers_bulk[i](x)
+            x = self.dense_layers_bulk[i](x, training=training)
             x = self.activation_layers_bulk[i](x) if self.pre_activation else x
-            x = self.batch_norm_layers[i + 1](x) if self.has_batch_norm else x
-            x = self.dropout_layers[i](x) if self.has_dropout else x
+            x = (
+                self.batch_norm_layers[i + 1](x, training=training)
+                if self.has_batch_norm
+                else x
+            )
+            x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
             x = self.activation_layers_bulk[i](x) if not self.pre_activation else x
 
             # Add residual connection when reaching the end of a block
@@ -352,7 +376,7 @@ class ResidualNeuralNetwork(MELTModel):
                 )
 
         # Return output layer output with activation built in
-        return self.output_layer(x)
+        return self.output_layer(x, training=training)
 
 
 @register_keras_serializable(package="tfmelt")
@@ -513,36 +537,48 @@ class BayesianNeuralNetwork(MELTModel):
                 name="output",
             )
 
-    def call(self, inputs):
+    def call(self, inputs, training=False):
         """Call the BNN."""
         # Apply input layer: dense -> batch norm -> activation -> input dropout
-        x = self.dense_layer_in(inputs)
-        x = self.batch_norm_layers[0](x) if self.has_batch_norm else x
+        x = self.dense_layer_in(inputs, training=training)
+        x = (
+            self.batch_norm_layers[0](x, training=training)
+            if self.has_batch_norm
+            else x
+        )
         x = self.activation_in(x)
-        x = self.input_dropout_layer(x) if self.has_input_dropout else x
+        x = (
+            self.input_dropout_layer(x, training=training)
+            if self.has_input_dropout
+            else x
+        )
 
         # Apply bulk layers: dense -> batch norm -> activation -> dropout
         for i in range(self.depth - (1 if self.do_aleatoric else 0)):
             x = (
-                self.dense_layers_bulk[i](x)
+                self.dense_layers_bulk[i](x, training=training)
                 if i < (self.depth - self.num_bayesian_layers)
                 else self.bayesian_layers[i - (self.depth - self.num_bayesian_layers)](
-                    x
+                    x, training=training
                 )
             )
-            x = self.batch_norm_layers[i + 1](x) if self.has_batch_norm else x
+            x = (
+                self.batch_norm_layers[i + 1](x, training=training)
+                if self.has_batch_norm
+                else x
+            )
             x = self.activations_bulk[i](x)
-            x = self.dropout_layers[i](x) if self.has_dropout else x
+            x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
 
         # Apply final distribution layer
         if self.do_aleatoric:
             if self.num_bayesian_layers > 1:
-                x = self.pre_aleatoric_layer_flipout(x)
+                x = self.pre_aleatoric_layer_flipout(x, training=training)
             else:
-                x = self.pre_aleatoric_layer_dense(x)
+                x = self.pre_aleatoric_layer_dense(x, training=training)
 
         # Apply output layer
-        return self.output_layer(x)
+        return self.output_layer(x, training=training)
 
     def negative_log_likelihood(self, y_true, y_pred):
         """Calculate the negative log likelihood."""
