@@ -19,6 +19,7 @@ def plot_history(history, metrics=["loss"], plot_log=False, savename=None):
     Returns:
     None
     """
+    # TODO: return the figure object for further customization
     if plot_log:
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
     else:

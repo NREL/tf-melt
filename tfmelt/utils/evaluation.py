@@ -62,10 +62,13 @@ def make_predictions(
         std_pred = np.sqrt(np.exp(log_var_pred))
     else:
         predictions = model(x_data, training=training)
+        std_pred = None
 
     # Unscale the results if required
     if unnormalize and y_normalizer is not None:
         predictions = y_normalizer.inverse_transform(predictions)
+        if std_pred is not None:
+            std_pred = np.float32(y_normalizer.scale_) * std_pred
     elif unnormalize and y_normalizer is None:
         raise ValueError(
             "y_normalizer must be provided to unnormalize the predictions."
