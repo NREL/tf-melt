@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
-from scipy.stats import norm, probplot
+from scipy.stats import probplot
 
 from .statistics import compute_metrics, compute_rmse, compute_rsquared
 
@@ -14,7 +13,8 @@ def plot_history(history, metrics=["loss"], plot_log=False, savename=None):
     history: History object from model training.
     metrics (list of str): List of metrics to plot. Defaults to ["loss"].
     plot_log (bool): Whether to include a logarithmic scale subplot. Defaults to False.
-    savename (str): Full path to save the plot image. If None, the plot will not be saved. Defaults to None.
+    savename (str): Full path to save the plot image. If None, the plot will not be
+                    saved. Defaults to None.
 
     Returns:
     None
@@ -110,7 +110,8 @@ def plot_predictions(
     y_test_real (array-like): Actual test values.
     output_indices (list of int): List of output indices to plot. Defaults to None.
     max_targets (int): Maximum number of targets to plot. Defaults to 3.
-    savename (str): Full path to save the plot image. If None, the plot will not be saved. Defaults to None.
+    savename (str): Full path to save the plot image. If None, the plot will not be
+                    saved. Defaults to None.
 
     Returns:
     None
@@ -329,7 +330,8 @@ def plot_value_vs_residuals(y_true, y_pred, ax, dataset_name, colors, use_pred=T
         handles.append(h)  # Get a handle to the scatter for the legend
     ax.axhline(0, color="red", linestyle="--")
     ax.set_title(
-        f"{dataset_name} Data: {'Predicted' if use_pred else 'True'} Value vs. Residuals"
+        f"{dataset_name} Data: {'Predicted' if use_pred else 'True'} Value vs. "
+        f"Residuals"
     )
     ax.set_xlabel("Predicted Value" if use_pred else "True Value")
     ax.set_ylabel("Residual (True - Predicted)")

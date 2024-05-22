@@ -1,7 +1,8 @@
 import numpy as np
 from scipy.optimize import minimize
 from scipy.stats import norm
-from sklearn.metrics import mean_squared_error
+
+# from sklearn.metrics import mean_squared_error
 
 
 def compute_rsquared(truth, pred):
@@ -14,7 +15,7 @@ def compute_rsquared(truth, pred):
 
 def compute_rmse(truth, pred):
     """Compute the root mean squared error (RMSE)."""
-    return np.sqrt(mean_squared_error(truth, pred))
+    return np.sqrt(np.mean((truth - pred) ** 2))
 
 
 def compute_normalized_rmse(truth, pred):
@@ -27,6 +28,7 @@ def compute_picp(truth, mean, std):
     """Compute the prediction interval coverage probability (PICP)."""
     lower_bound = mean - 1.96 * std
     upper_bound = mean + 1.96 * std
+    # Compute probability as the mean of boolean array
     coverage = np.mean((truth >= lower_bound) & (truth <= upper_bound))
     return coverage
 
@@ -163,7 +165,8 @@ def compute_metrics(y_real, y_pred, y_std, metrics_to_compute=None):
     y_real (array-like): Actual values.
     y_pred (array-like): Predicted values.
     y_std (array-like): Standard deviation of predictions.
-    metrics_to_compute (list, optional): List of metrics to compute. If None, all metrics are computed.
+    metrics_to_compute (list, optional): List of metrics to compute.
+                                         If None, all metrics are computed.
 
     Returns:
     dict: Dictionary of computed metrics.

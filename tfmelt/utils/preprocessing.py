@@ -36,7 +36,8 @@ def get_normalizers(norm_type="standard", n_normalizers=1, **kwargs):
     Get a list of normalizers based on the specified normalization type.
 
     Parameters:
-    norm_type (str): Type of normalization ('standard', 'minmax', 'robust', 'power', 'quantile').
+    norm_type (str): Type of normalization ('standard', 'minmax', 'robust', 'power',
+                     'quantile').
     n_normalizers (int): Number of normalizers to create. Defaults to 1.
     **kwargs: Additional keyword arguments for the specific scaler.
 

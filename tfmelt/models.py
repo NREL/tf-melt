@@ -10,6 +10,14 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.utils import register_keras_serializable
 
 
+def safe_exp(x):
+    """Prevents overflow by clipping input range to reasonable values."""
+    # TODO: Consider using tf.exp(x - tf.reduce_max(x)) instead
+    # Also consider moving to another module
+    x = tf.clip_by_value(x, clip_value_min=-20, clip_value_max=20)
+    return tf.exp(x)
+
+
 @register_keras_serializable(package="tfmelt")
 class MELTModel(Model):
     def __init__(
@@ -26,7 +34,7 @@ class MELTModel(Model):
         initializer: Optional[str] = "glorot_uniform",
         l1_reg: Optional[float] = 0.0,
         l2_reg: Optional[float] = 0.0,
-        do_aleatoric: Optional[bool] = False,
+        num_mixtures: Optional[int] = 0,
         **kwargs,
     ):
         """
@@ -46,6 +54,7 @@ class MELTModel(Model):
             l1_reg (float, optional): L1 regularization for the weights.
             l2_reg (float, optional): L2 regularization for the weights.
             do_aleatoric (bool, optional): Flag to perform aleatoric UQ.
+            num_mixtures (int, optional): Number of mixtures for density networks.
             **kwargs: Additional keyword arguments.
 
         """
@@ -63,7 +72,7 @@ class MELTModel(Model):
         self.initializer = initializer
         self.l1_reg = l1_reg
         self.l2_reg = l2_reg
-        self.do_aleatoric = do_aleatoric
+        self.num_mixtures = num_mixtures
 
         # Initialize flags for layers (to be set in build method)
         self.has_batch_norm = False
@@ -84,7 +93,7 @@ class MELTModel(Model):
             "initializer": self.initializer,
             "l1_reg": self.l1_reg,
             "l2_reg": self.l2_reg,
-            "do_aleatoric": self.do_aleatoric,
+            "num_mixtures": self.num_mixtures,
         }
 
     def initialize_layers(self):
@@ -154,7 +163,7 @@ class MELTModel(Model):
     def create_output_layer(self):
         """Create the output layer with activation from function."""
 
-        if self.do_aleatoric:
+        if self.num_mixtures == 1:
             # Output layer for predicting the mean
             self.mean_output_layer = Dense(
                 self.num_outputs,
@@ -173,7 +182,31 @@ class MELTModel(Model):
                 name="log_var_output",
             )
 
+        elif self.num_mixtures > 1:
+            # Mixture Density Network output layer
+            self.mix_coeffs_layer = Dense(
+                self.num_mixtures,
+                activation="softmax",
+                kernel_initializer=self.initializer,
+                name="mix_coeffs",
+            )
+            self.mean_output_layer = Dense(
+                self.num_mixtures * self.num_outputs,
+                activation=None,
+                kernel_initializer=self.initializer,
+                kernel_regularizer=self.regularizer,
+                name="mean_output",
+            )
+            self.log_var_output_layer = Dense(
+                self.num_mixtures * self.num_outputs,
+                activation=None,
+                kernel_initializer=self.initializer,
+                kernel_regularizer=self.regularizer,
+                name="log_var_output",
+            )
+
         else:
+            # Regular output layer
             self.output_layer = Dense(
                 self.num_outputs,
                 activation=self.output_activation,
@@ -182,18 +215,59 @@ class MELTModel(Model):
                 name="output",
             )
 
-    def aleatoric_loss(self, y_true, y_pred):
+    def aleatoric_loss(self, y_true, y_pred, variance_scale=1.0):
         """Loss function for aleatoric UQ predictions"""
         # mean_pred, log_var_pred = y_pred
         mean_pred = y_pred[0]
         log_var_pred = y_pred[1]
 
-        # Compute the negative log likelihood
-        nll = (
-            0.5 * tf.math.exp(-log_var_pred) * tf.math.square(y_true - mean_pred)
-            + 0.5 * log_var_pred
+        precision = tf.exp(-log_var_pred)
+        mse_loss = tf.reduce_mean(precision * tf.square(y_true - mean_pred))
+        var_loss = tf.reduce_mean(log_var_pred)
+
+        # Return the weighted sum of the MSE and variance loss
+        return mse_loss + variance_scale * var_loss
+
+    def mixture_density_loss(self, y_true, y_pred):
+        """Loss function for mixture density network predictions."""
+        # Extract the mixture coefficients, means, and log-variances
+        m_coeffs = y_pred[:, : self.num_mixtures]
+        mean_preds = y_pred[
+            :,
+            self.num_mixtures : self.num_mixtures
+            + self.num_mixtures * self.num_outputs,
+        ]
+        log_var_preds = y_pred[
+            :, self.num_mixtures + self.num_mixtures * self.num_outputs :
+        ]
+
+        # Reshape to ensure same shape as y_true replicated across mixtures
+        mean_preds = tf.reshape(mean_preds, [-1, self.num_mixtures, self.num_outputs])
+        log_var_preds = tf.reshape(
+            log_var_preds, [-1, self.num_mixtures, self.num_outputs]
         )
-        return tf.reduce_mean(nll)
+
+        # Calculate the Gaussian probability density function for each component
+        const_term = -0.5 * self.num_outputs * tf.math.log(2 * np.pi)
+        inv_sigma_log = -0.5 * log_var_preds
+        exp_term = (
+            -0.5
+            * tf.square(tf.expand_dims(y_true, 1) - mean_preds)
+            / safe_exp(log_var_preds)
+        )
+
+        # form log probabilities
+        log_probs = const_term + inv_sigma_log + exp_term
+
+        # Calculate the log likelihood
+        weighted_log_probs = log_probs + tf.math.log(m_coeffs[:, :, tf.newaxis])
+        # max_log_probs = tf.reduce_max(weighted_log_probs, axis=1, keepdims=True)
+        log_sum_exp = tf.reduce_logsumexp(weighted_log_probs, axis=1)
+
+        log_likelihood = tf.reduce_mean(log_sum_exp)
+
+        # Return the negative log likelihood
+        return -log_likelihood
 
     def compute_jacobian(self, x):
         """Compute the Jacobian of the model outputs with respect to inputs."""
@@ -209,12 +283,18 @@ class MELTModel(Model):
 
     def compile(self, optimizer="adam", loss="mse", metrics=None, **kwargs):
         """Compile the model with the appropriate loss function."""
-        if self.do_aleatoric:
+        if self.num_mixtures == 1:
             warnings.warn(
                 "Loss function is overridden when using aleatoric uncertainty. "
                 "Using the aleatoric loss function."
             )
             loss = self.aleatoric_loss
+        elif self.num_mixtures > 1:
+            warnings.warn(
+                "Loss function is overridden when using mixture density networks. "
+                "Using the mixture density loss function."
+            )
+            loss = self.mixture_density_loss
 
         super(MELTModel, self).compile(optimizer, loss, metrics, **kwargs)
 
@@ -297,13 +377,22 @@ class ArtificialNeuralNetwork(MELTModel):
             x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
 
         # Apply the output layer(s) and return
-        if self.do_aleatoric:
+        if self.num_mixtures == 1:
             # Predict mean and log-variance
             mean_output = self.mean_output_layer(x, training=training)
             log_var_output = self.log_var_output_layer(x, training=training)
 
             # return mean_output, log_var_output
             return tf.stack([mean_output, log_var_output])
+        elif self.num_mixtures > 1:
+            # Predict mixture density network outputs
+            m_coeffs = self.mix_coeffs_layer(x, training=training)
+            mean_output = self.mean_output_layer(x, training=training)
+            log_var_output = self.log_var_output_layer(x, training=training)
+
+            return tf.concat([m_coeffs, mean_output, log_var_output], axis=-1)
+            # return tf.stack([m_coeffs, mean_output, log_var_output])
+
         else:
             return self.output_layer(x, training=training)
 
@@ -433,13 +522,16 @@ class ResidualNeuralNetwork(MELTModel):
                 )
 
         # Apply the output layer(s) and return
-        if self.do_aleatoric:
+        if self.num_mixtures == 1:
             # Predict mean and log-variance
             mean_output = self.mean_output_layer(x, training=training)
             log_var_output = self.log_var_output_layer(x, training=training)
 
             # return mean_output, log_var_output
             return tf.stack([mean_output, log_var_output])
+        elif self.num_mixtures > 1:
+            # Predict mixture density network outputs
+            return self.mdn_output_layer(x, training=training)
         else:
             return self.output_layer(x, training=training)
 
@@ -450,6 +542,7 @@ class BayesianNeuralNetwork(MELTModel):
         self,
         num_points: Optional[int] = 1,
         num_bayesian_layers: Optional[int] = None,
+        do_aleatoric: Optional[bool] = False,
         aleatoric_scale_factor: Optional[float] = 5e-2,
         scale_epsilon: Optional[float] = 1e-3,
         use_batch_renorm: Optional[bool] = True,
@@ -463,6 +556,7 @@ class BayesianNeuralNetwork(MELTModel):
             num_bayesian_layers (int, optional): Number of layers to make Bayesian.
                                                 Layers are counted from the output
                                                  layer backwards.
+            do_aleatoric (bool, optional): Flag to perform aleatoric output.
             aleatoric_scale_factor (float, optional): Scale factor for aleatoric
                                                       uncertainty.
             scale_epsilon (float, optional): Epsilon value for the scale of the
@@ -475,6 +569,7 @@ class BayesianNeuralNetwork(MELTModel):
 
         self.num_points = num_points
         self.num_bayesian_layers = num_bayesian_layers
+        self.do_aleatoric = do_aleatoric
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
@@ -484,6 +579,7 @@ class BayesianNeuralNetwork(MELTModel):
             {
                 "num_points": self.num_points,
                 "num_bayesian_layers": self.num_bayesian_layers,
+                "do_aleatoric": self.do_aleatoric,
                 "aleatoric_scale_factor": self.aleatoric_scale_factor,
                 "scale_epsilon": self.scale_epsilon,
                 "use_batch_renorm": self.use_batch_renorm,
