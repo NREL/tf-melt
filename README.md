@@ -41,3 +41,13 @@ If you want to run the example notebooks, they require a couple additional packa
 ## Contributing
 
 pip install black isort flake8
+
+## Documentation
+
+Coming soon...
+
+## Related repo
+
+There is a parallel repo for implementation in PyTorch under development and will be live shortly:
+
+https://github.com/nrel/pt-melt

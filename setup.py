@@ -1,8 +1,8 @@
 import platform
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
-install_requires = ["pytest"]
+install_requires = ["pytest", "scikit-learn", "matplotlib"]
 print(f"Platform: {platform.system()}")
 
 if platform.system() == "Linux":
@@ -17,13 +17,14 @@ elif platform.system() == "Darwin":
 
 setup(
     name="tfmelt",
-    version="0.2.2",
+    version="0.3.0",
     description="TensorFlow Machine Learning Toolbox (TF-MELT)",
     url="https://github.com/NREL/tf-melt",
     author="Nicholas T. Wimer",
     author_email="nwimer@nrel.gov",
     license="BSD 3-Clause License",
-    packages=["tfmelt"],
+    # packages=["tfmelt"],
+    packages=find_packages(),
     install_requires=install_requires,
     classifiers=[
         "Development Status :: 1 - Planning",
