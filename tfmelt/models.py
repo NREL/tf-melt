@@ -35,6 +35,7 @@ class MELTModel(Model):
         l1_reg: Optional[float] = 0.0,
         l2_reg: Optional[float] = 0.0,
         num_mixtures: Optional[int] = 0,
+        node_list: Optional[list] = None,
         **kwargs,
     ):
         """
@@ -55,6 +56,7 @@ class MELTModel(Model):
             l2_reg (float, optional): L2 regularization for the weights.
             do_aleatoric (bool, optional): Flag to perform aleatoric UQ.
             num_mixtures (int, optional): Number of mixtures for density networks.
+            node_list (list, optional): Numbers of nodes to alternately define layers.
             **kwargs: Additional keyword arguments.
 
         """
@@ -73,11 +75,20 @@ class MELTModel(Model):
         self.l1_reg = l1_reg
         self.l2_reg = l2_reg
         self.num_mixtures = num_mixtures
+        self.node_list = node_list
 
         # Initialize flags for layers (to be set in build method)
         self.has_batch_norm = False
         self.has_dropout = False
         self.has_input_dropout = False
+
+        # Determine if network should be defined based on depth/width or node_list
+        if self.node_list:
+            self.num_layers = len(self.node_list)
+            self.layer_width = self.node_list
+        else:
+            self.num_layers = self.depth
+            self.layer_width = [self.width for i in range(self.depth)]
 
         # Create config dictionary for serialization
         self.config = {
@@ -94,6 +105,9 @@ class MELTModel(Model):
             "l1_reg": self.l1_reg,
             "l2_reg": self.l2_reg,
             "num_mixtures": self.num_mixtures,
+            "node_list": self.node_list,
+            "num_layers": self.num_layers,
+            "layer_width": self.layer_width,
         }
 
     def initialize_layers(self):
@@ -122,7 +136,7 @@ class MELTModel(Model):
         if self.dropout > 0:
             self.dropout_layers = [
                 Dropout(rate=self.dropout, name=f"dropout_{i}")
-                for i in range(self.depth)
+                for i in range(self.num_layers)
             ]
         if self.input_dropout > 0:
             self.input_dropout_layer = Dropout(
@@ -146,13 +160,13 @@ class MELTModel(Model):
                     ),
                     name=f"batch_norm_{i}",
                 )
-                for i in range(self.depth + 1)
+                for i in range(self.num_layers + 1)
             ]
 
     def create_input_layer(self):
         """Create the input layer with associated activation layer."""
         self.dense_layer_in = Dense(
-            self.width,
+            self.layer_width[0],
             activation=None,
             kernel_initializer=self.initializer,
             kernel_regularizer=self.regularizer,
@@ -230,6 +244,7 @@ class MELTModel(Model):
 
     def mixture_density_loss(self, y_true, y_pred):
         """Loss function for mixture density network predictions."""
+        # TODO: develop verification check for this loss function
         # Extract the mixture coefficients, means, and log-variances
         m_coeffs = y_pred[:, : self.num_mixtures]
         mean_preds = y_pred[
@@ -337,16 +352,17 @@ class ArtificialNeuralNetwork(MELTModel):
         # Bulk layers
         self.dense_layers_bulk = [
             Dense(
-                self.width,
+                self.layer_width[i + 1],
                 activation=None,
                 kernel_initializer=self.initializer,
                 kernel_regularizer=self.regularizer,
                 name=f"bulk_{i}",
             )
-            for i in range(self.depth)
+            for i in range(self.num_layers - 1)
         ]
         self.activations_bulk = [
-            Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
+            Activation(self.act_fun, name=f"bulk_act_{i}")
+            for i in range(self.num_layers - 1)
         ]
 
     def call(self, inputs, training=False):
@@ -366,7 +382,7 @@ class ArtificialNeuralNetwork(MELTModel):
         )
 
         # Apply bulk layers: dense -> batch norm -> activation -> dropout
-        for i in range(self.depth):
+        for i in range(self.num_layers - 1):
             x = self.dense_layers_bulk[i](x, training=training)
             x = (
                 self.batch_norm_layers[i + 1](x, training=training)
@@ -435,11 +451,11 @@ class ResidualNeuralNetwork(MELTModel):
 
     def build(self, input_shape):
         """Build the ResNet."""
-        if self.depth % self.layers_per_block != 0:
+        if self.num_layers % self.layers_per_block != 0:
             warnings.warn(
-                f"Warning: depth ({self.depth}) is not divisible by layers_per_block "
-                f"({self.layers_per_block}), so the last block will have "
-                f"{self.depth % self.layers_per_block} layers."
+                f"Warning: Number of layers ({self.num_layers}) is not divisible by "
+                f"layers_per_block ({self.layers_per_block}), so the last block will "
+                f"have {self.num_layers % self.layers_per_block} layers."
             )
 
         self.initialize_layers()
@@ -452,30 +468,31 @@ class ResidualNeuralNetwork(MELTModel):
         # ResNet Bulk layers
         self.dense_layers_bulk = [
             Dense(
-                self.width,
+                self.layer_width[i + 1],
                 activation=None,
                 kernel_initializer=self.initializer,
                 kernel_regularizer=self.regularizer,
                 name=f"bulk_{i}",
             )
-            for i in range(self.depth)
+            for i in range(self.num_layers - 1)
         ]
         self.activation_layers_bulk = [
-            Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
+            Activation(self.act_fun, name=f"bulk_act_{i}")
+            for i in range(self.num_layers)
         ]
         # Add layers for residual connections (Add layer for every "layers per block")
         # with remainder if depth is not divisible by layers per block
         self.add_layers = [
             Add(name=f"add_{i}")
             for i in range(
-                (self.depth + self.layers_per_block - 1) // self.layers_per_block
+                (self.num_layers + self.layers_per_block - 1) // self.layers_per_block
             )
         ]
         # Optional activation after the Add layers
         if self.post_add_activation:
             self.post_add_activations = [
                 Activation(self.act_fun, name=f"post_add_act_{i}")
-                for i in range(self.depth // 2)
+                for i in range(self.num_layers // 2)
             ]
 
     def call(self, inputs, training=False):
@@ -497,7 +514,7 @@ class ResidualNeuralNetwork(MELTModel):
         x = self.activation_in(x) if not self.pre_activation else x
 
         # Apply bulk layers with residual connections
-        for i in range(0, self.depth):
+        for i in range(0, self.num_layers - 1):
             y = x
 
             # Apply bulk layer:
@@ -513,7 +530,7 @@ class ResidualNeuralNetwork(MELTModel):
             x = self.activation_layers_bulk[i](x) if not self.pre_activation else x
 
             # Add residual connection when reaching the end of a block
-            if (i + 1) % self.layers_per_block == 0 or i == self.depth - 1:
+            if (i + 1) % self.layers_per_block == 0 or i == self.num_layers - 1:
                 x = self.add_layers[i // self.layers_per_block]([y, x])
                 x = (
                     self.post_add_activations[i // self.layers_per_block](x)
@@ -589,14 +606,14 @@ class BayesianNeuralNetwork(MELTModel):
     def build(self, input_shape):
         """Build the BNN."""
         if self.num_bayesian_layers is None:
-            self.num_bayesian_layers = self.depth + 1
-        elif self.num_bayesian_layers > self.depth + 1:
+            self.num_bayesian_layers = self.num_layers + 1
+        elif self.num_bayesian_layers > self.num_layers + 1:
             warnings.warn(
                 f"num_bayesian_layers ({self.num_bayesian_layers}) is greater than "
-                f"depth + 1 ({self.depth + 1}), so setting num_bayesian_layers to "
-                f"depth + 1."
+                f"(number of layers + 1) ({self.num_layers + 1}), so setting "
+                f"num_bayesian_layers to (number of layers + 1)."
             )
-            self.num_bayesian_layers = self.depth + 1
+            self.num_bayesian_layers = self.num_layers + 1
         self.initialize_layers()
         super(BayesianNeuralNetwork, self).build(input_shape)
 
@@ -606,12 +623,21 @@ class BayesianNeuralNetwork(MELTModel):
 
         # Identify the number of bulk Bayesian layers
         num_bulk_bayesian_layers = max(
-            0, self.num_bayesian_layers - (1 if self.do_aleatoric else 0)
+            0, self.num_bayesian_layers - 1 - (1 if self.do_aleatoric else 0)
         )
+
         # Identify the number of bulk Dense layers
         num_bulk_dense_layers = (
-            self.depth - num_bulk_bayesian_layers - (1 if self.do_aleatoric else 0)
+            self.num_layers
+            - num_bulk_bayesian_layers
+            - 1
+            - (1 if self.do_aleatoric else 0)
         )
+
+        # Check if the total layers match the length of layer_width
+        assert self.num_layers <= len(
+            self.layer_width
+        ), "num_layers exceeds length of layer_width"
 
         # Create the kernel divergence function
         self.kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
@@ -619,9 +645,9 @@ class BayesianNeuralNetwork(MELTModel):
         ) / (self.num_points * 1.0)
 
         # Create a bayesian input layer if num_bayesian_layers > depth
-        if self.num_bayesian_layers > self.depth:
+        if self.num_bayesian_layers >= self.num_layers:
             self.dense_layer_in = tfp.layers.DenseFlipout(
-                self.width,
+                self.layer_width[0],
                 kernel_divergence_fn=self.kernel_divergence_fn,
                 activation=None,
                 activity_regularizer=self.regularizer,
@@ -631,7 +657,7 @@ class BayesianNeuralNetwork(MELTModel):
         # Create the Bayesian layers
         self.bayesian_layers = [
             tfp.layers.DenseFlipout(
-                self.width,
+                self.layer_width[i + 1 + num_bulk_dense_layers],
                 kernel_divergence_fn=self.kernel_divergence_fn,
                 activation=None,
                 activity_regularizer=self.regularizer,
@@ -639,42 +665,32 @@ class BayesianNeuralNetwork(MELTModel):
             )
             for i in range(num_bulk_bayesian_layers)
         ]
-        # Create the bulk layers
+        # Create the dense layers
         self.dense_layers_bulk = [
-            Dense(
-                self.width,
+            tf.keras.layers.Dense(
+                self.layer_width[i + 1],
                 activation=None,
                 kernel_initializer=self.initializer,
                 kernel_regularizer=self.regularizer,
-                name=f"bulk_{i}",
+                name=f"bulk_dense_{i}",
             )
-            for i in range(num_bulk_dense_layers)
+            for i in range(num_bulk_dense_layers - 1)
         ]
         # Create the activation layers for the layers
         self.activations_bulk = [
-            Activation(self.act_fun, name=f"bulk_act_{i}") for i in range(self.depth)
+            Activation(self.act_fun, name=f"bulk_act_{i}")
+            for i in range(self.num_layers)
         ]
 
         # Create the final distribution layer
         if self.do_aleatoric:
-            # Create the pre-aleatoric layer based on number of Bayesian layers
-            if self.num_bayesian_layers == 1:
-                self.pre_aleatoric_layer_dense = Dense(
-                    2 * self.num_outputs,
-                    activation=None,
-                    kernel_initializer=self.initializer,
-                    kernel_regularizer=self.regularizer,
-                    name="pre_aleatoric_dense",
-                )
-            else:
-                self.pre_aleatoric_layer_flipout = tfp.layers.DenseFlipout(
-                    2 * self.num_outputs,
-                    kernel_divergence_fn=self.kernel_divergence_fn,
-                    activation=None,
-                    activity_regularizer=self.regularizer,
-                    name="pre_aleatoric_flipout",
-                )
-            # Create the aleatoric layer
+            self.pre_aleatoric_layer = tfp.layers.DenseFlipout(
+                2 * self.num_outputs,
+                kernel_divergence_fn=self.kernel_divergence_fn,
+                activation=None,
+                activity_regularizer=self.regularizer,
+                name="pre_aleatoric_flipout",
+            )
             self.output_layer = tfp.layers.DistributionLambda(
                 lambda t: tfp.distributions.Normal(
                     loc=t[..., : self.num_outputs],
@@ -710,22 +726,27 @@ class BayesianNeuralNetwork(MELTModel):
             else x
         )
 
+        bayesian_index = 0  # Initialize Bayesian index
+
         # Apply bulk layers: dense -> batch norm -> activation -> dropout
-        for i in range(self.depth - (1 if self.do_aleatoric else 0)):
-            x = (
-                self.dense_layers_bulk[i](x, training=training)
-                if i < (self.depth - self.num_bayesian_layers)
-                else self.bayesian_layers[i - (self.depth - self.num_bayesian_layers)](
-                    x, training=training
-                )
-            )
+        for i in range(self.num_layers - 1 - (1 if self.do_aleatoric else 0)):
+            if i < len(self.dense_layers_bulk):
+                x = self.dense_layers_bulk[i](x, training=training)
+            else:
+                bayesian_index = i - len(self.dense_layers_bulk)
+                if bayesian_index < len(self.bayesian_layers):
+                    x = self.bayesian_layers[bayesian_index](x, training=training)
             x = (
                 self.batch_norm_layers[i + 1](x, training=training)
                 if self.has_batch_norm
                 else x
             )
-            x = self.activations_bulk[i](x)
-            x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
+            x = self.activations_bulk[i + 1](x)
+            x = (
+                self.dropout_layers[i + 1](x, training=training)
+                if self.has_dropout
+                else x
+            )
 
         # Apply final distribution layer
         if self.do_aleatoric:
