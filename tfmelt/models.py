@@ -9,6 +9,13 @@ from tensorflow.keras.layers import Activation, Add, BatchNormalization, Dense, 
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import register_keras_serializable
 
+from tfmelt.blocks import (
+    DefaultOutput,
+    DenseBlock,
+    MultipleMixturesOutput,
+    SingleMixtureOutput,
+)
+
 
 def safe_exp(x):
     """Prevents overflow by clipping input range to reasonable values."""
@@ -90,6 +97,9 @@ class MELTModel(Model):
             self.num_layers = self.depth
             self.layer_width = [self.width for i in range(self.depth)]
 
+        # Create list for storing names of sub-layers
+        self.sub_layer_names = []
+
         # Create config dictionary for serialization
         self.config = {
             "num_outputs": self.num_outputs,
@@ -113,9 +123,9 @@ class MELTModel(Model):
     def initialize_layers(self):
         """Initialize the layers of the model."""
         self.create_regularizer()
-        self.create_dropout_layers()
-        self.create_batch_norm_layers()
-        self.create_input_layer()
+        # self.create_dropout_layers()
+        # self.create_batch_norm_layers()
+        # self.create_input_layer()
         self.create_output_layer()
 
         # Set attribute flags based on which layers are present
@@ -175,59 +185,40 @@ class MELTModel(Model):
         self.activation_in = Activation(self.act_fun, name="input2bulk_act")
 
     def create_output_layer(self):
-        """Create the output layer with activation from function."""
+        """Create the output layer based on the number of mixtures."""
 
         if self.num_mixtures == 1:
-            # Output layer for predicting the mean
-            self.mean_output_layer = Dense(
+            # Single Mixture Density Network output layer
+            self.output_layer = SingleMixtureOutput(
                 self.num_outputs,
-                activation=self.output_activation,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
-                name="mean_output",
+                self.output_activation,
+                self.initializer,
+                self.regularizer,
+                name="single_mixture_output",
             )
-
-            # Output layer for predicting the log-variance
-            self.log_var_output_layer = Dense(
-                self.num_outputs,
-                activation=None,  # No activation for log-variance
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
-                name="log_var_output",
-            )
+            self.sub_layer_names.append("single_mixture_output")
 
         elif self.num_mixtures > 1:
-            # Mixture Density Network output layer
-            self.mix_coeffs_layer = Dense(
+            # Multiple Mixture Density Network output layer
+            self.output_layer = MultipleMixturesOutput(
+                self.num_outputs,
                 self.num_mixtures,
-                activation="softmax",
-                kernel_initializer=self.initializer,
-                name="mix_coeffs",
+                self.initializer,
+                self.regularizer,
+                name="multiple_mixture_output",
             )
-            self.mean_output_layer = Dense(
-                self.num_mixtures * self.num_outputs,
-                activation=None,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
-                name="mean_output",
-            )
-            self.log_var_output_layer = Dense(
-                self.num_mixtures * self.num_outputs,
-                activation=None,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
-                name="log_var_output",
-            )
+            self.sub_layer_names.append("multiple_mixture_output")
 
         else:
             # Regular output layer
-            self.output_layer = Dense(
+            self.output_layer = DefaultOutput(
                 self.num_outputs,
-                activation=self.output_activation,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
+                self.output_activation,
+                self.initializer,
+                self.regularizer,
                 name="output",
             )
+            self.sub_layer_names.append("output")
 
     def aleatoric_loss(self, y_true, y_pred, variance_scale=1.0):
         """Loss function for aleatoric UQ predictions"""
@@ -313,6 +304,14 @@ class MELTModel(Model):
 
         super(MELTModel, self).compile(optimizer, loss, metrics, **kwargs)
 
+    def summary(self):
+        """Print a summary of the model that includes sub-layers."""
+        super(MELTModel, self).summary()
+
+        # Loop over sub-layers and print summaries
+        for layer_name in self.sub_layer_names:
+            self.get_layer(layer_name).summary()
+
     def get_config(self):
         """Get the config dictionary."""
         config = super(MELTModel, self).get_config()
@@ -350,67 +349,30 @@ class ArtificialNeuralNetwork(MELTModel):
         super(ArtificialNeuralNetwork, self).initialize_layers()
 
         # Bulk layers
-        self.dense_layers_bulk = [
-            Dense(
-                self.layer_width[i + 1],
-                activation=None,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
-                name=f"bulk_{i}",
-            )
-            for i in range(self.num_layers - 1)
-        ]
-        self.activations_bulk = [
-            Activation(self.act_fun, name=f"bulk_act_{i}")
-            for i in range(self.num_layers - 1)
-        ]
+        self.dense_block = DenseBlock(
+            node_list=self.layer_width,
+            activation=self.act_fun,
+            dropout=self.dropout,
+            batch_norm=self.has_batch_norm,
+            regularizer=self.regularizer,
+            name="dense_block",
+        )
+        self.sub_layer_names.append("dense_block")
 
     def call(self, inputs, training=False):
         """Call the ANN."""
-        # Apply input layer: dense -> batch norm -> activation -> input dropout
-        x = self.dense_layer_in(inputs, training=training)
+        # Apply input dropout
         x = (
-            self.batch_norm_layers[0](x, training=training)
-            if self.has_batch_norm
-            else x
-        )
-        x = self.activation_in(x)
-        x = (
-            self.input_dropout_layer(x, training=training)
+            self.input_dropout_layer(inputs, training=training)
             if self.has_input_dropout
-            else x
+            else inputs
         )
 
-        # Apply bulk layers: dense -> batch norm -> activation -> dropout
-        for i in range(self.num_layers - 1):
-            x = self.dense_layers_bulk[i](x, training=training)
-            x = (
-                self.batch_norm_layers[i + 1](x, training=training)
-                if self.has_batch_norm
-                else x
-            )
-            x = self.activations_bulk[i](x)
-            x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
+        # Apply the dense block
+        x = self.dense_block(x, training=training)
 
         # Apply the output layer(s) and return
-        if self.num_mixtures == 1:
-            # Predict mean and log-variance
-            mean_output = self.mean_output_layer(x, training=training)
-            log_var_output = self.log_var_output_layer(x, training=training)
-
-            # return mean_output, log_var_output
-            return tf.stack([mean_output, log_var_output])
-        elif self.num_mixtures > 1:
-            # Predict mixture density network outputs
-            m_coeffs = self.mix_coeffs_layer(x, training=training)
-            mean_output = self.mean_output_layer(x, training=training)
-            log_var_output = self.log_var_output_layer(x, training=training)
-
-            return tf.concat([m_coeffs, mean_output, log_var_output], axis=-1)
-            # return tf.stack([m_coeffs, mean_output, log_var_output])
-
-        else:
-            return self.output_layer(x, training=training)
+        return self.output_layer(x, training=training)
 
 
 @register_keras_serializable(package="tfmelt")
