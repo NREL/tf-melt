@@ -1,5 +1,5 @@
 import warnings
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 import tensorflow as tf
@@ -10,6 +10,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.utils import register_keras_serializable
 
 from tfmelt.blocks import (
+    BayesianBlock,
     DefaultOutput,
     DenseBlock,
     MultipleMixturesOutput,
@@ -411,6 +412,7 @@ class BayesianNeuralNetwork(MELTModel):
         aleatoric_scale_factor: Optional[float] = 5e-2,
         scale_epsilon: Optional[float] = 1e-3,
         use_batch_renorm: Optional[bool] = True,
+        bayesian_mask: Optional[List[bool]] = None,
         **kwargs,
     ):
         """
@@ -438,6 +440,7 @@ class BayesianNeuralNetwork(MELTModel):
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
+        self.bayesian_mask = bayesian_mask
 
         # Update config with new attributes
         self.config.update(
@@ -448,6 +451,7 @@ class BayesianNeuralNetwork(MELTModel):
                 "aleatoric_scale_factor": self.aleatoric_scale_factor,
                 "scale_epsilon": self.scale_epsilon,
                 "use_batch_renorm": self.use_batch_renorm,
+                "bayesian_mask": self.bayesian_mask,
             }
         )
 
@@ -469,142 +473,137 @@ class BayesianNeuralNetwork(MELTModel):
         """Initialize the layers of the BNN."""
         super(BayesianNeuralNetwork, self).initialize_layers()
 
-        # Identify the number of bulk Bayesian layers
-        num_bulk_bayesian_layers = max(
-            0, self.num_bayesian_layers - 1 - (1 if self.do_aleatoric else 0)
+        # Identify the number of Bayesian layers
+        self.num_bayesian_layers = (
+            len(self.node_list)
+            if self.bayesian_mask is None
+            else sum(self.bayesian_mask)
         )
+        # Determine the number of Dense layers
+        self.num_dense_layers = len(self.node_list) - self.num_bayesian_layers
 
-        # Identify the number of bulk Dense layers
-        num_bulk_dense_layers = (
-            self.num_layers
-            - num_bulk_bayesian_layers
-            - 1
-            - (1 if self.do_aleatoric else 0)
+        # Initialize the Dense block
+        self.dense_block = DenseBlock(
+            node_list=self.layer_width[0 : self.num_dense_layers],
+            activation=self.act_fun,
+            dropout=self.dropout,
+            batch_norm=self.batch_norm,
+            use_batch_renorm=self.use_batch_renorm,
+            regularizer=self.regularizer,
+            name="dense_block",
         )
+        self.sub_layer_names.append("dense_block")
 
-        # Check if the total layers match the length of layer_width
-        assert self.num_layers <= len(
-            self.layer_width
-        ), "num_layers exceeds length of layer_width"
+        # Initialize the Bayesian block
+        self.bayesian_block = BayesianBlock(
+            num_points=self.num_points,
+            # node_list=self.layer_width,
+            node_list=self.layer_width[self.num_dense_layers :],
+            activation=self.act_fun,
+            dropout=self.dropout,
+            batch_norm=self.batch_norm,
+            use_batch_renorm=self.use_batch_renorm,
+            regularizer=self.regularizer,
+            name="bayesian_block",
+        )
+        self.sub_layer_names.append("bayesian_block")
 
-        # Create the kernel divergence function
-        self.kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
-            q, p
-        ) / (self.num_points * 1.0)
-
-        # Create a bayesian input layer if num_bayesian_layers > depth
-        if self.num_bayesian_layers >= self.num_layers:
-            self.dense_layer_in = tfp.layers.DenseFlipout(
-                self.layer_width[0],
-                kernel_divergence_fn=self.kernel_divergence_fn,
-                activation=None,
-                activity_regularizer=self.regularizer,
-                name="input2bulk_bayesian",
-            )
-
-        # Create the Bayesian layers
-        self.bayesian_layers = [
-            tfp.layers.DenseFlipout(
-                self.layer_width[i + 1 + num_bulk_dense_layers],
-                kernel_divergence_fn=self.kernel_divergence_fn,
-                activation=None,
-                activity_regularizer=self.regularizer,
-                name=f"bayesian_{i}",
-            )
-            for i in range(num_bulk_bayesian_layers)
-        ]
-        # Create the dense layers
-        self.dense_layers_bulk = [
-            tf.keras.layers.Dense(
-                self.layer_width[i + 1],
-                activation=None,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
-                name=f"bulk_dense_{i}",
-            )
-            for i in range(num_bulk_dense_layers - 1)
-        ]
-        # Create the activation layers for the layers
-        self.activations_bulk = [
-            Activation(self.act_fun, name=f"bulk_act_{i}")
-            for i in range(self.num_layers)
-        ]
-
-        # Create the final distribution layer
-        if self.do_aleatoric:
-            self.pre_aleatoric_layer = tfp.layers.DenseFlipout(
-                2 * self.num_outputs,
-                kernel_divergence_fn=self.kernel_divergence_fn,
-                activation=None,
-                activity_regularizer=self.regularizer,
-                name="pre_aleatoric_flipout",
-            )
-            self.output_layer = tfp.layers.DistributionLambda(
-                lambda t: tfp.distributions.Normal(
-                    loc=t[..., : self.num_outputs],
-                    scale=self.scale_epsilon
-                    + tf.math.softplus(
-                        self.aleatoric_scale_factor * t[..., self.num_outputs :]
-                    ),
-                ),
-                name="dist_output",
-            )
-        else:
-            self.output_layer = tfp.layers.DenseFlipout(
-                self.num_outputs,
-                kernel_divergence_fn=self.kernel_divergence_fn,
-                activation=self.output_activation,
-                activity_regularizer=self.regularizer,
-                name="output",
-            )
+        # # Create the final distribution layer
+        # if self.do_aleatoric:
+        #     self.pre_aleatoric_layer = tfp.layers.DenseFlipout(
+        #         2 * self.num_outputs,
+        #         kernel_divergence_fn=self.kernel_divergence_fn,
+        #         activation=None,
+        #         activity_regularizer=self.regularizer,
+        #         name="pre_aleatoric_flipout",
+        #     )
+        #     self.output_layer = tfp.layers.DistributionLambda(
+        #         lambda t: tfp.distributions.Normal(
+        #             loc=t[..., : self.num_outputs],
+        #             scale=self.scale_epsilon
+        #             + tf.math.softplus(
+        #                 self.aleatoric_scale_factor * t[..., self.num_outputs :]
+        #             ),
+        #         ),
+        #         name="dist_output",
+        #     )
+        # else:
+        #     self.output_layer = tfp.layers.DenseFlipout(
+        #         self.num_outputs,
+        #         kernel_divergence_fn=self.kernel_divergence_fn,
+        #         activation=self.output_activation,
+        #         activity_regularizer=self.regularizer,
+        #         name="output",
+        #     )
 
     def call(self, inputs, training=False):
         """Call the BNN."""
-        # Apply input layer: dense -> batch norm -> activation -> input dropout
-        x = self.dense_layer_in(inputs, training=training)
+
+        # Apply input dropout
         x = (
-            self.batch_norm_layers[0](x, training=training)
-            if self.has_batch_norm
-            else x
-        )
-        x = self.activation_in(x)
-        x = (
-            self.input_dropout_layer(x, training=training)
-            if self.has_input_dropout
-            else x
+            self.input_dropout_layer(inputs, training=training)
+            if self.input_dropout > 0
+            else inputs
         )
 
-        bayesian_index = 0  # Initialize Bayesian index
+        # Apply the dense block
+        x = self.dense_block(x, training=training) if self.num_dense_layers > 0 else x
 
-        # Apply bulk layers: dense -> batch norm -> activation -> dropout
-        for i in range(self.num_layers - 1 - (1 if self.do_aleatoric else 0)):
-            if i < len(self.dense_layers_bulk):
-                x = self.dense_layers_bulk[i](x, training=training)
-            else:
-                bayesian_index = i - len(self.dense_layers_bulk)
-                if bayesian_index < len(self.bayesian_layers):
-                    x = self.bayesian_layers[bayesian_index](x, training=training)
-            x = (
-                self.batch_norm_layers[i + 1](x, training=training)
-                if self.has_batch_norm
-                else x
-            )
-            x = self.activations_bulk[i + 1](x)
-            x = (
-                self.dropout_layers[i + 1](x, training=training)
-                if self.has_dropout
-                else x
-            )
+        # Apply the bayesian block
+        x = (
+            self.bayesian_block(x, training=training)
+            if self.num_bayesian_layers > 0
+            else x
+        )
 
-        # Apply final distribution layer
-        if self.do_aleatoric:
-            if self.num_bayesian_layers > 1:
-                x = self.pre_aleatoric_layer_flipout(x, training=training)
-            else:
-                x = self.pre_aleatoric_layer_dense(x, training=training)
-
-        # Apply output layer
+        # Apply the output layer(s) and return
         return self.output_layer(x, training=training)
+
+        # # Apply input layer: dense -> batch norm -> activation -> input dropout
+        # x = self.dense_layer_in(inputs, training=training)
+        # x = (
+        #     self.batch_norm_layers[0](x, training=training)
+        #     if self.has_batch_norm
+        #     else x
+        # )
+        # x = self.activation_in(x)
+        # x = (
+        #     self.input_dropout_layer(x, training=training)
+        #     if self.has_input_dropout
+        #     else x
+        # )
+
+        # bayesian_index = 0  # Initialize Bayesian index
+
+        # # Apply bulk layers: dense -> batch norm -> activation -> dropout
+        # for i in range(self.num_layers - 1 - (1 if self.do_aleatoric else 0)):
+        #     if i < len(self.dense_layers_bulk):
+        #         x = self.dense_layers_bulk[i](x, training=training)
+        #     else:
+        #         bayesian_index = i - len(self.dense_layers_bulk)
+        #         if bayesian_index < len(self.bayesian_layers):
+        #             x = self.bayesian_layers[bayesian_index](x, training=training)
+        #     x = (
+        #         self.batch_norm_layers[i + 1](x, training=training)
+        #         if self.has_batch_norm
+        #         else x
+        #     )
+        #     x = self.activations_bulk[i + 1](x)
+        #     x = (
+        #         self.dropout_layers[i + 1](x, training=training)
+        #         if self.has_dropout
+        #         else x
+        #     )
+
+        # # Apply final distribution layer
+        # if self.do_aleatoric:
+        #     if self.num_bayesian_layers > 1:
+        #         x = self.pre_aleatoric_layer_flipout(x, training=training)
+        #     else:
+        #         x = self.pre_aleatoric_layer_dense(x, training=training)
+
+        # # Apply output layer
+        # return self.output_layer(x, training=training)
 
     def negative_log_likelihood(self, y_true, y_pred):
         """Calculate the negative log likelihood."""

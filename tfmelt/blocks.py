@@ -2,6 +2,7 @@ import warnings
 from typing import Any, List, Optional
 
 import tensorflow as tf
+import tensorflow_probability as tfp
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Activation, Add, BatchNormalization, Dense, Dropout
 from tensorflow.keras.regularizers import Regularizer
@@ -47,17 +48,6 @@ class MELTBlock(Model):
         # Validate dropout value
         if self.dropout is not None:
             assert 0 <= self.dropout < 1, "Dropout must be between 0 and 1"
-
-        # Initialize dense layers
-        self.dense_layers = [
-            Dense(
-                node,
-                activation=None,
-                kernel_regularizer=self.regularizer,
-                name=f"dense_{i}",
-            )
-            for i, node in enumerate(self.node_list)
-        ]
 
         # Activation layers
         if self.activation:
@@ -134,6 +124,17 @@ class DenseBlock(MELTBlock):
     ):
         super(DenseBlock, self).__init__(**kwargs)
 
+        # Initialize dense layers
+        self.dense_layers = [
+            Dense(
+                node,
+                activation=None,
+                kernel_regularizer=self.regularizer,
+                name=f"dense_{i}",
+            )
+            for i, node in enumerate(self.node_list)
+        ]
+
     def call(self, inputs: tf.Tensor, training: bool = False):
         """Forward pass through the dense block."""
         x = inputs
@@ -185,6 +186,17 @@ class ResidualBlock(MELTBlock):
                 f"have {self.num_layers % self.layers_per_block} layers."
             )
 
+        # Initialize dense layers
+        self.dense_layers = [
+            Dense(
+                node,
+                activation=None,
+                kernel_regularizer=self.regularizer,
+                name=f"dense_{i}",
+            )
+            for i, node in enumerate(self.node_list)
+        ]
+
         # Initialize Add layers
         self.add_layers = [
             Add(name=f"add_{i}")
@@ -235,6 +247,62 @@ class ResidualBlock(MELTBlock):
                     if self.post_add_activation
                     else x
                 )
+
+        return x
+
+
+class BayesianBlock(MELTBlock):
+    def __init__(
+        self,
+        num_points: Optional[int] = 1,
+        use_batch_renorm: Optional[bool] = True,
+        **kwargs: Any,
+    ):
+        super(BayesianBlock, self).__init__(**kwargs)
+
+        self.num_points = num_points
+        self.use_batch_renorm = use_batch_renorm
+
+        # Create kernel divergence function
+        kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
+            q, p
+        ) / tf.cast(self.num_points, tf.float32)
+
+        # Initialize Bayesian layers
+        self.bayesian_layers = [
+            tfp.layers.DenseFlipout(
+                node,
+                activation=None,
+                kernel_divergence_fn=kernel_divergence_fn,
+                activity_regularizer=self.regularizer,
+                name=f"bayesian_{i}",
+            )
+            for i, node in enumerate(self.node_list)
+        ]
+
+        # Update config dictionary for serialization
+        self.config.update(
+            {
+                "num_points": num_points,
+                "use_batch_renorm": use_batch_renorm,
+            }
+        )
+
+    def call(self, inputs: tf.Tensor, training: bool = False):
+        """Forward pass through the Bayesian block."""
+
+        x = inputs
+
+        for i in range(self.num_layers):
+            # bayesian -> batch norm -> activation -> dropout
+            x = self.bayesian_layers[i](x, training=training)
+            x = (
+                self.batch_norm_layers[i](x, training=training)
+                if self.batch_norm
+                else x
+            )
+            x = self.activation_layers[i](x) if self.activation else x
+            x = self.dropout_layers[i](x, training=training) if self.dropout > 0 else x
 
         return x
 
