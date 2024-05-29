@@ -1,4 +1,5 @@
 import warnings
+from itertools import groupby
 from typing import List, Optional
 
 import numpy as np
@@ -79,11 +80,6 @@ class MELTModel(Model):
         self.num_mixtures = num_mixtures
         self.node_list = node_list
 
-        # Initialize flags for layers (to be set in build method)
-        # self.has_batch_norm = False
-        # self.has_dropout = False
-        # self.has_input_dropout = False
-
         # Determine if network should be defined based on depth/width or node_list
         if self.node_list:
             self.num_layers = len(self.node_list)
@@ -119,14 +115,7 @@ class MELTModel(Model):
         """Initialize the layers of the model."""
         self.create_regularizer()
         self.create_dropout_layers()
-        # self.create_batch_norm_layers()
-        # self.create_input_layer()
         self.create_output_layer()
-
-        # # Set attribute flags based on which layers are present
-        # self.has_batch_norm = hasattr(self, "batch_norm_layers")
-        # self.has_dropout = hasattr(self, "dropout_layers")
-        # self.has_input_dropout = hasattr(self, "input_dropout_layer")
 
     def create_regularizer(self):
         """Create the regularizer."""
@@ -138,46 +127,10 @@ class MELTModel(Model):
 
     def create_dropout_layers(self):
         """Create the dropout layers."""
-        # if self.dropout > 0:
-        #     self.dropout_layers = [
-        #         Dropout(rate=self.dropout, name=f"dropout_{i}")
-        #         for i in range(self.num_layers)
-        #     ]
         if self.input_dropout > 0:
             self.input_dropout_layer = Dropout(
                 rate=self.input_dropout, name="input_dropout"
             )
-
-    # def create_batch_norm_layers(self):
-    #     """Create the batch normalization layers with optional renormalization."""
-    #     if self.batch_norm:
-    #         self.batch_norm_layers = [
-    #             BatchNormalization(
-    #                 renorm=self.use_batch_renorm,
-    #                 renorm_clipping=(
-    #                     {
-    #                         "rmax": 3,
-    #                         "rmin": 1 / 3,
-    #                         "dmax": 5,
-    #                     }
-    #                     if self.use_batch_renorm
-    #                     else None
-    #                 ),
-    #                 name=f"batch_norm_{i}",
-    #             )
-    #             for i in range(self.num_layers + 1)
-    #         ]
-
-    # def create_input_layer(self):
-    #     """Create the input layer with associated activation layer."""
-    #     self.dense_layer_in = Dense(
-    #         self.layer_width[0],
-    #         activation=None,
-    #         kernel_initializer=self.initializer,
-    #         kernel_regularizer=self.regularizer,
-    #         name="input2bulk",
-    #     )
-    #     self.activation_in = Activation(self.act_fun, name="input2bulk_act")
 
     def create_output_layer(self):
         """Create the output layer based on the number of mixtures."""
@@ -234,14 +187,12 @@ class MELTModel(Model):
                 "Loss function is overridden when using aleatoric uncertainty. "
                 "Using the aleatoric loss function."
             )
-            # loss = self.aleatoric_loss
             loss = SingleMixtureLoss()
         elif self.num_mixtures > 1:
             warnings.warn(
                 "Loss function is overridden when using mixture density networks. "
                 "Using the mixture density loss function."
             )
-            # loss = self.mixture_density_loss
             loss = MultipleMixtureLoss(self.num_mixtures, self.num_outputs)
 
         super(MELTModel, self).compile(optimizer, loss, metrics, **kwargs)
@@ -407,7 +358,6 @@ class BayesianNeuralNetwork(MELTModel):
     def __init__(
         self,
         num_points: Optional[int] = 1,
-        num_bayesian_layers: Optional[int] = None,
         do_aleatoric: Optional[bool] = False,
         aleatoric_scale_factor: Optional[float] = 5e-2,
         scale_epsilon: Optional[float] = 1e-3,
@@ -420,9 +370,6 @@ class BayesianNeuralNetwork(MELTModel):
 
         Args:
             num_points (int, optional): Number of Monte Carlo samples.
-            num_bayesian_layers (int, optional): Number of layers to make Bayesian.
-                                                Layers are counted from the output
-                                                 layer backwards.
             do_aleatoric (bool, optional): Flag to perform aleatoric output.
             aleatoric_scale_factor (float, optional): Scale factor for aleatoric
                                                       uncertainty.
@@ -435,18 +382,28 @@ class BayesianNeuralNetwork(MELTModel):
         super(BayesianNeuralNetwork, self).__init__(**kwargs)
 
         self.num_points = num_points
-        self.num_bayesian_layers = num_bayesian_layers
         self.do_aleatoric = do_aleatoric
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
         self.bayesian_mask = bayesian_mask
 
+        # Checks on bayesian mask and number of layers
+        if len(self.bayesian_mask) > self.num_layers:
+            warnings.warn(
+                "Bayesian mask is longer than the number of layers, so truncating."
+            )
+            self.bayesian_mask = self.bayesian_mask[: self.num_layers]
+        elif len(self.bayesian_mask) < self.num_layers:
+            raise ValueError(
+                "Bayesian mask is shorter than the number of layers."
+                "Please provide a mask for each layer."
+            )
+
         # Update config with new attributes
         self.config.update(
             {
                 "num_points": self.num_points,
-                "num_bayesian_layers": self.num_bayesian_layers,
                 "do_aleatoric": self.do_aleatoric,
                 "aleatoric_scale_factor": self.aleatoric_scale_factor,
                 "scale_epsilon": self.scale_epsilon,
@@ -457,15 +414,7 @@ class BayesianNeuralNetwork(MELTModel):
 
     def build(self, input_shape):
         """Build the BNN."""
-        if self.num_bayesian_layers is None:
-            self.num_bayesian_layers = self.num_layers + 1
-        elif self.num_bayesian_layers > self.num_layers + 1:
-            warnings.warn(
-                f"num_bayesian_layers ({self.num_bayesian_layers}) is greater than "
-                f"(number of layers + 1) ({self.num_layers + 1}), so setting "
-                f"num_bayesian_layers to (number of layers + 1)."
-            )
-            self.num_bayesian_layers = self.num_layers + 1
+
         self.initialize_layers()
         super(BayesianNeuralNetwork, self).build(input_shape)
 
@@ -473,40 +422,68 @@ class BayesianNeuralNetwork(MELTModel):
         """Initialize the layers of the BNN."""
         super(BayesianNeuralNetwork, self).initialize_layers()
 
-        # Identify the number of Bayesian layers
-        self.num_bayesian_layers = (
-            len(self.node_list)
-            if self.bayesian_mask is None
-            else sum(self.bayesian_mask)
-        )
-        # Determine the number of Dense layers
-        self.num_dense_layers = len(self.node_list) - self.num_bayesian_layers
+        # Create the Bayesian and Dense blocks based on the mask
+        if self.bayesian_mask is None:
+            self.num_dense_layers = 0
+            self.dense_block = None
+            self.bayesian_block = DenseBlock(
+                num_points=self.num_points,
+                node_list=self.layer_width,
+                activation=self.act_fun,
+                dropout=self.dropout,
+                batch_norm=self.batch_norm,
+                use_batch_renorm=self.use_batch_renorm,
+                regularizer=self.regularizer,
+                name="full_bayesian_block",
+            )
+            self.sub_layer_names.append("full_bayesian_block")
+        else:
 
-        # Initialize the Dense block
-        self.dense_block = DenseBlock(
-            node_list=self.layer_width[0 : self.num_dense_layers],
-            activation=self.act_fun,
-            dropout=self.dropout,
-            batch_norm=self.batch_norm,
-            use_batch_renorm=self.use_batch_renorm,
-            regularizer=self.regularizer,
-            name="dense_block",
-        )
-        self.sub_layer_names.append("dense_block")
+            self.dense_block = []
+            self.bayesian_block = []
 
-        # Initialize the Bayesian block
-        self.bayesian_block = BayesianBlock(
-            num_points=self.num_points,
-            # node_list=self.layer_width,
-            node_list=self.layer_width[self.num_dense_layers :],
-            activation=self.act_fun,
-            dropout=self.dropout,
-            batch_norm=self.batch_norm,
-            use_batch_renorm=self.use_batch_renorm,
-            regularizer=self.regularizer,
-            name="bayesian_block",
-        )
-        self.sub_layer_names.append("bayesian_block")
+            bayes_block_idx = 0
+            dense_block_idx = 0
+
+            # Loop through the Bayesian mask and create the blocks
+            idx = 0
+            for is_bayesian, group in groupby(self.bayesian_mask):
+                # Get the group and layer width
+                group_list = list(group)
+                group_len = len(group_list)
+                layer_width = self.layer_width[idx : idx + group_len]
+                idx += group_len
+
+                # Create a Bayesian block or Dense block
+                if is_bayesian:
+                    self.bayesian_block.append(
+                        BayesianBlock(
+                            num_points=self.num_points,
+                            node_list=layer_width,
+                            activation=self.act_fun,
+                            dropout=self.dropout,
+                            batch_norm=self.batch_norm,
+                            use_batch_renorm=self.use_batch_renorm,
+                            regularizer=self.regularizer,
+                            name=f"bayesian_block_{bayes_block_idx}",
+                        )
+                    )
+                    self.sub_layer_names.append(f"bayesian_block_{bayes_block_idx}")
+                    bayes_block_idx += 1
+                else:
+                    self.dense_block.append(
+                        DenseBlock(
+                            node_list=layer_width,
+                            activation=self.act_fun,
+                            dropout=self.dropout,
+                            batch_norm=self.batch_norm,
+                            use_batch_renorm=self.use_batch_renorm,
+                            regularizer=self.regularizer,
+                            name=f"dense_block_{dense_block_idx}",
+                        )
+                    )
+                    self.sub_layer_names.append(f"dense_block_{dense_block_idx}")
+                    dense_block_idx += 1
 
         # # Create the final distribution layer
         # if self.do_aleatoric:
@@ -546,64 +523,18 @@ class BayesianNeuralNetwork(MELTModel):
             else inputs
         )
 
-        # Apply the dense block
-        x = self.dense_block(x, training=training) if self.num_dense_layers > 0 else x
-
-        # Apply the bayesian block
-        x = (
-            self.bayesian_block(x, training=training)
-            if self.num_bayesian_layers > 0
-            else x
-        )
+        # Apply the blocks according to the Bayesian mask
+        dense_idx, bayes_idx = 0, 0
+        for is_bayesian, _ in groupby(self.bayesian_mask):
+            if is_bayesian:
+                x = self.bayesian_block[bayes_idx](x, training=training)
+                bayes_idx += 1
+            else:
+                x = self.dense_block[dense_idx](x, training=training)
+                dense_idx += 1
 
         # Apply the output layer(s) and return
         return self.output_layer(x, training=training)
-
-        # # Apply input layer: dense -> batch norm -> activation -> input dropout
-        # x = self.dense_layer_in(inputs, training=training)
-        # x = (
-        #     self.batch_norm_layers[0](x, training=training)
-        #     if self.has_batch_norm
-        #     else x
-        # )
-        # x = self.activation_in(x)
-        # x = (
-        #     self.input_dropout_layer(x, training=training)
-        #     if self.has_input_dropout
-        #     else x
-        # )
-
-        # bayesian_index = 0  # Initialize Bayesian index
-
-        # # Apply bulk layers: dense -> batch norm -> activation -> dropout
-        # for i in range(self.num_layers - 1 - (1 if self.do_aleatoric else 0)):
-        #     if i < len(self.dense_layers_bulk):
-        #         x = self.dense_layers_bulk[i](x, training=training)
-        #     else:
-        #         bayesian_index = i - len(self.dense_layers_bulk)
-        #         if bayesian_index < len(self.bayesian_layers):
-        #             x = self.bayesian_layers[bayesian_index](x, training=training)
-        #     x = (
-        #         self.batch_norm_layers[i + 1](x, training=training)
-        #         if self.has_batch_norm
-        #         else x
-        #     )
-        #     x = self.activations_bulk[i + 1](x)
-        #     x = (
-        #         self.dropout_layers[i + 1](x, training=training)
-        #         if self.has_dropout
-        #         else x
-        #     )
-
-        # # Apply final distribution layer
-        # if self.do_aleatoric:
-        #     if self.num_bayesian_layers > 1:
-        #         x = self.pre_aleatoric_layer_flipout(x, training=training)
-        #     else:
-        #         x = self.pre_aleatoric_layer_dense(x, training=training)
-
-        # # Apply output layer
-        # return self.output_layer(x, training=training)
 
     def negative_log_likelihood(self, y_true, y_pred):
         """Calculate the negative log likelihood."""
