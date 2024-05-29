@@ -13,16 +13,10 @@ from tfmelt.blocks import (
     DefaultOutput,
     DenseBlock,
     MultipleMixturesOutput,
+    ResidualBlock,
     SingleMixtureOutput,
 )
-
-
-def safe_exp(x):
-    """Prevents overflow by clipping input range to reasonable values."""
-    # TODO: Consider using tf.exp(x - tf.reduce_max(x)) instead
-    # Also consider moving to another module
-    x = tf.clip_by_value(x, clip_value_min=-20, clip_value_max=20)
-    return tf.exp(x)
+from tfmelt.losses import MultipleMixtureLoss, SingleMixtureLoss
 
 
 @register_keras_serializable(package="tfmelt")
@@ -85,9 +79,9 @@ class MELTModel(Model):
         self.node_list = node_list
 
         # Initialize flags for layers (to be set in build method)
-        self.has_batch_norm = False
-        self.has_dropout = False
-        self.has_input_dropout = False
+        # self.has_batch_norm = False
+        # self.has_dropout = False
+        # self.has_input_dropout = False
 
         # Determine if network should be defined based on depth/width or node_list
         if self.node_list:
@@ -123,15 +117,15 @@ class MELTModel(Model):
     def initialize_layers(self):
         """Initialize the layers of the model."""
         self.create_regularizer()
-        # self.create_dropout_layers()
+        self.create_dropout_layers()
         # self.create_batch_norm_layers()
         # self.create_input_layer()
         self.create_output_layer()
 
-        # Set attribute flags based on which layers are present
-        self.has_batch_norm = hasattr(self, "batch_norm_layers")
-        self.has_dropout = hasattr(self, "dropout_layers")
-        self.has_input_dropout = hasattr(self, "input_dropout_layer")
+        # # Set attribute flags based on which layers are present
+        # self.has_batch_norm = hasattr(self, "batch_norm_layers")
+        # self.has_dropout = hasattr(self, "dropout_layers")
+        # self.has_input_dropout = hasattr(self, "input_dropout_layer")
 
     def create_regularizer(self):
         """Create the regularizer."""
@@ -143,46 +137,46 @@ class MELTModel(Model):
 
     def create_dropout_layers(self):
         """Create the dropout layers."""
-        if self.dropout > 0:
-            self.dropout_layers = [
-                Dropout(rate=self.dropout, name=f"dropout_{i}")
-                for i in range(self.num_layers)
-            ]
+        # if self.dropout > 0:
+        #     self.dropout_layers = [
+        #         Dropout(rate=self.dropout, name=f"dropout_{i}")
+        #         for i in range(self.num_layers)
+        #     ]
         if self.input_dropout > 0:
             self.input_dropout_layer = Dropout(
                 rate=self.input_dropout, name="input_dropout"
             )
 
-    def create_batch_norm_layers(self):
-        """Create the batch normalization layers with optional renormalization."""
-        if self.batch_norm:
-            self.batch_norm_layers = [
-                BatchNormalization(
-                    renorm=self.use_batch_renorm,
-                    renorm_clipping=(
-                        {
-                            "rmax": 3,
-                            "rmin": 1 / 3,
-                            "dmax": 5,
-                        }
-                        if self.use_batch_renorm
-                        else None
-                    ),
-                    name=f"batch_norm_{i}",
-                )
-                for i in range(self.num_layers + 1)
-            ]
+    # def create_batch_norm_layers(self):
+    #     """Create the batch normalization layers with optional renormalization."""
+    #     if self.batch_norm:
+    #         self.batch_norm_layers = [
+    #             BatchNormalization(
+    #                 renorm=self.use_batch_renorm,
+    #                 renorm_clipping=(
+    #                     {
+    #                         "rmax": 3,
+    #                         "rmin": 1 / 3,
+    #                         "dmax": 5,
+    #                     }
+    #                     if self.use_batch_renorm
+    #                     else None
+    #                 ),
+    #                 name=f"batch_norm_{i}",
+    #             )
+    #             for i in range(self.num_layers + 1)
+    #         ]
 
-    def create_input_layer(self):
-        """Create the input layer with associated activation layer."""
-        self.dense_layer_in = Dense(
-            self.layer_width[0],
-            activation=None,
-            kernel_initializer=self.initializer,
-            kernel_regularizer=self.regularizer,
-            name="input2bulk",
-        )
-        self.activation_in = Activation(self.act_fun, name="input2bulk_act")
+    # def create_input_layer(self):
+    #     """Create the input layer with associated activation layer."""
+    #     self.dense_layer_in = Dense(
+    #         self.layer_width[0],
+    #         activation=None,
+    #         kernel_initializer=self.initializer,
+    #         kernel_regularizer=self.regularizer,
+    #         name="input2bulk",
+    #     )
+    #     self.activation_in = Activation(self.act_fun, name="input2bulk_act")
 
     def create_output_layer(self):
         """Create the output layer based on the number of mixtures."""
@@ -190,10 +184,10 @@ class MELTModel(Model):
         if self.num_mixtures == 1:
             # Single Mixture Density Network output layer
             self.output_layer = SingleMixtureOutput(
-                self.num_outputs,
-                self.output_activation,
-                self.initializer,
-                self.regularizer,
+                num_outputs=self.num_outputs,
+                output_activation=self.output_activation,
+                initializer=self.initializer,
+                regularizer=self.regularizer,
                 name="single_mixture_output",
             )
             self.sub_layer_names.append("single_mixture_output")
@@ -201,10 +195,10 @@ class MELTModel(Model):
         elif self.num_mixtures > 1:
             # Multiple Mixture Density Network output layer
             self.output_layer = MultipleMixturesOutput(
-                self.num_outputs,
-                self.num_mixtures,
-                self.initializer,
-                self.regularizer,
+                num_mixtures=self.num_mixtures,
+                num_outputs=self.num_outputs,
+                initializer=self.initializer,
+                regularizer=self.regularizer,
                 name="multiple_mixture_output",
             )
             self.sub_layer_names.append("multiple_mixture_output")
@@ -212,68 +206,13 @@ class MELTModel(Model):
         else:
             # Regular output layer
             self.output_layer = DefaultOutput(
-                self.num_outputs,
-                self.output_activation,
-                self.initializer,
-                self.regularizer,
+                num_outputs=self.num_outputs,
+                output_activation=self.output_activation,
+                initializer=self.initializer,
+                regularizer=self.regularizer,
                 name="output",
             )
             self.sub_layer_names.append("output")
-
-    def aleatoric_loss(self, y_true, y_pred, variance_scale=1.0):
-        """Loss function for aleatoric UQ predictions"""
-        # mean_pred, log_var_pred = y_pred
-        mean_pred = y_pred[0]
-        log_var_pred = y_pred[1]
-
-        precision = tf.exp(-log_var_pred)
-        mse_loss = tf.reduce_mean(precision * tf.square(y_true - mean_pred))
-        var_loss = tf.reduce_mean(log_var_pred)
-
-        # Return the weighted sum of the MSE and variance loss
-        return mse_loss + variance_scale * var_loss
-
-    def mixture_density_loss(self, y_true, y_pred):
-        """Loss function for mixture density network predictions."""
-        # TODO: develop verification check for this loss function
-        # Extract the mixture coefficients, means, and log-variances
-        m_coeffs = y_pred[:, : self.num_mixtures]
-        mean_preds = y_pred[
-            :,
-            self.num_mixtures : self.num_mixtures
-            + self.num_mixtures * self.num_outputs,
-        ]
-        log_var_preds = y_pred[
-            :, self.num_mixtures + self.num_mixtures * self.num_outputs :
-        ]
-
-        # Reshape to ensure same shape as y_true replicated across mixtures
-        mean_preds = tf.reshape(mean_preds, [-1, self.num_mixtures, self.num_outputs])
-        log_var_preds = tf.reshape(
-            log_var_preds, [-1, self.num_mixtures, self.num_outputs]
-        )
-
-        # Calculate the Gaussian probability density function for each component
-        const_term = -0.5 * self.num_outputs * tf.math.log(2 * np.pi)
-        inv_sigma_log = -0.5 * log_var_preds
-        exp_term = (
-            -0.5
-            * tf.square(tf.expand_dims(y_true, 1) - mean_preds)
-            / safe_exp(log_var_preds)
-        )
-
-        # form log probabilities
-        log_probs = const_term + inv_sigma_log + exp_term
-
-        # Calculate the log likelihood
-        weighted_log_probs = log_probs + tf.math.log(m_coeffs[:, :, tf.newaxis])
-        # max_log_probs = tf.reduce_max(weighted_log_probs, axis=1, keepdims=True)
-        log_sum_exp = tf.reduce_logsumexp(weighted_log_probs, axis=1)
-
-        log_likelihood = tf.reduce_mean(log_sum_exp)
-
-        # Return the negative log likelihood
-        return -log_likelihood
 
     def compute_jacobian(self, x):
         """Compute the Jacobian of the model outputs with respect to inputs."""
@@ -294,13 +233,15 @@ class MELTModel(Model):
                 "Loss function is overridden when using aleatoric uncertainty. "
                 "Using the aleatoric loss function."
             )
-            loss = self.aleatoric_loss
+            # loss = self.aleatoric_loss
+            loss = SingleMixtureLoss()
         elif self.num_mixtures > 1:
             warnings.warn(
                 "Loss function is overridden when using mixture density networks. "
                 "Using the mixture density loss function."
             )
-            loss = self.mixture_density_loss
+            # loss = self.mixture_density_loss
+            loss = MultipleMixtureLoss(self.num_mixtures, self.num_outputs)
 
         super(MELTModel, self).compile(optimizer, loss, metrics, **kwargs)
 
@@ -353,7 +294,8 @@ class ArtificialNeuralNetwork(MELTModel):
             node_list=self.layer_width,
             activation=self.act_fun,
             dropout=self.dropout,
-            batch_norm=self.has_batch_norm,
+            batch_norm=self.batch_norm,
+            use_batch_renorm=self.use_batch_renorm,
             regularizer=self.regularizer,
             name="dense_block",
         )
@@ -364,7 +306,7 @@ class ArtificialNeuralNetwork(MELTModel):
         # Apply input dropout
         x = (
             self.input_dropout_layer(inputs, training=training)
-            if self.has_input_dropout
+            if self.input_dropout > 0
             else inputs
         )
 
@@ -427,92 +369,36 @@ class ResidualNeuralNetwork(MELTModel):
         """Initialize the layers of the ResNet."""
         super(ResidualNeuralNetwork, self).initialize_layers()
 
-        # ResNet Bulk layers
-        self.dense_layers_bulk = [
-            Dense(
-                self.layer_width[i + 1],
-                activation=None,
-                kernel_initializer=self.initializer,
-                kernel_regularizer=self.regularizer,
-                name=f"bulk_{i}",
-            )
-            for i in range(self.num_layers - 1)
-        ]
-        self.activation_layers_bulk = [
-            Activation(self.act_fun, name=f"bulk_act_{i}")
-            for i in range(self.num_layers)
-        ]
-        # Add layers for residual connections (Add layer for every "layers per block")
-        # with remainder if depth is not divisible by layers per block
-        self.add_layers = [
-            Add(name=f"add_{i}")
-            for i in range(
-                (self.num_layers + self.layers_per_block - 1) // self.layers_per_block
-            )
-        ]
-        # Optional activation after the Add layers
-        if self.post_add_activation:
-            self.post_add_activations = [
-                Activation(self.act_fun, name=f"post_add_act_{i}")
-                for i in range(self.num_layers // 2)
-            ]
+        # Create the Residual block
+        self.residual_block = ResidualBlock(
+            node_list=self.layer_width,
+            layers_per_block=self.layers_per_block,
+            activation=self.act_fun,
+            dropout=self.dropout,
+            batch_norm=self.batch_norm,
+            use_batch_renorm=self.use_batch_renorm,
+            regularizer=self.regularizer,
+            pre_activation=self.pre_activation,
+            post_add_activation=self.post_add_activation,
+            name="residual_block",
+        )
+        self.sub_layer_names.append("residual_block")
 
     def call(self, inputs, training=False):
         """Call the ResNet."""
-        # Apply input layer:
-        # dense -> (pre-activation) -> batch norm -> input dropout -> (post-activation)
-        x = self.dense_layer_in(inputs, training=training)
-        x = self.activation_in(x) if self.pre_activation else x
+
+        # Apply input dropout
         x = (
-            self.batch_norm_layers[0](x, training=training)
-            if self.has_batch_norm
-            else x
+            self.input_dropout_layer(inputs, training=training)
+            if self.input_dropout > 0
+            else inputs
         )
-        x = (
-            self.input_dropout_layer(x, training=training)
-            if self.has_input_dropout
-            else x
-        )
-        x = self.activation_in(x) if not self.pre_activation else x
 
-        # Apply bulk layers with residual connections
-        for i in range(0, self.num_layers - 1):
-            y = x
-
-            # Apply bulk layer:
-            # dense -> (pre-activation) -> batch norm -> dropout -> (post-activation)
-            x = self.dense_layers_bulk[i](x, training=training)
-            x = self.activation_layers_bulk[i](x) if self.pre_activation else x
-            x = (
-                self.batch_norm_layers[i + 1](x, training=training)
-                if self.has_batch_norm
-                else x
-            )
-            x = self.dropout_layers[i](x, training=training) if self.has_dropout else x
-            x = self.activation_layers_bulk[i](x) if not self.pre_activation else x
-
-            # Add residual connection when reaching the end of a block
-            if (i + 1) % self.layers_per_block == 0 or i == self.num_layers - 1:
-                x = self.add_layers[i // self.layers_per_block]([y, x])
-                x = (
-                    self.post_add_activations[i // self.layers_per_block](x)
-                    if self.post_add_activation
-                    else x
-                )
+        # Apply the Residual blocks
+        x = self.residual_block(x, training=training)
 
         # Apply the output layer(s) and return
-        if self.num_mixtures == 1:
-            # Predict mean and log-variance
-            mean_output = self.mean_output_layer(x, training=training)
-            log_var_output = self.log_var_output_layer(x, training=training)
-
-            # return mean_output, log_var_output
-            return tf.stack([mean_output, log_var_output])
-        elif self.num_mixtures > 1:
-            # Predict mixture density network outputs
-            return self.mdn_output_layer(x, training=training)
-        else:
-            return self.output_layer(x, training=training)
+        return self.output_layer(x, training=training)
 
 
 @register_keras_serializable(package="tfmelt")
