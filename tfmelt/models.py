@@ -4,9 +4,8 @@ from typing import List, Optional
 
 import numpy as np
 import tensorflow as tf
-import tensorflow_probability as tfp
 from tensorflow.keras import regularizers
-from tensorflow.keras.layers import Activation, Add, BatchNormalization, Dense, Dropout
+from tensorflow.keras.layers import Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import register_keras_serializable
 
@@ -363,7 +362,8 @@ class BayesianNeuralNetwork(MELTModel):
         num_points (int, optional): Number of Monte Carlo samples.
         do_aleatoric (bool, optional): Flag to perform aleatoric output.
         do_bayesian_output (bool, optional): Flag to perform Bayesian output.
-        aleatoric_scale_factor (float, optional): Scale factor for aleatoric uncertainty.
+        aleatoric_scale_factor (float, optional): Scale factor for aleatoric
+                                                  uncertainty.
         scale_epsilon (float, optional): Epsilon value for the scale of the aleatoric
                                          uncertainty.
         use_batch_renorm (bool, optional): Whether to use batch renormalization.
@@ -480,7 +480,6 @@ class BayesianNeuralNetwork(MELTModel):
             )
             self.sub_layer_names.append("full_bayesian_block")
         else:
-
             self.dense_block = []
             self.bayesian_block = []
 

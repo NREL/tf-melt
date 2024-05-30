@@ -8,6 +8,20 @@ from tensorflow.keras.layers import Activation, Add, BatchNormalization, Dense, 
 from tensorflow.keras.regularizers import Regularizer
 
 
+def get_kernel_divergence_fn(num_points):
+    """
+    Get the kernel divergence function.
+
+    Args:
+        num_points (int): Number of points in kernel divergence.
+    """
+
+    def kernel_divergence_fn(q, p, _):
+        return tfp.distributions.kl_divergence(q, p) / tf.cast(num_points, tf.float32)
+
+    return kernel_divergence_fn
+
+
 class MELTBlock(Model):
     """
     Base class for a MELT block. Defines a block of dense layers with optional
@@ -18,9 +32,11 @@ class MELTBlock(Model):
         node_list (List[int]): Number of nodes in each dense layer.
         activation (str, optional): Activation function. Defaults to "relu".
         dropout (float, optional): Dropout rate (0-1). Defaults to None.
-        batch_norm (bool, optional): Apply batch normalization if True. Defaults to False.
+        batch_norm (bool, optional): Apply batch normalization if True. Defaults
+                                     to False.
         use_batch_renorm (bool, optional): Use batch renormalization. Defaults to False.
-        regularizer (Regularizer, optional): Kernel weights regularizer. Defaults to None.
+        regularizer (Regularizer, optional): Kernel weights regularizer. Defaults
+                                             to None.
         **kwargs: Extra arguments passed to the base class.
     """
 
@@ -110,8 +126,10 @@ class DenseBlock(MELTBlock):
         node_list (List[int]): Number of nodes in each dense layer.
         activation (str, optional): Activation function. Defaults to "relu".
         dropout (float, optional): Dropout rate (0-1). Defaults to None.
-        batch_norm (bool, optional): Apply batch normalization if True. Defaults to False.
-        regularizer (Regularizer, optional): Kernel weights regularizer. Defaults to None.
+        batch_norm (bool, optional): Apply batch normalization if True. Defaults
+                                     to False.
+        regularizer (Regularizer, optional): Kernel weights regularizer. Defaults
+                                             to None.
         **kwargs: Extra arguments passed to the base class.
 
     Raises:
@@ -160,8 +178,10 @@ class ResidualBlock(MELTBlock):
 
     Args:
         layers_per_block (int, optional): Number of layers per residual block.
-        pre_activation (bool, optional): Apply activation before adding residual connection.
-        post_add_activation (bool, optional): Apply activation after adding residual connection.
+        pre_activation (bool, optional): Apply activation before adding residual
+                                         connection.
+        post_add_activation (bool, optional): Apply activation after adding residual
+                                              connection.
         **kwargs: Extra arguments passed to the base class.
     """
 
@@ -275,9 +295,7 @@ class BayesianBlock(MELTBlock):
         self.use_batch_renorm = use_batch_renorm
 
         # Create kernel divergence function
-        kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
-            q, p
-        ) / tf.cast(self.num_points, tf.float32)
+        kernel_divergence_fn = get_kernel_divergence_fn(self.num_points)
 
         # Initialize Bayesian layers
         self.bayesian_layers = [
@@ -432,9 +450,7 @@ class DefaultOutput(Model):
 
         # Create kernel divergence function
         if bayesian:
-            kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
-                q, p
-            ) / tf.cast(num_points, tf.float32)
+            kernel_divergence_fn = get_kernel_divergence_fn(num_points)
 
         if bayesian:
             self.output_layer = tfp.layers.DenseFlipout(
@@ -483,9 +499,7 @@ class BayesianAleatoricOutput(Model):
         super(BayesianAleatoricOutput, self).__init__(**kwargs)
 
         # Create kernel divergence function
-        kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
-            q, p
-        ) / tf.cast(num_points, tf.float32)
+        kernel_divergence_fn = get_kernel_divergence_fn(num_points)
 
         self.pre_aleatoric_layer = tfp.layers.DenseFlipout(
             2 * num_outputs,
