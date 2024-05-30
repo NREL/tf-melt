@@ -252,6 +252,17 @@ class ResidualBlock(MELTBlock):
 
 
 class BayesianBlock(MELTBlock):
+    """
+    A BayesianBlock consists of multiple Bayesian dense layers with optional activation,
+    dropout, and batch normalization. The layers are implemented using the Flipout
+    variational layer.
+
+    Args:
+        num_points (int, optional): Number of Monte Carlo samples. Defaults to 1.
+        use_batch_renorm (bool, optional): Use batch renormalization. Defaults to True.
+        **kwargs: Extra arguments passed to the base class.
+    """
+
     def __init__(
         self,
         num_points: Optional[int] = 1,
@@ -320,7 +331,12 @@ class SingleMixtureOutput(Model):
     """
 
     def __init__(
-        self, num_outputs, output_activation, initializer, regularizer, **kwargs
+        self,
+        num_outputs,
+        output_activation,
+        initializer,
+        regularizer,
+        **kwargs,
     ):
         super(SingleMixtureOutput, self).__init__(**kwargs)
         self.mean_output_layer = Dense(
@@ -398,21 +414,97 @@ class DefaultOutput(Model):
         output_activation (str): Activation function for the output layer.
         initializer (str): Kernel initializer.
         regularizer (Regularizer): Kernel regularizer.
+        bayesian (bool): Use Bayesian layer if True.
         **kwargs: Extra arguments passed to the base class.
     """
 
     def __init__(
-        self, num_outputs, output_activation, initializer, regularizer, **kwargs
+        self,
+        num_outputs,
+        output_activation,
+        initializer,
+        regularizer,
+        bayesian=False,
+        num_points=1,
+        **kwargs,
     ):
         super(DefaultOutput, self).__init__(**kwargs)
-        self.output_layer = Dense(
-            num_outputs,
-            activation=output_activation,
-            kernel_initializer=initializer,
-            kernel_regularizer=regularizer,
-            name="output",
-        )
+
+        # Create kernel divergence function
+        if bayesian:
+            kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
+                q, p
+            ) / tf.cast(num_points, tf.float32)
+
+        if bayesian:
+            self.output_layer = tfp.layers.DenseFlipout(
+                num_outputs,
+                kernel_divergence_fn=kernel_divergence_fn,
+                activation=output_activation,
+                activity_regularizer=regularizer,
+                name="bayesian_output",
+            )
+        else:
+            self.output_layer = Dense(
+                num_outputs,
+                activation=output_activation,
+                kernel_initializer=initializer,
+                kernel_regularizer=regularizer,
+                name="output",
+            )
 
     def call(self, x, training=False):
         """Forward pass through the output layer."""
         return self.output_layer(x, training=training)
+
+
+class BayesianAleatoricOutput(Model):
+    """
+    Output layer for a Bayesian neural network with aleatoric uncertainty.
+
+    Args:
+        num_outputs (int): Number of output nodes.
+        num_points (int): Number of Monte Carlo samples.
+        regularizer (Regularizer): Kernel regularizer.
+        scale_epsilon (float): Epsilon value for scale parameter.
+        aleatoric_scale_factor (float): Scaling factor for aleatoric uncertainty.
+        **kwargs: Extra arguments passed to the base class.
+    """
+
+    def __init__(
+        self,
+        num_outputs,
+        num_points,
+        regularizer,
+        scale_epsilon=1e-3,
+        aleatoric_scale_factor=5e-2,
+        **kwargs,
+    ):
+        super(BayesianAleatoricOutput, self).__init__(**kwargs)
+
+        # Create kernel divergence function
+        kernel_divergence_fn = lambda q, p, _: tfp.distributions.kl_divergence(
+            q, p
+        ) / tf.cast(num_points, tf.float32)
+
+        self.pre_aleatoric_layer = tfp.layers.DenseFlipout(
+            2 * num_outputs,
+            kernel_divergence_fn=kernel_divergence_fn,
+            activation=None,
+            activity_regularizer=regularizer,
+            name="pre_aleatoric",
+        )
+
+        self.output_layer = tfp.layers.DistributionLambda(
+            lambda t: tfp.distributions.Normal(
+                loc=t[..., :num_outputs],
+                scale=scale_epsilon
+                + tf.math.softplus(aleatoric_scale_factor * t[..., num_outputs:]),
+            ),
+            name="distribution_output",
+        )
+
+    def call(self, x, training=False):
+        """Forward pass through the output layer."""
+        x = self.pre_aleatoric_layer(x, training=training)
+        return self.output_layer(x)

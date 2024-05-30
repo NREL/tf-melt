@@ -11,6 +11,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.utils import register_keras_serializable
 
 from tfmelt.blocks import (
+    BayesianAleatoricOutput,
     BayesianBlock,
     DefaultOutput,
     DenseBlock,
@@ -23,6 +24,28 @@ from tfmelt.losses import MultipleMixtureLoss, SingleMixtureLoss
 
 @register_keras_serializable(package="tfmelt")
 class MELTModel(Model):
+    """
+    TF-MELT base model.
+
+    Args:
+        num_outputs (int): Number of output units.
+        width (int, optional): Width of the hidden layers.
+        depth (int, optional): Number of hidden layers.
+        act_fun (str, optional): Activation function for the hidden layers.
+        dropout (float, optional): Dropout rate for the hidden layers.
+        input_dropout (float, optional): Dropout rate for the input layer.
+        batch_norm (bool, optional): Whether to use batch normalization.
+        use_batch_renorm (bool, optional): Whether to use batch renormalization.
+        output_activation (str, optional): Activation function for the output layer.
+        initializer (str, optional): Initializer for the weights.
+        l1_reg (float, optional): L1 regularization for the weights.
+        l2_reg (float, optional): L2 regularization for the weights.
+        do_aleatoric (bool, optional): Flag to perform aleatoric UQ.
+        num_mixtures (int, optional): Number of mixtures for density networks.
+        node_list (list, optional): Numbers of nodes to alternately define layers.
+        **kwargs: Additional keyword arguments.
+    """
+
     def __init__(
         self,
         num_outputs: int,
@@ -41,28 +64,6 @@ class MELTModel(Model):
         node_list: Optional[list] = None,
         **kwargs,
     ):
-        """
-        TF-MELT Base model.
-
-        Args:
-            num_outputs (int): Number of output units.
-            width (int, optional): Width of the hidden layers.
-            depth (int, optional): Number of hidden layers.
-            act_fun (str, optional): Activation function for the hidden layers.
-            dropout (float, optional): Dropout rate for the hidden layers.
-            input_dropout (float, optional): Dropout rate for the input layer.
-            batch_norm (bool, optional): Whether to use batch normalization.
-            use_batch_renorm (bool, optional): Whether to use batch renormalization.
-            output_activation (str, optional): Activation function for the output layer.
-            initializer (str, optional): Initializer for the weights.
-            l1_reg (float, optional): L1 regularization for the weights.
-            l2_reg (float, optional): L2 regularization for the weights.
-            do_aleatoric (bool, optional): Flag to perform aleatoric UQ.
-            num_mixtures (int, optional): Number of mixtures for density networks.
-            node_list (list, optional): Numbers of nodes to alternately define layers.
-            **kwargs: Additional keyword arguments.
-
-        """
         super(MELTModel, self).__init__(**kwargs)
 
         self.num_outputs = num_outputs
@@ -219,17 +220,17 @@ class MELTModel(Model):
 
 @register_keras_serializable(package="tfmelt")
 class ArtificialNeuralNetwork(MELTModel):
+    """
+    Artificial Neural Network model.
+
+    Args:
+        **kwargs: Additional keyword arguments.
+    """
+
     def __init__(
         self,
         **kwargs,
     ):
-        """
-        Artificial Neural Network model.
-
-        Args:
-            **kwargs: Additional keyword arguments.
-
-        """
         super(ArtificialNeuralNetwork, self).__init__(**kwargs)
 
     def build(self, input_shape):
@@ -271,6 +272,18 @@ class ArtificialNeuralNetwork(MELTModel):
 
 @register_keras_serializable(package="tfmelt")
 class ResidualNeuralNetwork(MELTModel):
+    """
+    Residual Neural Network model.
+
+    Args:
+        layers_per_block (int, optional): Number of layers in each block.
+        pre_activation (bool, optional): Whether to use pre-activation in residual
+                                         blocks.
+        post_add_activation (bool, optional): Whether to apply activation after adding
+                                              the residual connection.
+        **kwargs: Additional keyword arguments.
+    """
+
     def __init__(
         self,
         layers_per_block: Optional[int] = 2,
@@ -278,18 +291,6 @@ class ResidualNeuralNetwork(MELTModel):
         post_add_activation: Optional[bool] = False,
         **kwargs,
     ):
-        """
-        Initialize the ResidualNeuralNetwork model.
-
-        Args:
-            layers_per_block (int, optional): Number of layers in each block.
-            pre_activation (bool, optional): Whether to use pre-activation in residual
-                                             blocks.
-            post_add_activation (bool, optional): Whether to apply activation after
-                                                  adding the residual connection.
-            **kwargs: Additional keyword arguments.
-
-        """
         super(ResidualNeuralNetwork, self).__init__(**kwargs)
 
         self.layers_per_block = layers_per_block
@@ -355,34 +356,38 @@ class ResidualNeuralNetwork(MELTModel):
 
 @register_keras_serializable(package="tfmelt")
 class BayesianNeuralNetwork(MELTModel):
+    """
+    Bayesian Neural Network model.
+
+    Args:
+        num_points (int, optional): Number of Monte Carlo samples.
+        do_aleatoric (bool, optional): Flag to perform aleatoric output.
+        do_bayesian_output (bool, optional): Flag to perform Bayesian output.
+        aleatoric_scale_factor (float, optional): Scale factor for aleatoric uncertainty.
+        scale_epsilon (float, optional): Epsilon value for the scale of the aleatoric
+                                         uncertainty.
+        use_batch_renorm (bool, optional): Whether to use batch renormalization.
+        bayesian_mask (list, optional): List of booleans to determine which layers are
+                                        Bayesian and which are Dense.
+        **kwargs: Additional keyword arguments.
+    """
+
     def __init__(
         self,
         num_points: Optional[int] = 1,
         do_aleatoric: Optional[bool] = False,
+        do_bayesian_output: Optional[bool] = True,
         aleatoric_scale_factor: Optional[float] = 5e-2,
         scale_epsilon: Optional[float] = 1e-3,
         use_batch_renorm: Optional[bool] = True,
         bayesian_mask: Optional[List[bool]] = None,
         **kwargs,
     ):
-        """
-        Initialize the BayesianNeuralNetwork model.
-
-        Args:
-            num_points (int, optional): Number of Monte Carlo samples.
-            do_aleatoric (bool, optional): Flag to perform aleatoric output.
-            aleatoric_scale_factor (float, optional): Scale factor for aleatoric
-                                                      uncertainty.
-            scale_epsilon (float, optional): Epsilon value for the scale of the
-                                             aleatoric uncertainty.
-            use_batch_renorm (bool, optional): Whether to use batch renormalization.
-            **kwargs: Additional keyword arguments.
-
-        """
         super(BayesianNeuralNetwork, self).__init__(**kwargs)
 
         self.num_points = num_points
         self.do_aleatoric = do_aleatoric
+        self.do_bayesian_output = do_bayesian_output
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
@@ -411,6 +416,43 @@ class BayesianNeuralNetwork(MELTModel):
                 "bayesian_mask": self.bayesian_mask,
             }
         )
+
+    def create_output_layer(self):
+        """Create output layer for the Bayesian Neural Network."""
+
+        if self.do_aleatoric:
+            # Bayesian Aleatoric output layer
+            self.output_layer = BayesianAleatoricOutput(
+                num_outputs=self.num_outputs,
+                num_points=self.num_points,
+                aleatoric_scale_factor=self.aleatoric_scale_factor,
+                scale_epsilon=self.scale_epsilon,
+                regularizer=self.regularizer,
+                name="output",
+            )
+            self.sub_layer_names.append("output")
+        elif self.do_bayesian_output:
+            # Bayesian output layer
+            self.output_layer = DefaultOutput(
+                num_outputs=self.num_outputs,
+                output_activation=self.output_activation,
+                initializer=self.initializer,
+                regularizer=self.regularizer,
+                bayesian=True,
+                num_points=self.num_points,
+                name="output",
+            )
+            self.sub_layer_names.append("output")
+        else:
+            # Regular output layer
+            self.output_layer = DefaultOutput(
+                num_outputs=self.num_outputs,
+                output_activation=self.output_activation,
+                initializer=self.initializer,
+                regularizer=self.regularizer,
+                name="output",
+            )
+            self.sub_layer_names.append("output")
 
     def build(self, input_shape):
         """Build the BNN."""
@@ -484,34 +526,6 @@ class BayesianNeuralNetwork(MELTModel):
                     )
                     self.sub_layer_names.append(f"dense_block_{dense_block_idx}")
                     dense_block_idx += 1
-
-        # # Create the final distribution layer
-        # if self.do_aleatoric:
-        #     self.pre_aleatoric_layer = tfp.layers.DenseFlipout(
-        #         2 * self.num_outputs,
-        #         kernel_divergence_fn=self.kernel_divergence_fn,
-        #         activation=None,
-        #         activity_regularizer=self.regularizer,
-        #         name="pre_aleatoric_flipout",
-        #     )
-        #     self.output_layer = tfp.layers.DistributionLambda(
-        #         lambda t: tfp.distributions.Normal(
-        #             loc=t[..., : self.num_outputs],
-        #             scale=self.scale_epsilon
-        #             + tf.math.softplus(
-        #                 self.aleatoric_scale_factor * t[..., self.num_outputs :]
-        #             ),
-        #         ),
-        #         name="dist_output",
-        #     )
-        # else:
-        #     self.output_layer = tfp.layers.DenseFlipout(
-        #         self.num_outputs,
-        #         kernel_divergence_fn=self.kernel_divergence_fn,
-        #         activation=self.output_activation,
-        #         activity_regularizer=self.regularizer,
-        #         name="output",
-        #     )
 
     def call(self, inputs, training=False):
         """Call the BNN."""
