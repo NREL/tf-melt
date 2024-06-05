@@ -28,20 +28,27 @@ class MELTModel(Model):
 
     Args:
         num_outputs (int): Number of output units.
-        width (int, optional): Width of the hidden layers.
-        depth (int, optional): Number of hidden layers.
-        act_fun (str, optional): Activation function for the hidden layers.
-        dropout (float, optional): Dropout rate for the hidden layers.
-        input_dropout (float, optional): Dropout rate for the input layer.
-        batch_norm (bool, optional): Whether to use batch normalization.
+        width (int, optional): Width of the hidden layers. Defaults to 32.
+        depth (int, optional): Number of hidden layers. Defaults to 2.
+        act_fun (str, optional): Activation function for the hidden layers. Defaults to
+                                 "relu".
+        dropout (float, optional): Dropout rate for the hidden layers. Defaults to 0.0.
+        input_dropout (float, optional): Dropout rate for the input layer. Defaults to
+                                         0.0.
+        batch_norm (bool, optional): Whether to use batch normalization. Defaults to
+                                     False.
         use_batch_renorm (bool, optional): Whether to use batch renormalization.
+                                           Defaults to False.
         output_activation (str, optional): Activation function for the output layer.
-        initializer (str, optional): Initializer for the weights.
-        l1_reg (float, optional): L1 regularization for the weights.
-        l2_reg (float, optional): L2 regularization for the weights.
-        do_aleatoric (bool, optional): Flag to perform aleatoric UQ.
-        num_mixtures (int, optional): Number of mixtures for density networks.
+                                           Defaults to None.
+        initializer (str, optional): Initializer for the weights. Defaults to
+                                     "glorot_uniform".
+        l1_reg (float, optional): L1 regularization for the weights. Defaults to 0.0.
+        l2_reg (float, optional): L2 regularization for the weights. Defaults to 0.0.
+        num_mixtures (int, optional): Number of mixtures for density networks. Defaults
+                                      to 0.
         node_list (list, optional): Numbers of nodes to alternately define layers.
+                                    Defaults to None.
         **kwargs: Additional keyword arguments.
     """
 
@@ -249,6 +256,7 @@ class ArtificialNeuralNetwork(MELTModel):
             batch_norm=self.batch_norm,
             use_batch_renorm=self.use_batch_renorm,
             regularizer=self.regularizer,
+            initializer=self.initializer,
             name="dense_block",
         )
         self.sub_layer_names.append("dense_block")
@@ -275,11 +283,12 @@ class ResidualNeuralNetwork(MELTModel):
     Residual Neural Network model.
 
     Args:
-        layers_per_block (int, optional): Number of layers in each block.
+        layers_per_block (int, optional): Number of layers in each block. Defaults to 2.
         pre_activation (bool, optional): Whether to use pre-activation in residual
-                                         blocks.
+                                         blocks. Defaults to True.
         post_add_activation (bool, optional): Whether to apply activation after adding
-                                              the residual connection.
+                                              the residual connection. Defaults to
+                                              False.
         **kwargs: Additional keyword arguments.
     """
 
@@ -330,6 +339,7 @@ class ResidualNeuralNetwork(MELTModel):
             batch_norm=self.batch_norm,
             use_batch_renorm=self.use_batch_renorm,
             regularizer=self.regularizer,
+            initializer=self.initializer,
             pre_activation=self.pre_activation,
             post_add_activation=self.post_add_activation,
             name="residual_block",
@@ -359,16 +369,19 @@ class BayesianNeuralNetwork(MELTModel):
     Bayesian Neural Network model.
 
     Args:
-        num_points (int, optional): Number of Monte Carlo samples.
-        do_aleatoric (bool, optional): Flag to perform aleatoric output.
-        do_bayesian_output (bool, optional): Flag to perform Bayesian output.
+        num_points (int, optional): Number of Monte Carlo samples. Defaults to 1.
+        do_aleatoric (bool, optional): Flag to perform aleatoric output. Defaults to
+                                       False.
+        do_bayesian_output (bool, optional): Flag to perform Bayesian output. Defaults
+                                             to True.
         aleatoric_scale_factor (float, optional): Scale factor for aleatoric
-                                                  uncertainty.
+                                                  uncertainty. Defaults to 5e-2.
         scale_epsilon (float, optional): Epsilon value for the scale of the aleatoric
-                                         uncertainty.
+                                         uncertainty. Defaults to 1e-3.
         use_batch_renorm (bool, optional): Whether to use batch renormalization.
+                                           Defaults to True.
         bayesian_mask (list, optional): List of booleans to determine which layers are
-                                        Bayesian and which are Dense.
+                                        Bayesian and which are Dense. Defaults to None.
         **kwargs: Additional keyword arguments.
     """
 

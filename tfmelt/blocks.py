@@ -14,6 +14,9 @@ def get_kernel_divergence_fn(num_points):
 
     Args:
         num_points (int): Number of points in kernel divergence.
+
+    Returns:
+        Callable: Kernel divergence function.
     """
 
     def kernel_divergence_fn(q, p, _):
@@ -29,14 +32,19 @@ class MELTBlock(Model):
     various neural network blocks.
 
     Args:
-        node_list (List[int]): Number of nodes in each dense layer.
-        activation (str, optional): Activation function. Defaults to "relu".
+        node_list (List[int]): Number of nodes in each dense layer. The length of
+                               the list determines the number of layers.
+        activation (str, optional): Activation function. If None,
+                                    no activation is applied (linear). Defaults to
+                                    "relu".
         dropout (float, optional): Dropout rate (0-1). Defaults to None.
         batch_norm (bool, optional): Apply batch normalization if True. Defaults
                                      to False.
         use_batch_renorm (bool, optional): Use batch renormalization. Defaults to False.
         regularizer (Regularizer, optional): Kernel weights regularizer. Defaults
                                              to None.
+        initializer (str, optional): String defining the kernel initializer. Defaults
+                                     to "glorot_uniform".
         **kwargs: Extra arguments passed to the base class.
     """
 
@@ -48,15 +56,18 @@ class MELTBlock(Model):
         batch_norm: Optional[bool] = False,
         use_batch_renorm: Optional[bool] = False,
         regularizer: Optional[Regularizer] = None,
+        initializer: Optional[str] = "glorot_uniform",
         **kwargs: Any,
     ):
         super(MELTBlock, self).__init__(**kwargs)
+
         self.node_list = node_list
         self.activation = activation
         self.dropout = dropout
         self.batch_norm = batch_norm
         self.use_batch_renorm = use_batch_renorm
         self.regularizer = regularizer
+        self.initializer = initializer
 
         # Number of layers in the block
         self.num_layers = len(self.node_list)
@@ -98,11 +109,12 @@ class MELTBlock(Model):
 
         # Create config dictionary for serialization
         self.config = {
-            "node_list": node_list,
-            "activation": activation,
-            "dropout": dropout,
-            "batch_norm": batch_norm,
-            "regularizer": regularizer,
+            "node_list": self.node_list,
+            "activation": self.activation,
+            "dropout": self.dropout,
+            "batch_norm": self.batch_norm,
+            "regularizer": self.regularizer,
+            "initializer": self.initializer,
         }
 
     def get_config(self):
@@ -123,13 +135,6 @@ class DenseBlock(MELTBlock):
     and batch normalization.
 
     Args:
-        node_list (List[int]): Number of nodes in each dense layer.
-        activation (str, optional): Activation function. Defaults to "relu".
-        dropout (float, optional): Dropout rate (0-1). Defaults to None.
-        batch_norm (bool, optional): Apply batch normalization if True. Defaults
-                                     to False.
-        regularizer (Regularizer, optional): Kernel weights regularizer. Defaults
-                                             to None.
         **kwargs: Extra arguments passed to the base class.
 
     Raises:
@@ -148,6 +153,7 @@ class DenseBlock(MELTBlock):
                 node,
                 activation=None,
                 kernel_regularizer=self.regularizer,
+                kernel_initializer=self.initializer,
                 name=f"dense_{i}",
             )
             for i, node in enumerate(self.node_list)
@@ -177,11 +183,12 @@ class ResidualBlock(MELTBlock):
     and batch normalization. Residual connections are added after each block of layers.
 
     Args:
-        layers_per_block (int, optional): Number of layers per residual block.
+        layers_per_block (int, optional): Number of layers per residual block. Defaults
+                                          to 2.
         pre_activation (bool, optional): Apply activation before adding residual
-                                         connection.
+                                         connection. Defaults to False.
         post_add_activation (bool, optional): Apply activation after adding residual
-                                              connection.
+                                              connection. Defaults to False.
         **kwargs: Extra arguments passed to the base class.
     """
 
@@ -212,6 +219,7 @@ class ResidualBlock(MELTBlock):
                 node,
                 activation=None,
                 kernel_regularizer=self.regularizer,
+                kernel_initializer=self.initializer,
                 name=f"dense_{i}",
             )
             for i, node in enumerate(self.node_list)
@@ -341,34 +349,50 @@ class SingleMixtureOutput(Model):
     Output layer for a single mixture density network.
 
     Args:
-        num_outputs (int): Number of output nodes.
-        output_activation (str): Activation function for the output layer.
-        initializer (str): Kernel initializer.
-        regularizer (Regularizer): Kernel regularizer.
+        num_outputs (int): Number of output nodes. The output layer will have twice the
+                           number of nodes for the mean and log-variance.
+        output_activation (str, optional): Activation function for the output layer.
+                                           Defaults to None.
+        initializer (str, optional): Kernel initializer. Defaults to "glorot_uniform".
+        regularizer (Regularizer, optional): Kernel regularizer. Defaults to None.
         **kwargs: Extra arguments passed to the base class.
     """
 
     def __init__(
         self,
-        num_outputs,
-        output_activation,
-        initializer,
-        regularizer,
+        num_outputs: int,
+        output_activation: Optional[str] = None,
+        initializer: Optional[str] = "glorot_uniform",
+        regularizer: Optional[Regularizer] = None,
         **kwargs,
     ):
         super(SingleMixtureOutput, self).__init__(**kwargs)
+
+        self.num_outputs = num_outputs
+        self.output_activation = output_activation
+        self.initializer = initializer
+        self.regularizer = regularizer
+
+        # Update config dictionary for serialization
+        self.config = {
+            "num_outputs": self.num_outputs,
+            "output_activation": self.output_activation,
+            "initializer": self.initializer,
+            "regularizer": self.regularizer,
+        }
+
         self.mean_output_layer = Dense(
-            num_outputs,
-            activation=output_activation,
-            kernel_initializer=initializer,
-            kernel_regularizer=regularizer,
+            self.num_outputs,
+            activation=self.output_activation,
+            kernel_initializer=self.initializer,
+            kernel_regularizer=self.regularizer,
             name="mean_output",
         )
         self.log_var_output_layer = Dense(
-            num_outputs,
+            self.num_outputs,
             activation=None,  # No activation for log-variance
-            kernel_initializer=initializer,
-            kernel_regularizer=regularizer,
+            kernel_initializer=self.initializer,
+            kernel_regularizer=self.regularizer,
             name="log_var_output",
         )
 
@@ -378,6 +402,17 @@ class SingleMixtureOutput(Model):
         log_var_output = self.log_var_output_layer(x, training=training)
         return tf.stack([mean_output, log_var_output])
 
+    def get_config(self):
+        """Get the config dictionary"""
+        config = super(SingleMixtureOutput, self).get_config()
+        config.update(self.config)
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        """Create model from config dictionary"""
+        return cls(**config)
+
 
 class MultipleMixturesOutput(Model):
     """
@@ -386,32 +421,52 @@ class MultipleMixturesOutput(Model):
     Args:
         num_mixtures (int): Number of mixture components.
         num_outputs (int): Number of output nodes.
-        initializer (str): Kernel initializer.
-        regularizer (Regularizer): Kernel regularizer.
+        initializer (str, optional): Kernel initializer. Defaults to "glorot_uniform".
+        regularizer (Regularizer, optional): Kernel regularizer. Defaults to None.
         **kwargs: Extra arguments passed to the base class.
     """
 
-    def __init__(self, num_mixtures, num_outputs, initializer, regularizer, **kwargs):
-
+    def __init__(
+        self,
+        num_mixtures: int,
+        num_outputs: int,
+        initializer: Optional[str] = "glorot_uniform",
+        regularizer: Optional[Regularizer] = None,
+        **kwargs,
+    ):
         super(MultipleMixturesOutput, self).__init__(**kwargs)
+
+        self.num_mixtures = num_mixtures
+        self.num_outputs = num_outputs
+        self.initializer = initializer
+        self.regularizer = regularizer
+
+        # Update config dictionary for serialization
+        self.config = {
+            "num_mixtures": self.num_mixtures,
+            "num_outputs": self.num_outputs,
+            "initializer": self.initializer,
+            "regularizer": self.regularizer,
+        }
+
         self.mix_coeffs_layer = Dense(
-            num_mixtures,
+            self.num_mixtures,
             activation="softmax",
-            kernel_initializer=initializer,
+            kernel_initializer=self.initializer,
             name="mix_coeffs",
         )
         self.mean_output_layer = Dense(
-            num_mixtures * num_outputs,
+            self.num_mixtures * self.num_outputs,
             activation=None,
-            kernel_initializer=initializer,
-            kernel_regularizer=regularizer,
+            kernel_initializer=self.initializer,
+            kernel_regularizer=self.regularizer,
             name="mean_output",
         )
         self.log_var_output_layer = Dense(
-            num_mixtures * num_outputs,
+            self.num_mixtures * self.num_outputs,
             activation=None,
-            kernel_initializer=initializer,
-            kernel_regularizer=regularizer,
+            kernel_initializer=self.initializer,
+            kernel_regularizer=self.regularizer,
             name="log_var_output",
         )
 
@@ -422,6 +477,17 @@ class MultipleMixturesOutput(Model):
         log_var_output = self.log_var_output_layer(x, training=training)
         return tf.concat([m_coeffs, mean_output, log_var_output], axis=-1)
 
+    def get_config(self):
+        """Get the config dictionary"""
+        config = super(MultipleMixturesOutput, self).get_config()
+        config.update(self.config)
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        """Create model from config dictionary"""
+        return cls(**config)
+
 
 class DefaultOutput(Model):
     """
@@ -429,49 +495,79 @@ class DefaultOutput(Model):
 
     Args:
         num_outputs (int): Number of output nodes.
-        output_activation (str): Activation function for the output layer.
-        initializer (str): Kernel initializer.
-        regularizer (Regularizer): Kernel regularizer.
-        bayesian (bool): Use Bayesian layer if True.
+        output_activation (str, optional): Activation function for the output layer.
+                                           Defaults to None.
+        initializer (str, optional): Kernel initializer. Defaults to "glorot_uniform".
+        regularizer (Regularizer, optional): Kernel regularizer. Defaults to None.
+        bayesian (bool, optional): Use Bayesian layer if True. Defaults to False.
+        num_points (int, optional): Number of samples. Defaults to 1.
         **kwargs: Extra arguments passed to the base class.
     """
 
     def __init__(
         self,
         num_outputs,
-        output_activation,
-        initializer,
-        regularizer,
-        bayesian=False,
-        num_points=1,
+        output_activation: Optional[str] = None,
+        initializer: Optional[str] = "glorot_uniform",
+        regularizer: Optional[Regularizer] = None,
+        bayesian: Optional[bool] = False,
+        num_points: Optional[int] = 1,
         **kwargs,
     ):
         super(DefaultOutput, self).__init__(**kwargs)
 
+        self.num_outputs = num_outputs
+        self.output_activation = output_activation
+        self.initializer = initializer
+        self.regularizer = regularizer
+        self.bayesian = bayesian
+        self.num_points = num_points
+
+        # Update config dictionary for serialization
+        self.config = {
+            "num_outputs": self.num_outputs,
+            "output_activation": self.output_activation,
+            "initializer": self.initializer,
+            "regularizer": self.regularizer,
+            "bayesian": self.bayesian,
+            "num_points": self.num_points,
+        }
+
         # Create kernel divergence function
         if bayesian:
-            kernel_divergence_fn = get_kernel_divergence_fn(num_points)
+            kernel_divergence_fn = get_kernel_divergence_fn(self.num_points)
 
         if bayesian:
             self.output_layer = tfp.layers.DenseFlipout(
-                num_outputs,
+                self.num_outputs,
                 kernel_divergence_fn=kernel_divergence_fn,
-                activation=output_activation,
-                activity_regularizer=regularizer,
+                activation=self.output_activation,
+                activity_regularizer=self.regularizer,
                 name="bayesian_output",
             )
         else:
             self.output_layer = Dense(
-                num_outputs,
-                activation=output_activation,
-                kernel_initializer=initializer,
-                kernel_regularizer=regularizer,
+                self.num_outputs,
+                activation=self.output_activation,
+                kernel_initializer=self.initializer,
+                kernel_regularizer=self.regularizer,
                 name="output",
             )
 
     def call(self, x, training=False):
         """Forward pass through the output layer."""
         return self.output_layer(x, training=training)
+
+    def get_config(self):
+        """Get the config dictionary"""
+        config = super(DefaultOutput, self).get_config()
+        config.update(self.config)
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        """Create model from config dictionary"""
+        return cls(**config)
 
 
 class BayesianAleatoricOutput(Model):
@@ -481,39 +577,58 @@ class BayesianAleatoricOutput(Model):
     Args:
         num_outputs (int): Number of output nodes.
         num_points (int): Number of Monte Carlo samples.
-        regularizer (Regularizer): Kernel regularizer.
-        scale_epsilon (float): Epsilon value for scale parameter.
-        aleatoric_scale_factor (float): Scaling factor for aleatoric uncertainty.
+        regularizer (Regularizer, optional): Kernel regularizer. Defaults to None.
+        scale_epsilon (float, optional): Epsilon value for scale parameter. Defaults to
+                                         1e-3.
+        aleatoric_scale_factor (float, optional): Scaling factor for aleatoric
+                                                  uncertainty. Defaults to 5e-2.
         **kwargs: Extra arguments passed to the base class.
     """
 
     def __init__(
         self,
-        num_outputs,
-        num_points,
-        regularizer,
-        scale_epsilon=1e-3,
-        aleatoric_scale_factor=5e-2,
+        num_outputs: int,
+        num_points: int,
+        regularizer: Optional[Regularizer] = None,
+        scale_epsilon: Optional[float] = 1e-3,
+        aleatoric_scale_factor: Optional[float] = 5e-2,
         **kwargs,
     ):
         super(BayesianAleatoricOutput, self).__init__(**kwargs)
 
+        self.num_outputs = num_outputs
+        self.num_points = num_points
+        self.regularizer = regularizer
+        self.scale_epsilon = scale_epsilon
+        self.aleatoric_scale_factor = aleatoric_scale_factor
+
+        # Update config dictionary for serialization
+        self.config = {
+            "num_outputs": self.num_outputs,
+            "num_points": self.num_points,
+            "regularizer": self.regularizer,
+            "scale_epsilon": self.scale_epsilon,
+            "aleatoric_scale_factor": self.aleatoric_scale_factor,
+        }
+
         # Create kernel divergence function
-        kernel_divergence_fn = get_kernel_divergence_fn(num_points)
+        kernel_divergence_fn = get_kernel_divergence_fn(self.num_points)
 
         self.pre_aleatoric_layer = tfp.layers.DenseFlipout(
-            2 * num_outputs,
+            2 * self.num_outputs,
             kernel_divergence_fn=kernel_divergence_fn,
             activation=None,
-            activity_regularizer=regularizer,
+            activity_regularizer=self.regularizer,
             name="pre_aleatoric",
         )
 
         self.output_layer = tfp.layers.DistributionLambda(
             lambda t: tfp.distributions.Normal(
-                loc=t[..., :num_outputs],
-                scale=scale_epsilon
-                + tf.math.softplus(aleatoric_scale_factor * t[..., num_outputs:]),
+                loc=t[..., : self.num_outputs],
+                scale=self.scale_epsilon
+                + tf.math.softplus(
+                    self.aleatoric_scale_factor * t[..., self.num_outputs :]
+                ),
             ),
             name="distribution_output",
         )
@@ -522,3 +637,14 @@ class BayesianAleatoricOutput(Model):
         """Forward pass through the output layer."""
         x = self.pre_aleatoric_layer(x, training=training)
         return self.output_layer(x)
+
+    def get_config(self):
+        """Get the config dictionary"""
+        config = super(BayesianAleatoricOutput, self).get_config()
+        config.update(self.config)
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        """Create model from config dictionary"""
+        return cls(**config)
