@@ -288,7 +288,7 @@ def compute_winkler_score(truth, mean, std, alpha: Optional[float] = 0.05):
     significance level for the prediction interval. The Winkler score is defined as:
 
     .. math::
-        \\mathcal{W_i} = \\begin{cases} 
+        \\mathcal{W_i} = \\begin{cases}
         \\text{width} + \\frac{2}{\\alpha} (\\mathcal{L} - y_i), & \\text{if } y_i <
         \\mathcal{L} \\\\
         \\text{width} + \\frac{2}{\\alpha} (y_i - \\mathcal{U}), & \\text{if } y_i >
