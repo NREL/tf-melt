@@ -404,7 +404,9 @@ class BayesianNeuralNetwork(MELTModel):
         self.aleatoric_scale_factor = aleatoric_scale_factor
         self.scale_epsilon = scale_epsilon
         self.use_batch_renorm = use_batch_renorm
-        self.bayesian_mask = bayesian_mask
+        self.bayesian_mask = (
+            bayesian_mask if bayesian_mask is not None else [True] * self.num_layers
+        )
 
         # Checks on bayesian mask and number of layers
         if len(self.bayesian_mask) > self.num_layers:

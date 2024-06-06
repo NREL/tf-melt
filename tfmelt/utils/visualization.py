@@ -317,7 +317,7 @@ def plot_predictions_with_uncertainty(
             y_real,
             mean,
             std,
-            f"{dataset_name} Data",
+            # f"{dataset_name} Data",
             metrics_to_display=metrics_to_display,
         )
 
