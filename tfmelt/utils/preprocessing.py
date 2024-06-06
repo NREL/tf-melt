@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 from sklearn.preprocessing import (
     MinMaxScaler,
     PowerTransformer,
@@ -18,32 +20,62 @@ class IdentityScaler:
     def __init__(self, **kwargs):
         self.scale_ = 1.0
 
-    def fit(self, X, y=None):
+    def fit(self, X, y: Optional[Any] = None):
+        """
+        Dummy fit method that does nothing.
+
+        Args:
+            X (array-like): Input data.
+            y (array-like): Ignored.
+        """
         return self
 
     def transform(self, X):
+        """
+        Dummy transform method that returns the input data unchanged.
+
+        Args:
+            X (array-like): Input data.
+        """
         return X
 
-    def fit_transform(self, X, y=None):
+    def fit_transform(self, X, y: Optional[Any] = None):
+        """
+        Dummy fit_transform method that returns the input data unchanged.
+
+        Args:
+            X (array-like): Input data.
+            y (array-like): Ignored.
+        """
         return self.fit(X, y).transform(X)
 
     def inverse_transform(self, X):
+        """
+        Dummy inverse_transform method that returns the input data unchanged.
+
+        Args:
+            X (array-like): Input data.
+        """
         return X
 
 
-def get_normalizers(norm_type="standard", n_normalizers=1, **kwargs):
+def get_normalizers(
+    norm_type: Optional[str] = "standard", n_normalizers: Optional[int] = 1, **kwargs
+):
     """
-    Get a list of normalizers based on the specified normalization type.
+    Get a list of normalizers based on the specified normalization type and number of
+    normalizers.
 
-    Parameters:
-    norm_type (str): Type of normalization ('standard', 'minmax', 'robust', 'power',
-                     'quantile').
-    n_normalizers (int): Number of normalizers to create. Defaults to 1.
-    **kwargs: Additional keyword arguments for the specific scaler.
+    Args:
+        norm_type (str, optional): Type of normalization ('standard', 'minmax',
+        'robust', 'power', 'quantile'). Defaults to 'standard'.
+        n_normalizers (int, optional): Number of normalizers to create. Defaults to 1.
+        **kwargs: Additional keyword arguments for the specific scaler.
 
     Returns:
-    list: A list of normalizers.
+        list: A list of normalizers.
     """
+    # Supported normalization types
     normalizers = {
         "standard": StandardScaler,
         "minmax": MinMaxScaler,
@@ -53,12 +85,13 @@ def get_normalizers(norm_type="standard", n_normalizers=1, **kwargs):
         "none": IdentityScaler,
     }
 
+    # Check if the normalization type is supported
     if norm_type not in normalizers:
         raise ValueError(f"Unsupported normalization type: {norm_type}")
 
     scaler_class = normalizers[norm_type]
 
-    # Extract relevant kwargs for each scaler
+    # Extract relevant supported kwargs for each scaler
     scaler_params = {
         "minmax": ["feature_range"],
         "quantile": ["output_distribution", "n_quantiles", "random_state"],
@@ -74,4 +107,5 @@ def get_normalizers(norm_type="standard", n_normalizers=1, **kwargs):
     # Create the specified number of normalizers
     normalizers_list = [scaler_class(**relevant_kwargs) for _ in range(n_normalizers)]
 
+    # Return the list of normalizers
     return normalizers_list
