@@ -4,11 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import probplot
 
-from .statistics import (  # compute_mpiw,; compute_pinaw,
-    compute_metrics,
-    compute_rmse,
-    compute_rsquared,
-)
+from .statistics import compute_metrics, compute_rmse, compute_rsquared
 
 
 def plot_history(
@@ -74,9 +70,9 @@ def point_cloud_plot(
     y_pred,
     r_squared,
     rmse,
-    label,
-    marker,
-    color,
+    label: Optional[str] = None,
+    marker: Optional[str] = "o",
+    color: Optional[str] = "blue",
     text_pos: Optional[tuple] = (0.3, 0.01),
 ):
     """
@@ -88,9 +84,9 @@ def point_cloud_plot(
         y_pred (array-like): Predicted values.
         r_squared (float): R-squared value.
         rmse (float): RMSE value.
-        label (str): Label for the plot.
-        marker (str): Marker style.
-        color (str): Marker color.
+        label (str, optional): Label for the plot. Defaults to None.
+        marker (str, optional): Marker style. Defaults to "o".
+        color (str, optional): Marker color. Defaults to "blue".
         text_pos (tuple, optional): Position for the RMSE text annotation (x, y).
                                     Defaults to (0.3, 0.01).
     """
@@ -449,12 +445,13 @@ def plot_interval_width_vs_value(
     n_outputs = y_std.shape[1]
     handles = []
     for i in range(n_outputs):
+        # Compute the interval width as 2 * 1.96 * standard deviation (95% CI)
         interval_width = 2 * 1.96 * y_std[:, i]
+
+        # Normalize the interval width by the range of the true values
         if normalize:
             interval_width /= np.max(y_true[:, i]) - np.min(y_true[:, i])
-            # interval_width = compute_pinaw(y_true[:, i], y_std[:, i])
-        # else:
-        # interval_width = compute_mpiw(y_std[:, i])
+
         h = ax.scatter(
             y_pred[:, i] if use_pred else y_true[:, i],
             interval_width,
@@ -500,7 +497,7 @@ def plot_qq(
     handles = []
     for i in range(n_outputs):
         normalized_residuals = (y_true[:, i] - y_pred[:, i]) / y_std[:, i]
-        probplot(normalized_residuals, dist="norm", plot=ax, fit=True, rvalue=True)
+        probplot(normalized_residuals, dist="norm", plot=ax, fit=True, rvalue=False)
         # Get the handle for the QQ plot line and style it
         h = ax.get_lines()[-2]
         h.set_color(colors[i % len(colors)])
@@ -581,64 +578,64 @@ def plot_uncertainty_calibration(
     ax.legend(handles=handles)
 
 
-def plot_coverage_by_quantile(
-    ax,
-    y_true,
-    y_pred,
-    y_std,
-    dataset_name,
-    colors: Optional[List] = plt.rcParams["axes.prop_cycle"].by_key()["color"],
-):
-    """
-    Plot Coverage Probability by quantile.
+# def plot_coverage_by_quantile(
+#     ax,
+#     y_true,
+#     y_pred,
+#     y_std,
+#     dataset_name,
+#     colors: Optional[List] = plt.rcParams["axes.prop_cycle"].by_key()["color"],
+# ):
+#     """
+#     Plot Coverage Probability by quantile.
 
-    Args:
-        ax: Matplotlib axes object.
-        y_true (array-like): Actual values.
-        y_pred (array-like): Predicted values.
-        y_std (array-like): Standard deviation of predictions.
-        dataset_name (str): Name of the dataset for labeling.
-        colors (list): List of colors for the plot.
-    """
-    # TODO: Make this more informative...
-    n_outputs = y_true.shape[1] if y_true.ndim > 1 else 1
-    handles = []
-    quantiles = np.percentile(y_std, np.linspace(0, 100, 100))
-    text_positions = [(0.8, 0.2 - i * 0.05) for i in range(n_outputs)]
+#     Args:
+#         ax: Matplotlib axes object.
+#         y_true (array-like): Actual values.
+#         y_pred (array-like): Predicted values.
+#         y_std (array-like): Standard deviation of predictions.
+#         dataset_name (str): Name of the dataset for labeling.
+#         colors (list): List of colors for the plot.
+#     """
+#     # TODO: Make this more informative...
+#     n_outputs = y_true.shape[1] if y_true.ndim > 1 else 1
+#     handles = []
+#     quantiles = np.percentile(y_std, np.linspace(0, 100, 100))
+#     text_positions = [(0.8, 0.2 - i * 0.05) for i in range(n_outputs)]
 
-    for i in range(n_outputs):
-        coverages = []
-        for q in quantiles:
-            in_interval = np.abs(y_true[:, i] - y_pred[:, i]) <= q
-            coverage = np.mean(in_interval)
-            coverages.append(coverage)
+#     for i in range(n_outputs):
+#         coverages = []
+#         for q in quantiles:
+#             in_interval = np.abs(y_true[:, i] - y_pred[:, i]) <= q
+#             coverage = np.mean(in_interval)
+#             coverages.append(coverage)
 
-        # Find the quantile that achieves 95% coverage
-        coverage_array = np.array(coverages)
-        quantile_95 = quantiles[np.searchsorted(coverage_array, 0.95)]
+#         # Find the quantile that achieves 95% coverage
+#         coverage_array = np.array(coverages)
+#         quantile_95 = quantiles[np.searchsorted(coverage_array, 0.95)]
 
-        h = ax.plot(
-            quantiles, coverages, label=f"Output {i+1}", color=colors[i % len(colors)]
-        )
-        handles.append(h[0])
+#         h = ax.plot(
+#             quantiles, coverages, label=f"Output {i+1}", color=colors[i % len(colors)]
+#         )
+#         handles.append(h[0])
 
-        # Add vertical line at the quantile for 95% coverage
-        ax.axvline(x=quantile_95, color=colors[i % len(colors)], linestyle="--")
+#         # Add vertical line at the quantile for 95% coverage
+#         ax.axvline(x=quantile_95, color=colors[i % len(colors)], linestyle="--")
 
-        # Add text box showing the quantile value
-        ax.text(
-            quantile_95,
-            0.95,
-            f"95% Coverage at {quantile_95:.2f}",
-            transform=ax.transAxes,
-            verticalalignment="bottom",
-            horizontalalignment="right",
-            backgroundcolor="white",
-            color=colors[i % len(colors)],
-            position=text_positions[i],
-        )
+#         # Add text box showing the quantile value
+#         ax.text(
+#             quantile_95,
+#             0.95,
+#             f"95% Coverage at {quantile_95:.2f}",
+#             transform=ax.transAxes,
+#             verticalalignment="bottom",
+#             horizontalalignment="right",
+#             backgroundcolor="white",
+#             color=colors[i % len(colors)],
+#             position=text_positions[i],
+#         )
 
-    ax.set_xlabel("Uncertainty Quantile")
-    ax.set_ylabel("Coverage Probability")
-    ax.set_title(f"Coverage by Quantile: {dataset_name}")
-    ax.legend(handles=handles, loc="center right")
+#     ax.set_xlabel("Uncertainty Quantile")
+#     ax.set_ylabel("Coverage Probability")
+#     ax.set_title(f"Coverage by Quantile: {dataset_name}")
+#     ax.legend(handles=handles, loc="center right")

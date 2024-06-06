@@ -1,7 +1,7 @@
 .. _examples:
 
-Examples
-========
+Example Notebooks
+=================
 
 The examples folder includes a collection of Jupyter notebooks that demonstrate the 
 use of the TF-MELT package for different machine learning tasks. The examples included

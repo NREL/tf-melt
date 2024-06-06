@@ -25,8 +25,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "sphinx.ext.autosectionlabel",
-    # "sphinx.ext.githubpages",
-    # "sphinx.ext.inheritance_diagram",
+    "matplotlib.sphinxext.plot_directive",
     "sphinx_rtd_theme",
 ]
 
