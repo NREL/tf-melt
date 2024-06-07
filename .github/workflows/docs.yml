@@ -50,9 +50,9 @@ jobs:
       - name: Set TARGET_FOLDER
         run: |
           if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "::set-env name=TARGET_FOLDER::"
+            echo "TARGET_FOLDER=" >> $GITHUB_ENV
           else
-            echo "::set-env name=TARGET_FOLDER::pr-preview"
+            echo "TARGET_FOLDER=pr-preview" >> $GITHUB_ENV
           fi
 
       - name: Deploy
