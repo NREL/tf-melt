@@ -47,12 +47,15 @@ jobs:
           make html
           touch build/html/.nojekyll
 
-      - name: Set TARGET_FOLDER
+      - name: Set TARGET_FOLDER and CLEAN
+        id: vars
         run: |
           if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "TARGET_FOLDER=" >> $GITHUB_ENV
+            echo "CLEAN=true" >> $GITHUB_ENV
           else
-            echo "TARGET_FOLDER=pr-preview" >> $GITHUB_ENV
+            echo "TARGET_FOLDER=pr-preview/${{ github.event.number }}" >> $GITHUB_ENV
+            echo "CLEAN=false" >> $GITHUB_ENV
           fi
 
       - name: Deploy
@@ -62,5 +65,5 @@ jobs:
           BRANCH: gh-pages
           FOLDER: Docs/build/html
           SINGLE_COMMIT: true
-          TARGET_FOLDER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '' || 'pr-preview' }}
-          CLEAN: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'true' || 'false' }}
+          TARGET_FOLDER: ${{ env.TARGET_FOLDER }}
+          CLEAN: ${{ env.CLEAN }}
