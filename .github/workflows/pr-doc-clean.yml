@@ -2,7 +2,7 @@ name: Cleanup PR Documentation
 
 on:
   pull_request:
-    types: [closed]
+    # types: [closed]
 
 jobs:
   cleanup:
@@ -13,17 +13,24 @@ jobs:
         with:
           ref: "gh-pages"
 
-      - name: Remove PR Documentation
+      - name: Clean Documentation and Downloads
         run: |
           PR_NUMBER=${{ github.event.number }}
           echo "Cleaning up documentation for PR $PR_NUMBER"
-          git rm -r pr-preview/$PR_NUMBER
-          git commit -m "Remove documentation for PR $PR_NUMBER"
-          git push
+          # Check if PR documentation folder exists
+          if [ -d "pr-preview/$PR_NUMBER" ]; then
+              git rm -r pr-preview/$PR_NUMBER
+          fi
 
-      - name: Clean up _downloads
-        run: |
-          echo "Cleaning up _downloads folder"
-          git rm -r _downloads/*
-          git commit -m "Cleanup _downloads folder"
-          git push
+          # Check if _downloads folder is not empty and clean it
+          if [ "$(ls -A _downloads)" ]; then
+              git rm -r _downloads/*
+          fi
+
+          # Commit changes if there are any
+          if [ "$(git status --porcelain)" ]; then
+              git commit -m "Cleanup after PR $PR_NUMBER and _downloads folder"
+              git push
+          else
+              echo "No changes to commit."
+          fi
