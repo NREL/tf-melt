@@ -64,6 +64,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: Docs/build/html
-          single_commit: true
-          target_folder: ${{ env.TARGET_FOLDER }}
+          single-commit: true
+          target-folder: ${{ env.TARGET_FOLDER }}
           clean: ${{ env.CLEAN }}
