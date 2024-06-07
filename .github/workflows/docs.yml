@@ -62,4 +62,5 @@ jobs:
           BRANCH: gh-pages
           FOLDER: Docs/build/html
           SINGLE_COMMIT: true
-          TARGET_FOLDER: ${{ env.TARGET_FOLDER }}
+          TARGET_FOLDER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '' || 'pr-preview' }}
+          CLEAN: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'true' || 'false' }}
