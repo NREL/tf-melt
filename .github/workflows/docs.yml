@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.11.x"
 
       - name: Cache Python dependencies
         uses: actions/cache@v3
@@ -37,13 +37,23 @@ jobs:
           pip install sphinx nbsphinx nbsphinx_link sphinx_rtd_theme
 
       - name: Install Pandoc
-        run: sudo apt-get install -y pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
 
       - name: Build documentation
         run: |
           cd Docs
           make html
           touch build/html/.nojekyll
+
+      - name: Set TARGET_FOLDER
+        run: |
+          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "::set-env name=TARGET_FOLDER::"
+          else
+            echo "::set-env name=TARGET_FOLDER::pr-preview"
+          fi
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v4
@@ -52,9 +62,4 @@ jobs:
           BRANCH: gh-pages
           FOLDER: Docs/build/html
           SINGLE_COMMIT: true
-          TARGET_FOLDER: >-
-            ${{ 
-              github.event_name == 'push' && github.ref == 'refs/heads/main'
-              ? ''
-              : 'pr-preview' 
-            }}
+          TARGET_FOLDER: ${{ env.TARGET_FOLDER }}
