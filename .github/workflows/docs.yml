@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+    types: [closed, opened, synchronize]
     branches:
       - main
 
@@ -48,15 +49,22 @@ jobs:
           touch build/html/.nojekyll
 
       - name: Set TARGET_FOLDER and CLEAN
-        id: vars
         run: |
           if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "TARGET_FOLDER=docs/" >> $GITHUB_ENV
             echo "CLEAN=true" >> $GITHUB_ENV
+          elif [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.event.action }}" == "closed" ]; then
+            echo "TARGET_FOLDER=pr-preview/${{ github.event.number }}" >> $GITHUB_ENV
+            echo "CLEAN=true" >> $GITHUB_ENV
           else
             echo "TARGET_FOLDER=pr-preview/${{ github.event.number }}" >> $GITHUB_ENV
             echo "CLEAN=false" >> $GITHUB_ENV
-          fi
+
+      - name: Stage Cleanup for _downloads directory
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        run: |
+          git rm -rf _downloads/*
+          git add -u
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v4
