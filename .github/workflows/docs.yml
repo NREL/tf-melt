@@ -59,6 +59,7 @@ jobs:
           else
             echo "TARGET_FOLDER=pr-preview/${{ github.event.number }}" >> $GITHUB_ENV
             echo "CLEAN=false" >> $GITHUB_ENV
+          fi
 
       - name: Stage Cleanup for _downloads directory
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
