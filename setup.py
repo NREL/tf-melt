@@ -8,8 +8,8 @@ print(f"Platform: {platform.system()}")
 if platform.system() == "Linux":
     print(f"Installing TensorFlow with GPU support for {platform.system()}")
     # Install TensorFlow with GPU support
-    install_requires.append("tensorflow[and-cuda]==2.12")
-    install_requires.append("tensorflow-probability==0.20")
+    install_requires.append("tensorflow[and-cuda]<2.16")
+    install_requires.append("tensorflow-probability<0.24")
 elif platform.system() == "Darwin":
     # Install TensorFlow for Mac
     install_requires.append("tensorflow<2.16")
@@ -17,7 +17,7 @@ elif platform.system() == "Darwin":
 
 setup(
     name="tfmelt",
-    version="0.3.0",
+    version="0.4.0",
     description="TensorFlow Machine Learning Toolbox (TF-MELT)",
     url="https://github.com/NREL/tf-melt",
     author="Nicholas T. Wimer",
