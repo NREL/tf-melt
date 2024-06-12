@@ -61,11 +61,11 @@ jobs:
             echo "CLEAN=false" >> $GITHUB_ENV
           fi
 
-      - name: Stage Cleanup for _downloads directory
+      - name: Stage Cleanup for _downloads directory (files older than 10 days)
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         run: |
-          git rm -rf _downloads/*
-          git add -u
+          find _downloads -type f -mtime +10 -delete
+          git add _downloads
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v4
