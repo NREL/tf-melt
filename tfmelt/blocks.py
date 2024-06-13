@@ -20,7 +20,7 @@ def get_kernel_divergence_fn(num_points):
     """
 
     def kernel_divergence_fn(q, p, _):
-        return tfp.distributions.kl_divergence(q, p) / tf.cast(num_points, tf.float32)
+        return tfp.distributions.kl_divergence(q, p) / (num_points * 1.0)
 
     return kernel_divergence_fn
 
