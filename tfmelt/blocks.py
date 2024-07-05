@@ -344,13 +344,13 @@ class BayesianBlock(MELTBlock):
         return x
 
 
-class SingleMixtureOutput(Model):
+class MixtureDensityOutput(Model):
     """
-    Output layer for a single mixture density network.
+    Output layer for a mixture density network.
 
     Args:
-        num_outputs (int): Number of output nodes. The output layer will have twice the
-                           number of nodes for the mean and log-variance.
+        num_mixtures (int): Number of mixture components.
+        num_outputs (int): Number of output nodes.
         output_activation (str, optional): Activation function for the output layer.
                                            Defaults to None.
         initializer (str, optional): Kernel initializer. Defaults to "glorot_uniform".
@@ -360,14 +360,16 @@ class SingleMixtureOutput(Model):
 
     def __init__(
         self,
+        num_mixtures: int,
         num_outputs: int,
         output_activation: Optional[str] = None,
         initializer: Optional[str] = "glorot_uniform",
         regularizer: Optional[Regularizer] = None,
         **kwargs,
     ):
-        super(SingleMixtureOutput, self).__init__(**kwargs)
+        super(MixtureDensityOutput, self).__init__(**kwargs)
 
+        self.num_mixtures = num_mixtures
         self.num_outputs = num_outputs
         self.output_activation = output_activation
         self.initializer = initializer
@@ -375,76 +377,9 @@ class SingleMixtureOutput(Model):
 
         # Update config dictionary for serialization
         self.config = {
-            "num_outputs": self.num_outputs,
-            "output_activation": self.output_activation,
-            "initializer": self.initializer,
-            "regularizer": self.regularizer,
-        }
-
-        self.mean_output_layer = Dense(
-            self.num_outputs,
-            activation=self.output_activation,
-            kernel_initializer=self.initializer,
-            kernel_regularizer=self.regularizer,
-            name="mean_output",
-        )
-        self.log_var_output_layer = Dense(
-            self.num_outputs,
-            activation=None,  # No activation for log-variance
-            kernel_initializer=self.initializer,
-            kernel_regularizer=self.regularizer,
-            name="log_var_output",
-        )
-
-    def call(self, x, training=False):
-        """Forward pass through the output layer."""
-        mean_output = self.mean_output_layer(x, training=training)
-        log_var_output = self.log_var_output_layer(x, training=training)
-        return tf.stack([mean_output, log_var_output])
-
-    def get_config(self):
-        """Get the config dictionary"""
-        config = super(SingleMixtureOutput, self).get_config()
-        config.update(self.config)
-        return config
-
-    @classmethod
-    def from_config(cls, config):
-        """Create model from config dictionary"""
-        return cls(**config)
-
-
-class MultipleMixturesOutput(Model):
-    """
-    Output layer for a mixture density network.
-
-    Args:
-        num_mixtures (int): Number of mixture components.
-        num_outputs (int): Number of output nodes.
-        initializer (str, optional): Kernel initializer. Defaults to "glorot_uniform".
-        regularizer (Regularizer, optional): Kernel regularizer. Defaults to None.
-        **kwargs: Extra arguments passed to the base class.
-    """
-
-    def __init__(
-        self,
-        num_mixtures: int,
-        num_outputs: int,
-        initializer: Optional[str] = "glorot_uniform",
-        regularizer: Optional[Regularizer] = None,
-        **kwargs,
-    ):
-        super(MultipleMixturesOutput, self).__init__(**kwargs)
-
-        self.num_mixtures = num_mixtures
-        self.num_outputs = num_outputs
-        self.initializer = initializer
-        self.regularizer = regularizer
-
-        # Update config dictionary for serialization
-        self.config = {
             "num_mixtures": self.num_mixtures,
             "num_outputs": self.num_outputs,
+            "output_activation": self.output_activation,
             "initializer": self.initializer,
             "regularizer": self.regularizer,
         }
@@ -457,14 +392,14 @@ class MultipleMixturesOutput(Model):
         )
         self.mean_output_layer = Dense(
             self.num_mixtures * self.num_outputs,
-            activation=None,
+            activation=self.output_activation,
             kernel_initializer=self.initializer,
             kernel_regularizer=self.regularizer,
             name="mean_output",
         )
         self.log_var_output_layer = Dense(
             self.num_mixtures * self.num_outputs,
-            activation=None,
+            activation=self.output_activation,
             kernel_initializer=self.initializer,
             kernel_regularizer=self.regularizer,
             name="log_var_output",
@@ -479,7 +414,7 @@ class MultipleMixturesOutput(Model):
 
     def get_config(self):
         """Get the config dictionary"""
-        config = super(MultipleMixturesOutput, self).get_config()
+        config = super(MixtureDensityOutput, self).get_config()
         config.update(self.config)
         return config
 
