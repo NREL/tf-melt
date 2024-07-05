@@ -11,10 +11,19 @@ def safe_exp(x):
 
 
 class MixtureDensityLoss(Loss):
+    """
+    Loss function for the Mixture Density Network (MDN) model. Computes the negative log
+    likelihood using the weighted average of the Gaussian mixture model components.
+
+    Args:
+        num_mixtures (int): Number of mixture components.
+        num_outputs (int): Number of output dimensions.
+    """
+
     def __init__(self, num_mixtures, num_outputs, **kwargs):
         super(MixtureDensityLoss, self).__init__(**kwargs)
-        self.num_outputs = num_outputs
         self.num_mixtures = num_mixtures
+        self.num_outputs = num_outputs
 
     def call(self, y_true, y_pred):
         # TODO: Determine if the constant terms provide any benefit
