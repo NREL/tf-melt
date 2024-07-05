@@ -17,13 +17,12 @@ elif platform.system() == "Darwin":
 
 setup(
     name="tfmelt",
-    version="0.4.1",
+    version="0.4.2",
     description="TensorFlow Machine Learning Toolbox (TF-MELT)",
     url="https://github.com/NREL/tf-melt",
     author="Nicholas T. Wimer",
     author_email="nwimer@nrel.gov",
     license="BSD 3-Clause License",
-    # packages=["tfmelt"],
     packages=find_packages(),
     install_requires=install_requires,
     classifiers=[

@@ -9,16 +9,17 @@ from tensorflow.keras.layers import Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import register_keras_serializable
 
-from tfmelt.blocks import (
+from tfmelt.blocks import (  # MultipleMixturesOutput,; SingleMixtureOutput,
     BayesianAleatoricOutput,
     BayesianBlock,
     DefaultOutput,
     DenseBlock,
-    MultipleMixturesOutput,
+    MixtureDensityOutput,
     ResidualBlock,
-    SingleMixtureOutput,
 )
-from tfmelt.losses import MultipleMixtureLoss, SingleMixtureLoss
+
+# from tfmelt.losses import MultipleMixtureLoss, SingleMixtureLoss
+from tfmelt.losses import MixtureDensityLoss
 
 
 @register_keras_serializable(package="tfmelt")
@@ -142,27 +143,16 @@ class MELTModel(Model):
     def create_output_layer(self):
         """Create the output layer based on the number of mixtures."""
 
-        if self.num_mixtures == 1:
-            # Single Mixture Density Network output layer
-            self.output_layer = SingleMixtureOutput(
+        if self.num_mixtures > 0:
+            self.output_layer = MixtureDensityOutput(
+                num_mixtures=self.num_mixtures,
                 num_outputs=self.num_outputs,
                 output_activation=self.output_activation,
                 initializer=self.initializer,
                 regularizer=self.regularizer,
-                name="single_mixture_output",
+                name="mixture_density_output",
             )
-            self.sub_layer_names.append("single_mixture_output")
-
-        elif self.num_mixtures > 1:
-            # Multiple Mixture Density Network output layer
-            self.output_layer = MultipleMixturesOutput(
-                num_mixtures=self.num_mixtures,
-                num_outputs=self.num_outputs,
-                initializer=self.initializer,
-                regularizer=self.regularizer,
-                name="multiple_mixture_output",
-            )
-            self.sub_layer_names.append("multiple_mixture_output")
+            self.sub_layer_names.append("mixture_density_output")
 
         else:
             # Regular output layer
@@ -189,18 +179,13 @@ class MELTModel(Model):
 
     def compile(self, optimizer="adam", loss="mse", metrics=None, **kwargs):
         """Compile the model with the appropriate loss function."""
-        if self.num_mixtures == 1:
-            warnings.warn(
-                "Loss function is overridden when using aleatoric uncertainty. "
-                "Using the aleatoric loss function."
-            )
-            loss = SingleMixtureLoss()
-        elif self.num_mixtures > 1:
+
+        if self.num_mixtures > 0:
             warnings.warn(
                 "Loss function is overridden when using mixture density networks. "
                 "Using the mixture density loss function."
             )
-            loss = MultipleMixtureLoss(self.num_mixtures, self.num_outputs)
+            loss = MixtureDensityLoss(self.num_mixtures, self.num_outputs)
 
         super(MELTModel, self).compile(optimizer, loss, metrics, **kwargs)
 

@@ -4,45 +4,40 @@ from tensorflow.keras.losses import Loss
 
 
 def safe_exp(x):
-    """Prevents overflow by clipping input range to reasonable values."""
+    """
+    Prevents overflow by clipping input range to reasonable values.
+
+    The function clips the input range and then takes the exponential:
+
+    .. math::
+        \\text{safe_exp}(x) = \\exp(\\min(\\max(x, -20), 20))
+
+    Args:
+        x (tensor): Input tensor.
+
+    """
     # TODO: Consider using tf.exp(x - tf.reduce_max(x)) instead
     x = tf.clip_by_value(x, clip_value_min=-20, clip_value_max=20)
     return tf.exp(x)
 
 
-class SingleMixtureLoss(Loss):
+class MixtureDensityLoss(Loss):
     """
-    Custom loss function for a single Gaussian mixture model.
+    Loss function for the Mixture Density Network (MDN) model. Computes the negative log
+    likelihood using the weighted average of the Gaussian mixture model components.
 
     Args:
-        variance_scale (float): Scaling factor for the variance loss.
-        **kwargs: Extra arguments passed to the base class.
+        num_mixtures (int): Number of mixture components.
+        num_outputs (int): Number of output dimensions.
     """
 
-    def __init__(self, variance_scale=1.0, **kwargs):
-        super(SingleMixtureLoss, self).__init__(**kwargs)
-        self.variance_scale = variance_scale
-
-    def call(self, y_true, y_pred):
-        mean_pred = y_pred[0]
-        log_var_pred = y_pred[1]
-
-        precision = tf.exp(-log_var_pred)
-        mse_loss = tf.reduce_mean(precision * tf.square(y_true - mean_pred))
-        var_loss = tf.reduce_mean(log_var_pred)
-
-        # Return the weighted sum of the MSE and variance loss
-        return mse_loss + self.variance_scale * var_loss
-
-
-class MultipleMixtureLoss(Loss):
     def __init__(self, num_mixtures, num_outputs, **kwargs):
-        super(MultipleMixtureLoss, self).__init__(**kwargs)
-        self.num_outputs = num_outputs
+        super(MixtureDensityLoss, self).__init__(**kwargs)
         self.num_mixtures = num_mixtures
+        self.num_outputs = num_outputs
 
     def call(self, y_true, y_pred):
-        # TODO: develop verification check for this loss function
+        # TODO: Determine if the constant terms provide any benefit
         # Extract the mixture coefficients, means, and log-variances
         end_mixture = self.num_mixtures
         end_mean = end_mixture + self.num_mixtures * self.num_outputs
@@ -59,7 +54,7 @@ class MultipleMixtureLoss(Loss):
         )
 
         # Calculate the Gaussian probability density function for each component
-        const_term = -0.5 * self.num_outputs * tf.math.log(2 * np.pi)
+        const_term = -0.5 * self.num_outputs * tf.math.log(2 * tf.constant(np.pi))
         inv_sigma_log = -0.5 * log_var_preds
         exp_term = (
             -0.5
