@@ -7,11 +7,10 @@ def safe_exp(x):
     """
     Prevents overflow by clipping input range to reasonable values.
 
-    The function clips the input range as:
+    The function clips the input range and then takes the exponential:
 
     .. math::
-        x = \text{tf.clip_by_value}(x, \text{clip_value_min}=-20, \text{clip_value_max}
-        =20)
+        \\text{safe_exp}(x) = \\exp(\\min(\\max(x, -20), 20))
 
     Args:
         x (tensor): Input tensor.
