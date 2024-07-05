@@ -4,7 +4,19 @@ from tensorflow.keras.losses import Loss
 
 
 def safe_exp(x):
-    """Prevents overflow by clipping input range to reasonable values."""
+    """
+    Prevents overflow by clipping input range to reasonable values.
+
+    The function clips the input range as:
+
+    .. math::
+        x = \text{tf.clip_by_value}(x, \text{clip_value_min}=-20, \text{clip_value_max}
+        =20)
+
+    Args:
+        x (tensor): Input tensor.
+
+    """
     # TODO: Consider using tf.exp(x - tf.reduce_max(x)) instead
     x = tf.clip_by_value(x, clip_value_min=-20, clip_value_max=20)
     return tf.exp(x)
