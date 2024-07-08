@@ -259,6 +259,12 @@ class ArtificialNeuralNetwork(MELTModel):
         # Apply the output layer(s) and return
         return self.output_layer(x, training=training)
 
+    def get_config(self):
+        """Get the config dictionary."""
+        config = super(ArtificialNeuralNetwork, self).get_config()
+        config.update(self.config)
+        return config
+
 
 @register_keras_serializable(package="tfmelt")
 class ResidualNeuralNetwork(MELTModel):
@@ -344,6 +350,12 @@ class ResidualNeuralNetwork(MELTModel):
 
         # Apply the output layer(s) and return
         return self.output_layer(x, training=training)
+
+    def get_config(self):
+        """Get the config dictionary."""
+        config = super(ResidualNeuralNetwork, self).get_config()
+        config.update(self.config)
+        return config
 
 
 @register_keras_serializable(package="tfmelt")
@@ -561,3 +573,9 @@ class BayesianNeuralNetwork(MELTModel):
             loss = self.negative_log_likelihood
 
         super(BayesianNeuralNetwork, self).compile(optimizer, loss, metrics, **kwargs)
+
+    def get_config(self):
+        """Get the config dictionary."""
+        config = super(BayesianNeuralNetwork, self).get_config()
+        config.update(self.config)
+        return config
