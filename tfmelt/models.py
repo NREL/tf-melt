@@ -115,8 +115,6 @@ class MELTModel(Model):
             "l2_reg": self.l2_reg,
             "num_mixtures": self.num_mixtures,
             "node_list": self.node_list,
-            "num_layers": self.num_layers,
-            "layer_width": self.layer_width,
         }
 
     def initialize_layers(self):
@@ -468,7 +466,7 @@ class BayesianNeuralNetwork(MELTModel):
         if self.bayesian_mask is None:
             self.num_dense_layers = 0
             self.dense_block = None
-            self.bayesian_block = DenseBlock(
+            self.bayesian_block = BayesianBlock(
                 num_points=self.num_points,
                 node_list=self.layer_width,
                 activation=self.act_fun,
