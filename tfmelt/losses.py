@@ -36,6 +36,11 @@ class MixtureDensityLoss(Loss):
         self.num_mixtures = num_mixtures
         self.num_outputs = num_outputs
 
+        self.config = {
+            "num_mixtures": num_mixtures,
+            "num_outputs": num_outputs,
+        }
+
     def call(self, y_true, y_pred):
         # TODO: Determine if the constant terms provide any benefit
         # Extract the mixture coefficients, means, and log-variances
@@ -73,3 +78,9 @@ class MixtureDensityLoss(Loss):
 
         # Return the negative log likelihood
         return -log_likelihood
+
+    def get_config(self):
+        """Get the config dictionary."""
+        config = super(MixtureDensityLoss, self).get_config()
+        config.update(self.config)
+        return config
