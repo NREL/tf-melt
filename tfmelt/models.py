@@ -44,6 +44,7 @@ class MELTModel(Model):
                                            Defaults to None.
         initializer (str, optional): Initializer for the weights. Defaults to
                                      "glorot_uniform".
+        seed (int, optional): Random seed for reproducibility. Defaults to None.
         l1_reg (float, optional): L1 regularization for the weights. Defaults to 0.0.
         l2_reg (float, optional): L2 regularization for the weights. Defaults to 0.0.
         num_mixtures (int, optional): Number of mixtures for density networks. Defaults
@@ -65,6 +66,7 @@ class MELTModel(Model):
         use_batch_renorm: Optional[bool] = False,
         output_activation: Optional[str] = None,
         initializer: Optional[str] = "glorot_uniform",
+        seed: Optional[int] = None,
         l1_reg: Optional[float] = 0.0,
         l2_reg: Optional[float] = 0.0,
         num_mixtures: Optional[int] = 0,
@@ -83,6 +85,7 @@ class MELTModel(Model):
         self.use_batch_renorm = use_batch_renorm
         self.output_activation = output_activation
         self.initializer = initializer
+        self.seed = seed
         self.l1_reg = l1_reg
         self.l2_reg = l2_reg
         self.num_mixtures = num_mixtures
@@ -111,6 +114,7 @@ class MELTModel(Model):
             "use_batch_renorm": self.use_batch_renorm,
             "output_activation": self.output_activation,
             "initializer": self.initializer,
+            "seed": self.seed,
             "l1_reg": self.l1_reg,
             "l2_reg": self.l2_reg,
             "num_mixtures": self.num_mixtures,
@@ -147,6 +151,7 @@ class MELTModel(Model):
                 num_outputs=self.num_outputs,
                 output_activation=self.output_activation,
                 initializer=self.initializer,
+                seed=self.seed,
                 regularizer=self.regularizer,
                 name="mixture_density_output",
             )
@@ -158,6 +163,7 @@ class MELTModel(Model):
                 num_outputs=self.num_outputs,
                 output_activation=self.output_activation,
                 initializer=self.initializer,
+                seed=self.seed,
                 regularizer=self.regularizer,
                 name="output",
             )
@@ -240,6 +246,7 @@ class ArtificialNeuralNetwork(MELTModel):
             use_batch_renorm=self.use_batch_renorm,
             regularizer=self.regularizer,
             initializer=self.initializer,
+            seed=self.seed,
             name="dense_block",
         )
         self.sub_layer_names.append("dense_block")
@@ -329,6 +336,7 @@ class ResidualNeuralNetwork(MELTModel):
             use_batch_renorm=self.use_batch_renorm,
             regularizer=self.regularizer,
             initializer=self.initializer,
+            seed=self.seed,
             pre_activation=self.pre_activation,
             post_add_activation=self.post_add_activation,
             name="residual_block",
@@ -447,6 +455,7 @@ class BayesianNeuralNetwork(MELTModel):
                 num_outputs=self.num_outputs,
                 output_activation=self.output_activation,
                 initializer=self.initializer,
+                seed=self.seed,
                 regularizer=self.regularizer,
                 bayesian=True,
                 num_points=self.num_points,
@@ -459,6 +468,7 @@ class BayesianNeuralNetwork(MELTModel):
                 num_outputs=self.num_outputs,
                 output_activation=self.output_activation,
                 initializer=self.initializer,
+                seed=self.seed,
                 regularizer=self.regularizer,
                 name="output",
             )

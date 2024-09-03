@@ -7,6 +7,8 @@ from tensorflow.keras import Model
 from tensorflow.keras.layers import Activation, Add, BatchNormalization, Dense, Dropout
 from tensorflow.keras.regularizers import Regularizer
 
+from tfmelt.nn_utils import get_initializer
+
 
 def get_kernel_divergence_fn(num_points):
     """
@@ -45,6 +47,7 @@ class MELTBlock(Model):
                                              to None.
         initializer (str, optional): String defining the kernel initializer. Defaults
                                      to "glorot_uniform".
+        seed (int, optional): Random seed. Defaults to None.
         **kwargs: Extra arguments passed to the base class.
     """
 
@@ -57,6 +60,7 @@ class MELTBlock(Model):
         use_batch_renorm: Optional[bool] = False,
         regularizer: Optional[Regularizer] = None,
         initializer: Optional[str] = "glorot_uniform",
+        seed: Optional[int] = None,
         **kwargs: Any,
     ):
         super(MELTBlock, self).__init__(**kwargs)
@@ -67,7 +71,11 @@ class MELTBlock(Model):
         self.batch_norm = batch_norm
         self.use_batch_renorm = use_batch_renorm
         self.regularizer = regularizer
-        self.initializer = initializer
+        # self.initializer = initializer
+        self.seed = seed
+
+        # Get kernel initializer
+        self.initializer = get_initializer(init_name=initializer, seed=self.seed)
 
         # Number of layers in the block
         self.num_layers = len(self.node_list)
@@ -115,6 +123,7 @@ class MELTBlock(Model):
             "batch_norm": self.batch_norm,
             "regularizer": self.regularizer,
             "initializer": self.initializer,
+            "seed": self.seed,
         }
 
     def get_config(self):
@@ -364,6 +373,7 @@ class MixtureDensityOutput(Model):
         num_outputs: int,
         output_activation: Optional[str] = None,
         initializer: Optional[str] = "glorot_uniform",
+        seed: Optional[int] = None,
         regularizer: Optional[Regularizer] = None,
         **kwargs,
     ):
@@ -372,8 +382,12 @@ class MixtureDensityOutput(Model):
         self.num_mixtures = num_mixtures
         self.num_outputs = num_outputs
         self.output_activation = output_activation
-        self.initializer = initializer
+        # self.initializer = initializer
+        self.seed = seed
         self.regularizer = regularizer
+
+        # Get kernel initializer
+        self.initializer = get_initializer(init_name=initializer, seed=self.seed)
 
         # Update config dictionary for serialization
         self.config = {
@@ -381,6 +395,7 @@ class MixtureDensityOutput(Model):
             "num_outputs": self.num_outputs,
             "output_activation": self.output_activation,
             "initializer": self.initializer,
+            "seed": self.seed,
             "regularizer": self.regularizer,
         }
 
@@ -444,6 +459,7 @@ class DefaultOutput(Model):
         num_outputs,
         output_activation: Optional[str] = None,
         initializer: Optional[str] = "glorot_uniform",
+        seed: Optional[int] = None,
         regularizer: Optional[Regularizer] = None,
         bayesian: Optional[bool] = False,
         num_points: Optional[int] = 1,
@@ -453,16 +469,21 @@ class DefaultOutput(Model):
 
         self.num_outputs = num_outputs
         self.output_activation = output_activation
-        self.initializer = initializer
+        # self.initializer = initializer
+        self.seed = seed
         self.regularizer = regularizer
         self.bayesian = bayesian
         self.num_points = num_points
+
+        # Get kernel initializer
+        self.initializer = get_initializer(init_name=initializer, seed=self.seed)
 
         # Update config dictionary for serialization
         self.config = {
             "num_outputs": self.num_outputs,
             "output_activation": self.output_activation,
             "initializer": self.initializer,
+            "seed": self.seed,
             "regularizer": self.regularizer,
             "bayesian": self.bayesian,
             "num_points": self.num_points,
