@@ -1,3 +1,4 @@
+import random
 import warnings
 from typing import Any, List, Optional
 
@@ -71,10 +72,11 @@ class MELTBlock(Model):
         self.batch_norm = batch_norm
         self.use_batch_renorm = use_batch_renorm
         self.regularizer = regularizer
-        # self.initializer = initializer
         self.seed = seed
 
         # Get kernel initializer
+        if self.seed is None:
+            self.seed = random.randint(0, 2**32 - 1)
         self.initializer = get_initializer(init_name=initializer, seed=self.seed)
 
         # Number of layers in the block
@@ -382,11 +384,12 @@ class MixtureDensityOutput(Model):
         self.num_mixtures = num_mixtures
         self.num_outputs = num_outputs
         self.output_activation = output_activation
-        # self.initializer = initializer
         self.seed = seed
         self.regularizer = regularizer
 
         # Get kernel initializer
+        if self.seed is None:
+            self.seed = random.randint(0, 2**32 - 1)
         self.initializer = get_initializer(init_name=initializer, seed=self.seed)
 
         # Update config dictionary for serialization
@@ -469,13 +472,16 @@ class DefaultOutput(Model):
 
         self.num_outputs = num_outputs
         self.output_activation = output_activation
-        # self.initializer = initializer
         self.seed = seed
         self.regularizer = regularizer
         self.bayesian = bayesian
         self.num_points = num_points
+        # Set number of mixture components for compatibility
+        self.num_mixtures = 0
 
         # Get kernel initializer
+        if self.seed is None:
+            self.seed = random.randint(0, 2**32 - 1)
         self.initializer = get_initializer(init_name=initializer, seed=self.seed)
 
         # Update config dictionary for serialization
@@ -487,6 +493,7 @@ class DefaultOutput(Model):
             "regularizer": self.regularizer,
             "bayesian": self.bayesian,
             "num_points": self.num_points,
+            "num_mixtures": self.num_mixtures,
         }
 
         # Create kernel divergence function
