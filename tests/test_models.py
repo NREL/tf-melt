@@ -57,6 +57,7 @@ def model_config():
         "l2_reg": 0.0,
         "num_mixtures": 0,
         "node_list": None,
+        "seed": 42,
     }
 
 
