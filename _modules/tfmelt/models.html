@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tfmelt.models &mdash; tf-melt  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            tf-melt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">tf-melt</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tfmelt.html">TF-MELT package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#module-tfmelt.blocks">Blocks Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput.call"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput.from_config"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput.get_config"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianBlock"><code class="docutils literal notranslate"><span class="pre">BayesianBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianBlock.call"><code class="docutils literal notranslate"><span class="pre">BayesianBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput"><code class="docutils literal notranslate"><span class="pre">DefaultOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput.call"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput.from_config"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput.get_config"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DenseBlock"><code class="docutils literal notranslate"><span class="pre">DenseBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DenseBlock.call"><code class="docutils literal notranslate"><span class="pre">DenseBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MELTBlock"><code class="docutils literal notranslate"><span class="pre">MELTBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MELTBlock.from_config"><code class="docutils literal notranslate"><span class="pre">MELTBlock.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MELTBlock.get_config"><code class="docutils literal notranslate"><span class="pre">MELTBlock.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput.call"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput.from_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput.get_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.ResidualBlock"><code class="docutils literal notranslate"><span class="pre">ResidualBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.ResidualBlock.call"><code class="docutils literal notranslate"><span class="pre">ResidualBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.get_kernel_divergence_fn"><code class="docutils literal notranslate"><span class="pre">get_kernel_divergence_fn()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#module-tfmelt.losses">Losses Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.MixtureDensityLoss"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.MixtureDensityLoss.call"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.MixtureDensityLoss.get_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.safe_exp"><code class="docutils literal notranslate"><span class="pre">safe_exp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#module-tfmelt.models">Models Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.compile"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.compile()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.create_output_layer"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.create_output_layer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.negative_log_likelihood"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.negative_log_likelihood()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel"><code class="docutils literal notranslate"><span class="pre">MELTModel</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.compile"><code class="docutils literal notranslate"><span class="pre">MELTModel.compile()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.compute_jacobian"><code class="docutils literal notranslate"><span class="pre">MELTModel.compute_jacobian()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.create_dropout_layers"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_dropout_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.create_output_layer"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_output_layer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.create_regularizer"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_regularizer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.from_config"><code class="docutils literal notranslate"><span class="pre">MELTModel.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.get_config"><code class="docutils literal notranslate"><span class="pre">MELTModel.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.initialize_layers"><code class="docutils literal notranslate"><span class="pre">MELTModel.initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.summary"><code class="docutils literal notranslate"><span class="pre">MELTModel.summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.initialize_layers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.utils.html">TF-MELT Utilities Subpackage</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#module-tfmelt.utils.evaluation">Evaluation Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#module-tfmelt.utils.preprocessing">Preprocessing Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#module-tfmelt.utils.statistics">Statistics Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#visualization-module">Visualization Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tests.html">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tests.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tests.html#module-tests.test_models">Test Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_get_config"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_num_parameters"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_num_parameters()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_output_shape"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_output_shape()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_serialization"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_serialization()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_sigmoid_output"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_sigmoid_output()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_softmax_output"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_softmax_output()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_unused_layers"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_unused_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_call"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_serialization"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_serialization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel"><code class="docutils literal notranslate"><span class="pre">TestMELTModel</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel.test_from_config"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel.test_get_config"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_call"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.ann_model"><code class="docutils literal notranslate"><span class="pre">ann_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.bnn_model"><code class="docutils literal notranslate"><span class="pre">bnn_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.melt_model"><code class="docutils literal notranslate"><span class="pre">melt_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.model_config"><code class="docutils literal notranslate"><span class="pre">model_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.resnet_model"><code class="docutils literal notranslate"><span class="pre">resnet_model()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html">Example Notebooks</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tf-melt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tfmelt.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tfmelt.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">regularizers</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Dropout</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.utils</span> <span class="kn">import</span> <span class="n">register_keras_serializable</span>
+
+<span class="kn">from</span> <span class="nn">tfmelt.blocks</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># MultipleMixturesOutput,; SingleMixtureOutput,</span>
+    <span class="n">BayesianAleatoricOutput</span><span class="p">,</span>
+    <span class="n">BayesianBlock</span><span class="p">,</span>
+    <span class="n">DefaultOutput</span><span class="p">,</span>
+    <span class="n">DenseBlock</span><span class="p">,</span>
+    <span class="n">MixtureDensityOutput</span><span class="p">,</span>
+    <span class="n">ResidualBlock</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># from tfmelt.losses import MultipleMixtureLoss, SingleMixtureLoss</span>
+<span class="kn">from</span> <span class="nn">tfmelt.losses</span> <span class="kn">import</span> <span class="n">MixtureDensityLoss</span>
+
+
+<div class="viewcode-block" id="MELTModel">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel">[docs]</a>
+<span class="nd">@register_keras_serializable</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="s2">&quot;tfmelt&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MELTModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TF-MELT base model.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_outputs (int): Number of output units.</span>
+<span class="sd">        width (int, optional): Width of the hidden layers. Defaults to 32.</span>
+<span class="sd">        depth (int, optional): Number of hidden layers. Defaults to 2.</span>
+<span class="sd">        act_fun (str, optional): Activation function for the hidden layers. Defaults to</span>
+<span class="sd">                                 &quot;relu&quot;.</span>
+<span class="sd">        dropout (float, optional): Dropout rate for the hidden layers. Defaults to 0.0.</span>
+<span class="sd">        input_dropout (float, optional): Dropout rate for the input layer. Defaults to</span>
+<span class="sd">                                         0.0.</span>
+<span class="sd">        batch_norm (bool, optional): Whether to use batch normalization. Defaults to</span>
+<span class="sd">                                     False.</span>
+<span class="sd">        use_batch_renorm (bool, optional): Whether to use batch renormalization.</span>
+<span class="sd">                                           Defaults to False.</span>
+<span class="sd">        output_activation (str, optional): Activation function for the output layer.</span>
+<span class="sd">                                           Defaults to None.</span>
+<span class="sd">        initializer (str, optional): Initializer for the weights. Defaults to</span>
+<span class="sd">                                     &quot;glorot_uniform&quot;.</span>
+<span class="sd">        seed (int, optional): Random seed for reproducibility. Defaults to None.</span>
+<span class="sd">        l1_reg (float, optional): L1 regularization for the weights. Defaults to 0.0.</span>
+<span class="sd">        l2_reg (float, optional): L2 regularization for the weights. Defaults to 0.0.</span>
+<span class="sd">        num_mixtures (int, optional): Number of mixtures for density networks. Defaults</span>
+<span class="sd">                                      to 0.</span>
+<span class="sd">        node_list (list, optional): Numbers of nodes to alternately define layers.</span>
+<span class="sd">                                    Defaults to None.</span>
+<span class="sd">        **kwargs: Additional keyword arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_outputs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="n">depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">act_fun</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+        <span class="n">dropout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">input_dropout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">batch_norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_batch_renorm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">output_activation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">initializer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;glorot_uniform&quot;</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">l1_reg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">l2_reg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">num_mixtures</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">node_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MELTModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span> <span class="o">=</span> <span class="n">num_outputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">act_fun</span> <span class="o">=</span> <span class="n">act_fun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">dropout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">=</span> <span class="n">input_dropout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_norm</span> <span class="o">=</span> <span class="n">batch_norm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span> <span class="o">=</span> <span class="n">use_batch_renorm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_activation</span> <span class="o">=</span> <span class="n">output_activation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initializer</span> <span class="o">=</span> <span class="n">initializer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l1_reg</span> <span class="o">=</span> <span class="n">l1_reg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l2_reg</span> <span class="o">=</span> <span class="n">l2_reg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_mixtures</span> <span class="o">=</span> <span class="n">num_mixtures</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_list</span> <span class="o">=</span> <span class="n">node_list</span>
+
+        <span class="c1"># Determine if network should be defined based on depth/width or node_list</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_list</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer_width</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">)]</span>
+
+        <span class="c1"># Create list for storing names of sub-layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Create config dictionary for serialization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;num_outputs&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">,</span>
+            <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span>
+            <span class="s2">&quot;act_fun&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_fun</span><span class="p">,</span>
+            <span class="s2">&quot;dropout&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="s2">&quot;input_dropout&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span><span class="p">,</span>
+            <span class="s2">&quot;batch_norm&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">,</span>
+            <span class="s2">&quot;use_batch_renorm&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span><span class="p">,</span>
+            <span class="s2">&quot;output_activation&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_activation</span><span class="p">,</span>
+            <span class="s2">&quot;initializer&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">initializer</span><span class="p">,</span>
+            <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+            <span class="s2">&quot;l1_reg&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">l1_reg</span><span class="p">,</span>
+            <span class="s2">&quot;l2_reg&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">l2_reg</span><span class="p">,</span>
+            <span class="s2">&quot;num_mixtures&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mixtures</span><span class="p">,</span>
+            <span class="s2">&quot;node_list&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_list</span><span class="p">,</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="MELTModel.initialize_layers">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the layers of the model.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_regularizer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_dropout_layers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_output_layer</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.create_regularizer">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.create_regularizer">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_regularizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the regularizer.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">regularizers</span><span class="o">.</span><span class="n">L1L2</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">l1_reg</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">l2_reg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l1_reg</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">l2_reg</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.create_dropout_layers">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.create_dropout_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dropout_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the dropout layers.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout_layer</span> <span class="o">=</span> <span class="n">Dropout</span><span class="p">(</span>
+                <span class="n">rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;input_dropout&quot;</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.create_output_layer">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.create_output_layer">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_output_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the output layer based on the number of mixtures.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mixtures</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">MixtureDensityOutput</span><span class="p">(</span>
+                <span class="n">num_mixtures</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_mixtures</span><span class="p">,</span>
+                <span class="n">num_outputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">,</span>
+                <span class="n">output_activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_activation</span><span class="p">,</span>
+                <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initializer</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+                <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mixture_density_output&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mixture_density_output&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Regular output layer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">DefaultOutput</span><span class="p">(</span>
+                <span class="n">num_outputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">,</span>
+                <span class="n">output_activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_activation</span><span class="p">,</span>
+                <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initializer</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+                <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.compute_jacobian">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.compute_jacobian">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the Jacobian of the model outputs with respect to inputs.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x must be a tf.Tensor or np.ndarray&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+            <span class="n">tape</span><span class="o">.</span><span class="n">watch</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tape</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.compile">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.compile">[docs]</a>
+    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;adam&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;mse&quot;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compile the model with the appropriate loss function.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mixtures</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Loss function is overridden when using mixture density networks. &quot;</span>
+                <span class="s2">&quot;Using the mixture density loss function.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">MixtureDensityLoss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_mixtures</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">MELTModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.summary">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.summary">[docs]</a>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print a summary of the model that includes sub-layers.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MELTModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+        <span class="c1"># Loop over sub-layers and print summaries</span>
+        <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.get_config">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config dictionary.&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MELTModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="MELTModel.from_config">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.MELTModel.from_config">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a model from a config dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ArtificialNeuralNetwork">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork">[docs]</a>
+<span class="nd">@register_keras_serializable</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="s2">&quot;tfmelt&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ArtificialNeuralNetwork</span><span class="p">(</span><span class="n">MELTModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Artificial Neural Network model.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        **kwargs: Additional keyword arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ArtificialNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ArtificialNeuralNetwork.build">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the ANN.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ArtificialNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ArtificialNeuralNetwork.initialize_layers">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the layers of the ANN.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ArtificialNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+
+        <span class="c1"># Bulk layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense_block</span> <span class="o">=</span> <span class="n">DenseBlock</span><span class="p">(</span>
+            <span class="n">node_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_width</span><span class="p">,</span>
+            <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">act_fun</span><span class="p">,</span>
+            <span class="n">dropout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="n">batch_norm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">,</span>
+            <span class="n">use_batch_renorm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span><span class="p">,</span>
+            <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+            <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initializer</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dense_block&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;dense_block&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ArtificialNeuralNetwork.call">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.call">[docs]</a>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the ANN.&quot;&quot;&quot;</span>
+        <span class="c1"># Apply input dropout</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout_layer</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">else</span> <span class="n">inputs</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Apply the dense block</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense_block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+
+        <span class="c1"># Apply the output layer(s) and return</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ArtificialNeuralNetwork.get_config">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config dictionary.&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ArtificialNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ResidualNeuralNetwork">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork">[docs]</a>
+<span class="nd">@register_keras_serializable</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="s2">&quot;tfmelt&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ResidualNeuralNetwork</span><span class="p">(</span><span class="n">MELTModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Residual Neural Network model.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        layers_per_block (int, optional): Number of layers in each block. Defaults to 2.</span>
+<span class="sd">        pre_activation (bool, optional): Whether to use pre-activation in residual</span>
+<span class="sd">                                         blocks. Defaults to True.</span>
+<span class="sd">        post_add_activation (bool, optional): Whether to apply activation after adding</span>
+<span class="sd">                                              the residual connection. Defaults to</span>
+<span class="sd">                                              False.</span>
+<span class="sd">        **kwargs: Additional keyword arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">layers_per_block</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">pre_activation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">post_add_activation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResidualNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers_per_block</span> <span class="o">=</span> <span class="n">layers_per_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_activation</span> <span class="o">=</span> <span class="n">pre_activation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_add_activation</span> <span class="o">=</span> <span class="n">post_add_activation</span>
+
+        <span class="c1"># Update config with new attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;layers_per_block&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_per_block</span><span class="p">,</span>
+                <span class="s2">&quot;pre_activation&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_activation</span><span class="p">,</span>
+                <span class="s2">&quot;post_add_activation&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_add_activation</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ResidualNeuralNetwork.build">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the ResNet.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_per_block</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Warning: Number of layers (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="si">}</span><span class="s2">) is not divisible by &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;layers_per_block (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_per_block</span><span class="si">}</span><span class="s2">), so the last block will &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;have </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">layers_per_block</span><span class="si">}</span><span class="s2"> layers.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResidualNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResidualNeuralNetwork.initialize_layers">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the layers of the ResNet.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResidualNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+
+        <span class="c1"># Create the Residual block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_block</span> <span class="o">=</span> <span class="n">ResidualBlock</span><span class="p">(</span>
+            <span class="n">node_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_width</span><span class="p">,</span>
+            <span class="n">layers_per_block</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_per_block</span><span class="p">,</span>
+            <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">act_fun</span><span class="p">,</span>
+            <span class="n">dropout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="n">batch_norm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">,</span>
+            <span class="n">use_batch_renorm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span><span class="p">,</span>
+            <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+            <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initializer</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">pre_activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_activation</span><span class="p">,</span>
+            <span class="n">post_add_activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">post_add_activation</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;residual_block&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;residual_block&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResidualNeuralNetwork.call">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.call">[docs]</a>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the ResNet.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Apply input dropout</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout_layer</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">else</span> <span class="n">inputs</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Apply the Residual blocks</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+
+        <span class="c1"># Apply the output layer(s) and return</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResidualNeuralNetwork.get_config">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config dictionary.&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ResidualNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BayesianNeuralNetwork">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork">[docs]</a>
+<span class="nd">@register_keras_serializable</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="s2">&quot;tfmelt&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">BayesianNeuralNetwork</span><span class="p">(</span><span class="n">MELTModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bayesian Neural Network model.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_points (int, optional): Number of Monte Carlo samples. Defaults to 1.</span>
+<span class="sd">        do_aleatoric (bool, optional): Flag to perform aleatoric output. Defaults to</span>
+<span class="sd">                                       False.</span>
+<span class="sd">        do_bayesian_output (bool, optional): Flag to perform Bayesian output. Defaults</span>
+<span class="sd">                                             to True.</span>
+<span class="sd">        aleatoric_scale_factor (float, optional): Scale factor for aleatoric</span>
+<span class="sd">                                                  uncertainty. Defaults to 5e-2.</span>
+<span class="sd">        scale_epsilon (float, optional): Epsilon value for the scale of the aleatoric</span>
+<span class="sd">                                         uncertainty. Defaults to 1e-3.</span>
+<span class="sd">        use_batch_renorm (bool, optional): Whether to use batch renormalization.</span>
+<span class="sd">                                           Defaults to True.</span>
+<span class="sd">        bayesian_mask (list, optional): List of booleans to determine which layers are</span>
+<span class="sd">                                        Bayesian and which are Dense. Defaults to None.</span>
+<span class="sd">        **kwargs: Additional keyword arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_points</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">do_aleatoric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">do_bayesian_output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">aleatoric_scale_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5e-2</span><span class="p">,</span>
+        <span class="n">scale_epsilon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">use_batch_renorm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">bayesian_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BayesianNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_points</span> <span class="o">=</span> <span class="n">num_points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_aleatoric</span> <span class="o">=</span> <span class="n">do_aleatoric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_bayesian_output</span> <span class="o">=</span> <span class="n">do_bayesian_output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aleatoric_scale_factor</span> <span class="o">=</span> <span class="n">aleatoric_scale_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_epsilon</span> <span class="o">=</span> <span class="n">scale_epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span> <span class="o">=</span> <span class="n">use_batch_renorm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">bayesian_mask</span> <span class="k">if</span> <span class="n">bayesian_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Checks on bayesian mask and number of layers</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Bayesian mask is longer than the number of layers, so truncating.&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Bayesian mask is shorter than the number of layers.&quot;</span>
+                <span class="s2">&quot;Please provide a mask for each layer.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Update config with new attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;num_points&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points</span><span class="p">,</span>
+                <span class="s2">&quot;do_aleatoric&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_aleatoric</span><span class="p">,</span>
+                <span class="s2">&quot;aleatoric_scale_factor&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">aleatoric_scale_factor</span><span class="p">,</span>
+                <span class="s2">&quot;scale_epsilon&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_epsilon</span><span class="p">,</span>
+                <span class="s2">&quot;use_batch_renorm&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span><span class="p">,</span>
+                <span class="s2">&quot;bayesian_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="BayesianNeuralNetwork.create_output_layer">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.create_output_layer">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_output_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create output layer for the Bayesian Neural Network.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_aleatoric</span><span class="p">:</span>
+            <span class="c1"># Bayesian Aleatoric output layer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">BayesianAleatoricOutput</span><span class="p">(</span>
+                <span class="n">num_outputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">,</span>
+                <span class="n">num_points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points</span><span class="p">,</span>
+                <span class="n">aleatoric_scale_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">aleatoric_scale_factor</span><span class="p">,</span>
+                <span class="n">scale_epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_epsilon</span><span class="p">,</span>
+                <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_bayesian_output</span><span class="p">:</span>
+            <span class="c1"># Bayesian output layer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">DefaultOutput</span><span class="p">(</span>
+                <span class="n">num_outputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">,</span>
+                <span class="n">output_activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_activation</span><span class="p">,</span>
+                <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initializer</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+                <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                <span class="n">bayesian</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">num_points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Regular output layer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">DefaultOutput</span><span class="p">(</span>
+                <span class="n">num_outputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_outputs</span><span class="p">,</span>
+                <span class="n">output_activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_activation</span><span class="p">,</span>
+                <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initializer</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+                <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BayesianNeuralNetwork.build">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the BNN.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BayesianNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BayesianNeuralNetwork.initialize_layers">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the layers of the BNN.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BayesianNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+
+        <span class="c1"># Create the Bayesian and Dense blocks based on the mask</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_dense_layers</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dense_block</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_block</span> <span class="o">=</span> <span class="n">BayesianBlock</span><span class="p">(</span>
+                <span class="n">num_points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points</span><span class="p">,</span>
+                <span class="n">node_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_width</span><span class="p">,</span>
+                <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">act_fun</span><span class="p">,</span>
+                <span class="n">dropout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+                <span class="n">batch_norm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">,</span>
+                <span class="n">use_batch_renorm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span><span class="p">,</span>
+                <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;full_bayesian_block&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;full_bayesian_block&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dense_block</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_block</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">bayes_block_idx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">dense_block_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Loop through the Bayesian mask and create the blocks</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">is_bayesian</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span><span class="p">):</span>
+                <span class="c1"># Get the group and layer width</span>
+                <span class="n">group_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+                <span class="n">group_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_list</span><span class="p">)</span>
+                <span class="n">layer_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_width</span><span class="p">[</span><span class="n">idx</span> <span class="p">:</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">group_len</span><span class="p">]</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="n">group_len</span>
+
+                <span class="c1"># Create a Bayesian block or Dense block</span>
+                <span class="k">if</span> <span class="n">is_bayesian</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">BayesianBlock</span><span class="p">(</span>
+                            <span class="n">num_points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points</span><span class="p">,</span>
+                            <span class="n">node_list</span><span class="o">=</span><span class="n">layer_width</span><span class="p">,</span>
+                            <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">act_fun</span><span class="p">,</span>
+                            <span class="n">dropout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+                            <span class="n">batch_norm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">,</span>
+                            <span class="n">use_batch_renorm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span><span class="p">,</span>
+                            <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;bayesian_block_</span><span class="si">{</span><span class="n">bayes_block_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;bayesian_block_</span><span class="si">{</span><span class="n">bayes_block_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">bayes_block_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dense_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">DenseBlock</span><span class="p">(</span>
+                            <span class="n">node_list</span><span class="o">=</span><span class="n">layer_width</span><span class="p">,</span>
+                            <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">act_fun</span><span class="p">,</span>
+                            <span class="n">dropout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+                            <span class="n">batch_norm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">,</span>
+                            <span class="n">use_batch_renorm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_batch_renorm</span><span class="p">,</span>
+                            <span class="n">regularizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;dense_block_</span><span class="si">{</span><span class="n">dense_block_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sub_layer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dense_block_</span><span class="si">{</span><span class="n">dense_block_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">dense_block_idx</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="BayesianNeuralNetwork.call">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.call">[docs]</a>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the BNN.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Apply input dropout</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout_layer</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">else</span> <span class="n">inputs</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Apply the blocks according to the Bayesian mask</span>
+        <span class="n">dense_idx</span><span class="p">,</span> <span class="n">bayes_idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">is_bayesian</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bayesian_mask</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_bayesian</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bayesian_block</span><span class="p">[</span><span class="n">bayes_idx</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+                <span class="n">bayes_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense_block</span><span class="p">[</span><span class="n">dense_idx</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+                <span class="n">dense_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Apply the output layer(s) and return</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BayesianNeuralNetwork.negative_log_likelihood">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.negative_log_likelihood">[docs]</a>
+    <span class="k">def</span> <span class="nf">negative_log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the negative log likelihood.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">y_pred</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BayesianNeuralNetwork.compile">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.compile">[docs]</a>
+    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;adam&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;mse&quot;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compile the model with the appropriate loss function.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_aleatoric</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Loss function is overridden when using aleatoric uncertainty. &quot;</span>
+                <span class="s2">&quot;Using the negative log likelihood loss function.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">negative_log_likelihood</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BayesianNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BayesianNeuralNetwork.get_config">
+<a class="viewcode-back" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config dictionary.&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">BayesianNeuralNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Alliance for Sustainable Energy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

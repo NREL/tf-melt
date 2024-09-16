@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.test_models &mdash; tf-melt  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            tf-melt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">tf-melt</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tfmelt.html">TF-MELT package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#module-tfmelt.blocks">Blocks Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput.call"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput.from_config"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianAleatoricOutput.get_config"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianBlock"><code class="docutils literal notranslate"><span class="pre">BayesianBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.BayesianBlock.call"><code class="docutils literal notranslate"><span class="pre">BayesianBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput"><code class="docutils literal notranslate"><span class="pre">DefaultOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput.call"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput.from_config"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DefaultOutput.get_config"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DenseBlock"><code class="docutils literal notranslate"><span class="pre">DenseBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.DenseBlock.call"><code class="docutils literal notranslate"><span class="pre">DenseBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MELTBlock"><code class="docutils literal notranslate"><span class="pre">MELTBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MELTBlock.from_config"><code class="docutils literal notranslate"><span class="pre">MELTBlock.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MELTBlock.get_config"><code class="docutils literal notranslate"><span class="pre">MELTBlock.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput.call"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput.from_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.MixtureDensityOutput.get_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.ResidualBlock"><code class="docutils literal notranslate"><span class="pre">ResidualBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.ResidualBlock.call"><code class="docutils literal notranslate"><span class="pre">ResidualBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.blocks.get_kernel_divergence_fn"><code class="docutils literal notranslate"><span class="pre">get_kernel_divergence_fn()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#module-tfmelt.losses">Losses Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.MixtureDensityLoss"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.MixtureDensityLoss.call"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.MixtureDensityLoss.get_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.losses.safe_exp"><code class="docutils literal notranslate"><span class="pre">safe_exp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#module-tfmelt.models">Models Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ArtificialNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.compile"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.compile()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.create_output_layer"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.create_output_layer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.BayesianNeuralNetwork.negative_log_likelihood"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.negative_log_likelihood()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel"><code class="docutils literal notranslate"><span class="pre">MELTModel</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.compile"><code class="docutils literal notranslate"><span class="pre">MELTModel.compile()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.compute_jacobian"><code class="docutils literal notranslate"><span class="pre">MELTModel.compute_jacobian()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.create_dropout_layers"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_dropout_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.create_output_layer"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_output_layer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.create_regularizer"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_regularizer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.from_config"><code class="docutils literal notranslate"><span class="pre">MELTModel.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.get_config"><code class="docutils literal notranslate"><span class="pre">MELTModel.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.initialize_layers"><code class="docutils literal notranslate"><span class="pre">MELTModel.initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.MELTModel.summary"><code class="docutils literal notranslate"><span class="pre">MELTModel.summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.html#tfmelt.models.ResidualNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.initialize_layers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../tfmelt.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tfmelt.utils.html">TF-MELT Utilities Subpackage</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#module-tfmelt.utils.evaluation">Evaluation Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#module-tfmelt.utils.preprocessing">Preprocessing Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#module-tfmelt.utils.statistics">Statistics Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tfmelt.utils.html#visualization-module">Visualization Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tests.html">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tests.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tests.html#module-tests.test_models">Test Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_get_config"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_num_parameters"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_num_parameters()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_output_shape"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_output_shape()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_serialization"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_serialization()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_sigmoid_output"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_sigmoid_output()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_softmax_output"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_softmax_output()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_unused_layers"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_unused_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_call"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_serialization"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_serialization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel"><code class="docutils literal notranslate"><span class="pre">TestMELTModel</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel.test_from_config"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel.test_get_config"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestMELTModel.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_call"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.ann_model"><code class="docutils literal notranslate"><span class="pre">ann_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.bnn_model"><code class="docutils literal notranslate"><span class="pre">bnn_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.melt_model"><code class="docutils literal notranslate"><span class="pre">melt_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.model_config"><code class="docutils literal notranslate"><span class="pre">model_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests.html#tests.test_models.resnet_model"><code class="docutils literal notranslate"><span class="pre">resnet_model()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html">Example Notebooks</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tf-melt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tests.test_models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tests.test_models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">model_from_json</span>
+
+<span class="kn">from</span> <span class="nn">tfmelt.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ArtificialNeuralNetwork</span><span class="p">,</span>
+    <span class="n">BayesianNeuralNetwork</span><span class="p">,</span>
+    <span class="n">MELTModel</span><span class="p">,</span>
+    <span class="n">ResidualNeuralNetwork</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Define expected variables</span>
+<span class="n">NUM_FEAT</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">NUM_OUTPUTS</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">WIDTH</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">DEPTH</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">NUM_LAYERS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="c1"># 4 layers per input and hidden layer (dense, activation, dropout, batch norm)</span>
+    <span class="p">(</span><span class="n">DEPTH</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span>
+    <span class="c1"># 1 layer for the output layer (dense with activation built-in)</span>
+    <span class="o">+</span> <span class="mi">1</span>
+<span class="p">)</span>
+<span class="n">TOTAL_NUM_TRAINABLE_PARAMS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">WIDTH</span> <span class="o">*</span> <span class="n">NUM_FEAT</span><span class="p">)</span>  <span class="c1"># input layer weights</span>
+    <span class="o">+</span> <span class="n">WIDTH</span>  <span class="c1"># input layer biases</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">DEPTH</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">WIDTH</span> <span class="o">*</span> <span class="n">WIDTH</span><span class="p">)</span>  <span class="c1"># hidden layers weights</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">DEPTH</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">WIDTH</span>  <span class="c1"># hidden layers biases</span>
+    <span class="o">+</span> <span class="p">(</span><span class="n">WIDTH</span> <span class="o">*</span> <span class="n">NUM_OUTPUTS</span><span class="p">)</span>  <span class="c1"># output layer weights</span>
+    <span class="o">+</span> <span class="n">NUM_OUTPUTS</span>  <span class="c1"># biases for output layer</span>
+<span class="p">)</span>
+<span class="n">TOTAL_NUM_PARAMS</span> <span class="o">=</span> <span class="n">TOTAL_NUM_TRAINABLE_PARAMS</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">WIDTH</span> <span class="o">*</span> <span class="n">DEPTH</span>  <span class="c1"># batch norm params</span>
+<span class="n">DATA_SIZE</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># create some fake data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">((</span><span class="n">DATA_SIZE</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="model_config">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.model_config">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">model_config</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;num_outputs&quot;</span><span class="p">:</span> <span class="n">NUM_OUTPUTS</span><span class="p">,</span>
+        <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="n">WIDTH</span><span class="p">,</span>
+        <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="n">DEPTH</span><span class="p">,</span>
+        <span class="s2">&quot;act_fun&quot;</span><span class="p">:</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dropout&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">&quot;input_dropout&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">&quot;batch_norm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;use_batch_renorm&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;output_activation&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;initializer&quot;</span><span class="p">:</span> <span class="s2">&quot;glorot_uniform&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;l1_reg&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;l2_reg&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;num_mixtures&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;node_list&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="melt_model">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.melt_model">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">melt_model</span><span class="p">(</span><span class="n">model_config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an instance of the MELTModel class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">MELTModel</span><span class="p">(</span><span class="o">**</span><span class="n">model_config</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ann_model">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.ann_model">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">ann_model</span><span class="p">(</span><span class="n">model_config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an instance of the ArtificialNeuralNetwork class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ArtificialNeuralNetwork</span><span class="p">(</span><span class="o">**</span><span class="n">model_config</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="resnet_model">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.resnet_model">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">resnet_model</span><span class="p">(</span><span class="n">model_config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an instance of the ResidualNeuralNetwork class.&quot;&quot;&quot;</span>
+    <span class="n">resnet_config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model_config</span><span class="p">)</span>
+    <span class="n">resnet_config</span><span class="p">[</span><span class="s2">&quot;layers_per_block&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">resnet_config</span><span class="p">[</span><span class="s2">&quot;pre_activation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">resnet_config</span><span class="p">[</span><span class="s2">&quot;post_add_activation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">ResidualNeuralNetwork</span><span class="p">(</span><span class="o">**</span><span class="n">resnet_config</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="bnn_model">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.bnn_model">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">bnn_model</span><span class="p">(</span><span class="n">model_config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an instance of the BayesianNeuralNetwork class.&quot;&quot;&quot;</span>
+    <span class="n">bnn_config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model_config</span><span class="p">)</span>
+    <span class="n">bnn_config</span><span class="p">[</span><span class="s2">&quot;num_points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DATA_SIZE</span>
+    <span class="n">bnn_config</span><span class="p">[</span><span class="s2">&quot;do_aleatoric&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">bnn_config</span><span class="p">[</span><span class="s2">&quot;bayesian_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">BayesianNeuralNetwork</span><span class="p">(</span><span class="o">**</span><span class="n">bnn_config</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TestMELTModel">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestMELTModel">[docs]</a>
+<span class="k">class</span> <span class="nc">TestMELTModel</span><span class="p">:</span>
+<div class="viewcode-block" id="TestMELTModel.test_initialize_layers">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestMELTModel.test_initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">melt_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the initialize_layers method.&quot;&quot;&quot;</span>
+        <span class="n">melt_model</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+
+        <span class="c1"># Check that the regularizer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">melt_model</span><span class="p">,</span> <span class="s2">&quot;regularizer&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that input dropout layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">melt_model</span><span class="p">,</span> <span class="s2">&quot;input_dropout&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the output layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">melt_model</span><span class="p">,</span> <span class="s2">&quot;output_layer&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestMELTModel.test_get_config">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestMELTModel.test_get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">melt_model</span><span class="p">,</span> <span class="n">model_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the get_config method.&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">melt_model</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+
+        <span class="c1"># Check that the config dictionary is correct</span>
+        <span class="k">assert</span> <span class="n">config</span> <span class="o">==</span> <span class="n">model_config</span></div>
+
+
+<div class="viewcode-block" id="TestMELTModel.test_from_config">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestMELTModel.test_from_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_from_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the from_config method.&quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">MELTModel</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">model_config</span><span class="p">)</span>
+
+        <span class="c1"># Check that the model has been created correctly</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">MELTModel</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">num_outputs</span> <span class="o">==</span> <span class="n">NUM_OUTPUTS</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="n">WIDTH</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">depth</span> <span class="o">==</span> <span class="n">DEPTH</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">act_fun</span> <span class="o">==</span> <span class="s2">&quot;relu&quot;</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">dropout</span> <span class="o">==</span> <span class="mf">0.5</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">==</span> <span class="mf">0.5</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">batch_norm</span> <span class="ow">is</span> <span class="kc">True</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">output_activation</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">initializer</span> <span class="o">==</span> <span class="s2">&quot;glorot_uniform&quot;</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">l1_reg</span> <span class="o">==</span> <span class="mf">0.0</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">l2_reg</span> <span class="o">==</span> <span class="mf">0.0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork">[docs]</a>
+<span class="k">class</span> <span class="nc">TestArtificialNeuralNetwork</span><span class="p">:</span>
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_build">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_build">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the build method.&quot;&quot;&quot;</span>
+        <span class="c1"># Call the build method</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Check that the model has been built correctly</span>
+        <span class="k">assert</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">built</span></div>
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_output_shape">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_output_shape">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_output_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the output shape of the model.&quot;&quot;&quot;</span>
+        <span class="c1"># Build the model</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Call the model and get the output</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># Check that the output has the right shape</span>
+        <span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">DATA_SIZE</span><span class="p">,</span> <span class="n">NUM_OUTPUTS</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_num_parameters">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_num_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_num_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the number of parameters in the model.&quot;&quot;&quot;</span>
+        <span class="c1"># Build the model with all the layers</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Check that the number of parameters is as expected</span>
+        <span class="k">assert</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">count_params</span><span class="p">()</span> <span class="o">==</span> <span class="n">TOTAL_NUM_PARAMS</span></div>
+
+
+    <span class="c1"># def test_num_layers(self, ann_model):</span>
+    <span class="c1">#     &quot;&quot;&quot;Test the number of layers in the model.&quot;&quot;&quot;</span>
+    <span class="c1">#     # Build the model with all the layers</span>
+    <span class="c1">#     ann_model.build((None, NUM_FEAT))</span>
+    <span class="c1">#     # Check that the number of layers is as expected</span>
+    <span class="c1">#     print(ann_model.layers)</span>
+    <span class="c1">#     assert len(ann_model.layers) == NUM_LAYERS</span>
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_initialize_layers">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the initialize_layers method.&quot;&quot;&quot;</span>
+        <span class="c1"># Call the initialize_layers method</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+
+        <span class="c1"># Check that the blocks have been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ann_model</span><span class="p">,</span> <span class="s2">&quot;dense_block&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the regularizer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ann_model</span><span class="p">,</span> <span class="s2">&quot;regularizer&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that input dropout layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ann_model</span><span class="p">,</span> <span class="s2">&quot;input_dropout&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the output layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ann_model</span><span class="p">,</span> <span class="s2">&quot;output_layer&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_get_config">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">,</span> <span class="n">model_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the get_config method.&quot;&quot;&quot;</span>
+        <span class="c1"># Call the get_config method</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="c1"># Check that the config dictionary is correct</span>
+        <span class="k">assert</span> <span class="n">config</span> <span class="o">==</span> <span class="n">model_config</span></div>
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_unused_layers">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_unused_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_unused_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test that there are no unused layers in the model.&quot;&quot;&quot;</span>
+        <span class="c1"># Call the build method</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Capture the output of model.summary()</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">redirect_stdout</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+            <span class="n">ann_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+        <span class="c1"># Check that the unused layers are not in the summary</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="s2">&quot;unused&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">summary</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;There are unused layers in the model.</span><span class="se">\n</span><span class="s2"> Summary: </span><span class="si">{</span><span class="n">summary</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_sigmoid_output">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_sigmoid_output">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_sigmoid_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the output of the model with sigmoid activation.&quot;&quot;&quot;</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">output_activation</span> <span class="o">=</span> <span class="s2">&quot;sigmoid&quot;</span>
+        <span class="c1"># Build the model with sigmoid activation</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Call the model and get the output</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># Check that each output is between 0 and 1</span>
+        <span class="k">assert</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_softmax_output">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_softmax_output">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_softmax_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the output of the model with softmax activation.&quot;&quot;&quot;</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">output_activation</span> <span class="o">=</span> <span class="s2">&quot;softmax&quot;</span>
+        <span class="c1"># Build the model with softmax activation</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Call the model and get the output</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># Check that the output sums to 1 for each sample</span>
+        <span class="k">assert</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span>
+            <span class="n">DATA_SIZE</span> <span class="o">*</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">epsilon</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestArtificialNeuralNetwork.test_serialization">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestArtificialNeuralNetwork.test_serialization">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_serialization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ann_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test that the model can be serialized and deserialized.&quot;&quot;&quot;</span>
+        <span class="c1"># Build the model</span>
+        <span class="n">ann_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Serialize the model</span>
+        <span class="n">serialized_model</span> <span class="o">=</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">serialized_model</span>
+
+        <span class="c1"># Deserialize the model</span>
+        <span class="n">deserialized_model</span> <span class="o">=</span> <span class="n">model_from_json</span><span class="p">(</span>
+            <span class="n">serialized_model</span><span class="p">,</span>
+            <span class="n">custom_objects</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ArtificialNeuralNetwork&quot;</span><span class="p">:</span> <span class="n">ArtificialNeuralNetwork</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="n">deserialized_model</span>
+
+        <span class="c1"># Build the deserialized model</span>
+        <span class="n">deserialized_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+
+        <span class="c1"># Check that the deserialized model is the same as the original model</span>
+        <span class="k">assert</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span> <span class="o">==</span> <span class="n">deserialized_model</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">ann_model</span><span class="o">.</span><span class="n">count_params</span><span class="p">()</span> <span class="o">==</span> <span class="n">deserialized_model</span><span class="o">.</span><span class="n">count_params</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TestResidualNeuralNetwork">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork">[docs]</a>
+<span class="k">class</span> <span class="nc">TestResidualNeuralNetwork</span><span class="p">:</span>
+<div class="viewcode-block" id="TestResidualNeuralNetwork.test_initialize_layers">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resnet_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the initialize_layers method.&quot;&quot;&quot;</span>
+        <span class="n">resnet_model</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+
+        <span class="c1"># Check that the blocks have been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resnet_model</span><span class="p">,</span> <span class="s2">&quot;residual_block&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the regularizer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resnet_model</span><span class="p">,</span> <span class="s2">&quot;regularizer&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that input dropout layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resnet_model</span><span class="p">,</span> <span class="s2">&quot;input_dropout&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the output layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resnet_model</span><span class="p">,</span> <span class="s2">&quot;output_layer&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestResidualNeuralNetwork.test_build">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_build">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resnet_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the build method.&quot;&quot;&quot;</span>
+        <span class="c1"># Call the build method</span>
+        <span class="n">resnet_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Check that the model has been built correctly</span>
+        <span class="k">assert</span> <span class="n">resnet_model</span><span class="o">.</span><span class="n">built</span></div>
+
+
+<div class="viewcode-block" id="TestResidualNeuralNetwork.test_call">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestResidualNeuralNetwork.test_call">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resnet_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the call method.&quot;&quot;&quot;</span>
+        <span class="c1"># Build the model</span>
+        <span class="n">resnet_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Call the model and get the output</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">resnet_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># Check that the output has the right shape</span>
+        <span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">DATA_SIZE</span><span class="p">,</span> <span class="n">NUM_OUTPUTS</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TestBayesianNeuralNetwork">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork">[docs]</a>
+<span class="k">class</span> <span class="nc">TestBayesianNeuralNetwork</span><span class="p">:</span>
+<div class="viewcode-block" id="TestBayesianNeuralNetwork.test_initialize_layers">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_initialize_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_initialize_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bnn_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the initialize_layers method.&quot;&quot;&quot;</span>
+        <span class="n">bnn_model</span><span class="o">.</span><span class="n">initialize_layers</span><span class="p">()</span>
+
+        <span class="c1"># Check that the blocks have been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bnn_model</span><span class="p">,</span> <span class="s2">&quot;bayesian_block&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bnn_model</span><span class="p">,</span> <span class="s2">&quot;dense_block&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the regularizer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bnn_model</span><span class="p">,</span> <span class="s2">&quot;regularizer&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that input dropout layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bnn_model</span><span class="p">,</span> <span class="s2">&quot;input_dropout&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the output layer has been initialized correctly</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bnn_model</span><span class="p">,</span> <span class="s2">&quot;output_layer&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestBayesianNeuralNetwork.test_build">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_build">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bnn_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the build method.&quot;&quot;&quot;</span>
+        <span class="c1"># Call the build method</span>
+        <span class="n">bnn_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Check that the model has been built correctly</span>
+        <span class="k">assert</span> <span class="n">bnn_model</span><span class="o">.</span><span class="n">built</span></div>
+
+
+<div class="viewcode-block" id="TestBayesianNeuralNetwork.test_call">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_call">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bnn_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the call method.&quot;&quot;&quot;</span>
+        <span class="c1"># Build the model</span>
+        <span class="n">bnn_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Call the model and get the output</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">bnn_model</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># Check that the output has the right shape</span>
+        <span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">DATA_SIZE</span><span class="p">,</span> <span class="n">NUM_OUTPUTS</span><span class="p">)</span></div>
+
+
+    <span class="c1"># def test_num_layers(self, bnn_model):</span>
+    <span class="c1">#     &quot;&quot;&quot;Test the number of layers in the model.&quot;&quot;&quot;</span>
+    <span class="c1">#     # Build the model with all the layers</span>
+    <span class="c1">#     bnn_model.build((None, NUM_FEAT))</span>
+    <span class="c1">#     # Check that the number of layers is as expected</span>
+    <span class="c1">#     assert len(bnn_model.layers) == NUM_LAYERS + 1</span>
+
+<div class="viewcode-block" id="TestBayesianNeuralNetwork.test_serialization">
+<a class="viewcode-back" href="../../tests.html#tests.test_models.TestBayesianNeuralNetwork.test_serialization">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_serialization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bnn_model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test that the model can be serialized and deserialized.&quot;&quot;&quot;</span>
+        <span class="c1"># Build the model</span>
+        <span class="n">bnn_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+        <span class="c1"># Serialize the model</span>
+        <span class="n">serialized_model</span> <span class="o">=</span> <span class="n">bnn_model</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">serialized_model</span>
+
+        <span class="c1"># Deserialize the model</span>
+        <span class="n">deserialized_model</span> <span class="o">=</span> <span class="n">model_from_json</span><span class="p">(</span>
+            <span class="n">serialized_model</span><span class="p">,</span>
+            <span class="n">custom_objects</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;BayesianNeuralNetwork&quot;</span><span class="p">:</span> <span class="n">BayesianNeuralNetwork</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="n">deserialized_model</span>
+
+        <span class="c1"># Build the deserialized model</span>
+        <span class="n">deserialized_model</span><span class="o">.</span><span class="n">build</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">NUM_FEAT</span><span class="p">))</span>
+
+        <span class="c1"># Check that the deserialized model is the same as the original model</span>
+        <span class="k">assert</span> <span class="n">bnn_model</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span> <span class="o">==</span> <span class="n">deserialized_model</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">bnn_model</span><span class="o">.</span><span class="n">count_params</span><span class="p">()</span> <span class="o">==</span> <span class="n">deserialized_model</span><span class="o">.</span><span class="n">count_params</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Alliance for Sustainable Energy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

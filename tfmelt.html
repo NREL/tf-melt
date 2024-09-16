@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TF-MELT package &mdash; tf-melt  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TF-MELT Utilities Subpackage" href="tfmelt.utils.html" />
+    <link rel="prev" title="tf-melt" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            tf-melt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tf-melt</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TF-MELT package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-tfmelt.blocks">Blocks Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.BayesianAleatoricOutput"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.BayesianAleatoricOutput.call"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.BayesianAleatoricOutput.from_config"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.BayesianAleatoricOutput.get_config"><code class="docutils literal notranslate"><span class="pre">BayesianAleatoricOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.BayesianBlock"><code class="docutils literal notranslate"><span class="pre">BayesianBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.BayesianBlock.call"><code class="docutils literal notranslate"><span class="pre">BayesianBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.DefaultOutput"><code class="docutils literal notranslate"><span class="pre">DefaultOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.DefaultOutput.call"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.DefaultOutput.from_config"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.DefaultOutput.get_config"><code class="docutils literal notranslate"><span class="pre">DefaultOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.DenseBlock"><code class="docutils literal notranslate"><span class="pre">DenseBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.DenseBlock.call"><code class="docutils literal notranslate"><span class="pre">DenseBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.MELTBlock"><code class="docutils literal notranslate"><span class="pre">MELTBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.MELTBlock.from_config"><code class="docutils literal notranslate"><span class="pre">MELTBlock.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.MELTBlock.get_config"><code class="docutils literal notranslate"><span class="pre">MELTBlock.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.MixtureDensityOutput"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.MixtureDensityOutput.call"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.MixtureDensityOutput.from_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.MixtureDensityOutput.get_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityOutput.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.ResidualBlock"><code class="docutils literal notranslate"><span class="pre">ResidualBlock</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.blocks.ResidualBlock.call"><code class="docutils literal notranslate"><span class="pre">ResidualBlock.call()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.blocks.get_kernel_divergence_fn"><code class="docutils literal notranslate"><span class="pre">get_kernel_divergence_fn()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tfmelt.losses">Losses Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.losses.MixtureDensityLoss"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.losses.MixtureDensityLoss.call"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.losses.MixtureDensityLoss.get_config"><code class="docutils literal notranslate"><span class="pre">MixtureDensityLoss.get_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.losses.safe_exp"><code class="docutils literal notranslate"><span class="pre">safe_exp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tfmelt.models">Models Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.models.ArtificialNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ArtificialNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ArtificialNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ArtificialNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ArtificialNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">ArtificialNeuralNetwork.initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork.compile"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.compile()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork.create_output_layer"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.create_output_layer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.BayesianNeuralNetwork.negative_log_likelihood"><code class="docutils literal notranslate"><span class="pre">BayesianNeuralNetwork.negative_log_likelihood()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.models.MELTModel"><code class="docutils literal notranslate"><span class="pre">MELTModel</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.compile"><code class="docutils literal notranslate"><span class="pre">MELTModel.compile()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.compute_jacobian"><code class="docutils literal notranslate"><span class="pre">MELTModel.compute_jacobian()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.create_dropout_layers"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_dropout_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.create_output_layer"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_output_layer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.create_regularizer"><code class="docutils literal notranslate"><span class="pre">MELTModel.create_regularizer()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.from_config"><code class="docutils literal notranslate"><span class="pre">MELTModel.from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.get_config"><code class="docutils literal notranslate"><span class="pre">MELTModel.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.initialize_layers"><code class="docutils literal notranslate"><span class="pre">MELTModel.initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.MELTModel.summary"><code class="docutils literal notranslate"><span class="pre">MELTModel.summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#tfmelt.models.ResidualNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ResidualNeuralNetwork.build"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ResidualNeuralNetwork.call"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ResidualNeuralNetwork.get_config"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#tfmelt.models.ResidualNeuralNetwork.initialize_layers"><code class="docutils literal notranslate"><span class="pre">ResidualNeuralNetwork.initialize_layers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tfmelt.utils.html">TF-MELT Utilities Subpackage</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="tfmelt.utils.html#module-tfmelt.utils.evaluation">Evaluation Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tfmelt.utils.html#module-tfmelt.utils.preprocessing">Preprocessing Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tfmelt.utils.html#module-tfmelt.utils.statistics">Statistics Module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tfmelt.utils.html#visualization-module">Visualization Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#module-tests.test_models">Test Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_get_config"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_num_parameters"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_num_parameters()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_output_shape"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_output_shape()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_serialization"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_serialization()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_sigmoid_output"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_sigmoid_output()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_softmax_output"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_softmax_output()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestArtificialNeuralNetwork.test_unused_layers"><code class="docutils literal notranslate"><span class="pre">TestArtificialNeuralNetwork.test_unused_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.TestBayesianNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestBayesianNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestBayesianNeuralNetwork.test_call"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestBayesianNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_initialize_layers()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestBayesianNeuralNetwork.test_serialization"><code class="docutils literal notranslate"><span class="pre">TestBayesianNeuralNetwork.test_serialization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.TestMELTModel"><code class="docutils literal notranslate"><span class="pre">TestMELTModel</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestMELTModel.test_from_config"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_from_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestMELTModel.test_get_config"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_get_config()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestMELTModel.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestMELTModel.test_initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.TestResidualNeuralNetwork"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestResidualNeuralNetwork.test_build"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_build()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestResidualNeuralNetwork.test_call"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_call()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="tests.html#tests.test_models.TestResidualNeuralNetwork.test_initialize_layers"><code class="docutils literal notranslate"><span class="pre">TestResidualNeuralNetwork.test_initialize_layers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.ann_model"><code class="docutils literal notranslate"><span class="pre">ann_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.bnn_model"><code class="docutils literal notranslate"><span class="pre">bnn_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.melt_model"><code class="docutils literal notranslate"><span class="pre">melt_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.model_config"><code class="docutils literal notranslate"><span class="pre">model_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.html#tests.test_models.resnet_model"><code class="docutils literal notranslate"><span class="pre">resnet_model()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">Example Notebooks</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tf-melt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">tf-melt</a></li>
+      <li class="breadcrumb-item active">TF-MELT package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tfmelt.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tf-melt-package">
+<span id="tfmelt-package"></span><h1>TF-MELT package<a class="headerlink" href="#tf-melt-package" title="Link to this heading"></a></h1>
+<p>TF-MELT is composed of a series of modules that form the basis for building a variety
+of machine learning models. The structure of the packages is to encourage modularity
+and reusability of the code. The main modules are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#tfmelt-blocks"><span class="std std-ref">Blocks Module</span></a>: Each of the blocks is a self-contained
+TensorFlow model in itself, but can be combined with other blocks to form more complex
+models. The blocks are designed to be easily combined with other blocks, and to be
+easily extended.</p></li>
+<li><p><a class="reference internal" href="#tfmelt-losses"><span class="std std-ref">Losses Module</span></a>: The losses are custom loss functions that should
+be used with their respective models. Certain loss functions are designed to be used
+with specific models, but others can be used with any model.</p></li>
+<li><p><a class="reference internal" href="#tfmelt-models"><span class="std std-ref">Models Module</span></a>: The models are the main machine learning models
+that are built using the blocks and losses. The models serve a dual purpose of being a
+standalone model, and also as a template for building more complex models with the
+TF-MELT blocks.</p></li>
+</ul>
+<p>Following is a detailed description of the modules and subpackages in the TF-MELT.</p>
+<section id="module-tfmelt.blocks">
+<span id="blocks-module"></span><span id="tfmelt-blocks"></span><h2>Blocks Module<a class="headerlink" href="#module-tfmelt.blocks" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.blocks.BayesianAleatoricOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">BayesianAleatoricOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#BayesianAleatoricOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.BayesianAleatoricOutput" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Output layer for a Bayesian neural network with aleatoric uncertainty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_outputs</strong> (<em>int</em>) – Number of output nodes.</p></li>
+<li><p><strong>num_points</strong> (<em>int</em>) – Number of Monte Carlo samples.</p></li>
+<li><p><strong>regularizer</strong> (<em>Regularizer</em><em>, </em><em>optional</em>) – Kernel regularizer. Defaults to None.</p></li>
+<li><p><strong>scale_epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – Epsilon value for scale parameter. Defaults to
+1e-3.</p></li>
+<li><p><strong>aleatoric_scale_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – Scaling factor for aleatoric
+uncertainty. Defaults to 5e-2.</p></li>
+<li><p><strong>**kwargs</strong> – Extra arguments passed to the base class.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.BayesianAleatoricOutput.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#BayesianAleatoricOutput.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.BayesianAleatoricOutput.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the output layer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.BayesianAleatoricOutput.from_config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#BayesianAleatoricOutput.from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.BayesianAleatoricOutput.from_config" title="Link to this definition"></a></dt>
+<dd><p>Create model from config dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.BayesianAleatoricOutput.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#BayesianAleatoricOutput.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.BayesianAleatoricOutput.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.blocks.BayesianBlock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">BayesianBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#BayesianBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.BayesianBlock" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tfmelt.blocks.MELTBlock" title="tfmelt.blocks.MELTBlock"><code class="xref py py-class docutils literal notranslate"><span class="pre">MELTBlock</span></code></a></p>
+<p>A BayesianBlock consists of multiple Bayesian dense layers with optional activation,
+dropout, and batch normalization. The layers are implemented using the Flipout
+variational layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of Monte Carlo samples. Defaults to 1.</p></li>
+<li><p><strong>use_batch_renorm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Use batch renormalization. Defaults to True.</p></li>
+<li><p><strong>**kwargs</strong> – Extra arguments passed to the base class.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.BayesianBlock.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#BayesianBlock.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.BayesianBlock.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the Bayesian block.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.blocks.DefaultOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">DefaultOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#DefaultOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.DefaultOutput" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Default output layer with a single dense layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_outputs</strong> (<em>int</em>) – Number of output nodes.</p></li>
+<li><p><strong>output_activation</strong> (<em>str</em><em>, </em><em>optional</em>) – Activation function for the output layer.
+Defaults to None.</p></li>
+<li><p><strong>initializer</strong> (<em>str</em><em>, </em><em>optional</em>) – Kernel initializer. Defaults to “glorot_uniform”.</p></li>
+<li><p><strong>regularizer</strong> (<em>Regularizer</em><em>, </em><em>optional</em>) – Kernel regularizer. Defaults to None.</p></li>
+<li><p><strong>bayesian</strong> (<em>bool</em><em>, </em><em>optional</em>) – Use Bayesian layer if True. Defaults to False.</p></li>
+<li><p><strong>num_points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of samples. Defaults to 1.</p></li>
+<li><p><strong>**kwargs</strong> – Extra arguments passed to the base class.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.DefaultOutput.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#DefaultOutput.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.DefaultOutput.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the output layer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.DefaultOutput.from_config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#DefaultOutput.from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.DefaultOutput.from_config" title="Link to this definition"></a></dt>
+<dd><p>Create model from config dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.DefaultOutput.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#DefaultOutput.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.DefaultOutput.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.blocks.DenseBlock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">DenseBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#DenseBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.DenseBlock" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tfmelt.blocks.MELTBlock" title="tfmelt.blocks.MELTBlock"><code class="xref py py-class docutils literal notranslate"><span class="pre">MELTBlock</span></code></a></p>
+<p>A DenseBlock consists of multiple dense layers with optional activation, dropout,
+and batch normalization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Extra arguments passed to the base class.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – If dropout is not within the range of [0, 1].</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.DenseBlock.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#DenseBlock.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.DenseBlock.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the dense block.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.blocks.MELTBlock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">MELTBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#MELTBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.MELTBlock" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Base class for a MELT block. Defines a block of dense layers with optional
+activation, dropout, and batch normalization. Forms the building block for
+various neural network blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_list</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Number of nodes in each dense layer. The length of
+the list determines the number of layers.</p></li>
+<li><p><strong>activation</strong> (<em>str</em><em>, </em><em>optional</em>) – Activation function. If None,
+no activation is applied (linear). Defaults to
+“relu”.</p></li>
+<li><p><strong>dropout</strong> (<em>float</em><em>, </em><em>optional</em>) – Dropout rate (0-1). Defaults to None.</p></li>
+<li><p><strong>batch_norm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Apply batch normalization if True. Defaults
+to False.</p></li>
+<li><p><strong>use_batch_renorm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Use batch renormalization. Defaults to False.</p></li>
+<li><p><strong>regularizer</strong> (<em>Regularizer</em><em>, </em><em>optional</em>) – Kernel weights regularizer. Defaults
+to None.</p></li>
+<li><p><strong>initializer</strong> (<em>str</em><em>, </em><em>optional</em>) – String defining the kernel initializer. Defaults
+to “glorot_uniform”.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed. Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> – Extra arguments passed to the base class.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.MELTBlock.from_config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#MELTBlock.from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.MELTBlock.from_config" title="Link to this definition"></a></dt>
+<dd><p>Create model from config dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.MELTBlock.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#MELTBlock.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.MELTBlock.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.blocks.MixtureDensityOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">MixtureDensityOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#MixtureDensityOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.MixtureDensityOutput" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Output layer for a mixture density network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_mixtures</strong> (<em>int</em>) – Number of mixture components.</p></li>
+<li><p><strong>num_outputs</strong> (<em>int</em>) – Number of output nodes.</p></li>
+<li><p><strong>output_activation</strong> (<em>str</em><em>, </em><em>optional</em>) – Activation function for the output layer.
+Defaults to None.</p></li>
+<li><p><strong>initializer</strong> (<em>str</em><em>, </em><em>optional</em>) – Kernel initializer. Defaults to “glorot_uniform”.</p></li>
+<li><p><strong>regularizer</strong> (<em>Regularizer</em><em>, </em><em>optional</em>) – Kernel regularizer. Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> – Extra arguments passed to the base class.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.MixtureDensityOutput.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#MixtureDensityOutput.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.MixtureDensityOutput.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the output layer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.MixtureDensityOutput.from_config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#MixtureDensityOutput.from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.MixtureDensityOutput.from_config" title="Link to this definition"></a></dt>
+<dd><p>Create model from config dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.MixtureDensityOutput.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#MixtureDensityOutput.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.MixtureDensityOutput.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.blocks.ResidualBlock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">ResidualBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#ResidualBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.ResidualBlock" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tfmelt.blocks.MELTBlock" title="tfmelt.blocks.MELTBlock"><code class="xref py py-class docutils literal notranslate"><span class="pre">MELTBlock</span></code></a></p>
+<p>A ResidualBlock consists of multiple dense layers with optional activation, dropout,
+and batch normalization. Residual connections are added after each block of layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layers_per_block</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of layers per residual block. Defaults
+to 2.</p></li>
+<li><p><strong>pre_activation</strong> (<em>bool</em><em>, </em><em>optional</em>) – Apply activation before adding residual
+connection. Defaults to False.</p></li>
+<li><p><strong>post_add_activation</strong> (<em>bool</em><em>, </em><em>optional</em>) – Apply activation after adding residual
+connection. Defaults to False.</p></li>
+<li><p><strong>**kwargs</strong> – Extra arguments passed to the base class.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.blocks.ResidualBlock.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#ResidualBlock.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.ResidualBlock.call" title="Link to this definition"></a></dt>
+<dd><p>Forward pass through the residual block.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tfmelt.blocks.get_kernel_divergence_fn">
+<span class="sig-prename descclassname"><span class="pre">tfmelt.blocks.</span></span><span class="sig-name descname"><span class="pre">get_kernel_divergence_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/blocks.html#get_kernel_divergence_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.blocks.get_kernel_divergence_fn" title="Link to this definition"></a></dt>
+<dd><p>Get the kernel divergence function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_points</strong> (<em>int</em>) – Number of points in kernel divergence.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Kernel divergence function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tfmelt.losses">
+<span id="losses-module"></span><span id="tfmelt-losses"></span><h2>Losses Module<a class="headerlink" href="#module-tfmelt.losses" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.losses.MixtureDensityLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.losses.</span></span><span class="sig-name descname"><span class="pre">MixtureDensityLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_mixtures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_outputs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/losses.html#MixtureDensityLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.losses.MixtureDensityLoss" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Loss</span></code></p>
+<p>Loss function for the Mixture Density Network (MDN) model. Computes the negative log
+likelihood using the weighted average of the Gaussian mixture model components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_mixtures</strong> (<em>int</em>) – Number of mixture components.</p></li>
+<li><p><strong>num_outputs</strong> (<em>int</em>) – Number of output dimensions.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.losses.MixtureDensityLoss.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/losses.html#MixtureDensityLoss.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.losses.MixtureDensityLoss.call" title="Link to this definition"></a></dt>
+<dd><p>Invokes the <cite>Loss</cite> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> – Ground truth values. shape = <cite>[batch_size, d0, .. dN]</cite>,
+except sparse loss functions such as sparse categorical
+crossentropy where shape = <cite>[batch_size, d0, .. dN-1]</cite></p></li>
+<li><p><strong>y_pred</strong> – The predicted values. shape = <cite>[batch_size, d0, .. dN]</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Loss values with the shape <cite>[batch_size, d0, .. dN-1]</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.losses.MixtureDensityLoss.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/losses.html#MixtureDensityLoss.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.losses.MixtureDensityLoss.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tfmelt.losses.safe_exp">
+<span class="sig-prename descclassname"><span class="pre">tfmelt.losses.</span></span><span class="sig-name descname"><span class="pre">safe_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/losses.html#safe_exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.losses.safe_exp" title="Link to this definition"></a></dt>
+<dd><p>Prevents overflow by clipping input range to reasonable values.</p>
+<p>The function clips the input range and then takes the exponential:</p>
+<div class="math notranslate nohighlight">
+\[\text{safe_exp}(x) = \exp(\min(\max(x, -20), 20))\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tfmelt.models">
+<span id="models-module"></span><span id="tfmelt-models"></span><h2>Models Module<a class="headerlink" href="#module-tfmelt.models" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.models.ArtificialNeuralNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.models.</span></span><span class="sig-name descname"><span class="pre">ArtificialNeuralNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ArtificialNeuralNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ArtificialNeuralNetwork" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tfmelt.models.MELTModel" title="tfmelt.models.MELTModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">MELTModel</span></code></a></p>
+<p>Artificial Neural Network model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Additional keyword arguments.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ArtificialNeuralNetwork.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ArtificialNeuralNetwork.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ArtificialNeuralNetwork.build" title="Link to this definition"></a></dt>
+<dd><p>Build the ANN.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ArtificialNeuralNetwork.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ArtificialNeuralNetwork.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ArtificialNeuralNetwork.call" title="Link to this definition"></a></dt>
+<dd><p>Call the ANN.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ArtificialNeuralNetwork.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ArtificialNeuralNetwork.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ArtificialNeuralNetwork.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ArtificialNeuralNetwork.initialize_layers">
+<span class="sig-name descname"><span class="pre">initialize_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ArtificialNeuralNetwork.initialize_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ArtificialNeuralNetwork.initialize_layers" title="Link to this definition"></a></dt>
+<dd><p>Initialize the layers of the ANN.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.models.</span></span><span class="sig-name descname"><span class="pre">BayesianNeuralNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tfmelt.models.MELTModel" title="tfmelt.models.MELTModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">MELTModel</span></code></a></p>
+<p>Bayesian Neural Network model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of Monte Carlo samples. Defaults to 1.</p></li>
+<li><p><strong>do_aleatoric</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to perform aleatoric output. Defaults to
+False.</p></li>
+<li><p><strong>do_bayesian_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to perform Bayesian output. Defaults
+to True.</p></li>
+<li><p><strong>aleatoric_scale_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – Scale factor for aleatoric
+uncertainty. Defaults to 5e-2.</p></li>
+<li><p><strong>scale_epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – Epsilon value for the scale of the aleatoric
+uncertainty. Defaults to 1e-3.</p></li>
+<li><p><strong>use_batch_renorm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use batch renormalization.
+Defaults to True.</p></li>
+<li><p><strong>bayesian_mask</strong> (<em>list</em><em>, </em><em>optional</em>) – List of booleans to determine which layers are
+Bayesian and which are Dense. Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork.build" title="Link to this definition"></a></dt>
+<dd><p>Build the BNN.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork.call" title="Link to this definition"></a></dt>
+<dd><p>Call the BNN.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork.compile">
+<span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork.compile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork.compile" title="Link to this definition"></a></dt>
+<dd><p>Compile the model with the appropriate loss function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork.create_output_layer">
+<span class="sig-name descname"><span class="pre">create_output_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork.create_output_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork.create_output_layer" title="Link to this definition"></a></dt>
+<dd><p>Create output layer for the Bayesian Neural Network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork.initialize_layers">
+<span class="sig-name descname"><span class="pre">initialize_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork.initialize_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork.initialize_layers" title="Link to this definition"></a></dt>
+<dd><p>Initialize the layers of the BNN.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.BayesianNeuralNetwork.negative_log_likelihood">
+<span class="sig-name descname"><span class="pre">negative_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#BayesianNeuralNetwork.negative_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.BayesianNeuralNetwork.negative_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Calculate the negative log likelihood.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.models.</span></span><span class="sig-name descname"><span class="pre">MELTModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>TF-MELT base model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_outputs</strong> (<em>int</em>) – Number of output units.</p></li>
+<li><p><strong>width</strong> (<em>int</em><em>, </em><em>optional</em>) – Width of the hidden layers. Defaults to 32.</p></li>
+<li><p><strong>depth</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of hidden layers. Defaults to 2.</p></li>
+<li><p><strong>act_fun</strong> (<em>str</em><em>, </em><em>optional</em>) – Activation function for the hidden layers. Defaults to
+“relu”.</p></li>
+<li><p><strong>dropout</strong> (<em>float</em><em>, </em><em>optional</em>) – Dropout rate for the hidden layers. Defaults to 0.0.</p></li>
+<li><p><strong>input_dropout</strong> (<em>float</em><em>, </em><em>optional</em>) – Dropout rate for the input layer. Defaults to
+0.0.</p></li>
+<li><p><strong>batch_norm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use batch normalization. Defaults to
+False.</p></li>
+<li><p><strong>use_batch_renorm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use batch renormalization.
+Defaults to False.</p></li>
+<li><p><strong>output_activation</strong> (<em>str</em><em>, </em><em>optional</em>) – Activation function for the output layer.
+Defaults to None.</p></li>
+<li><p><strong>initializer</strong> (<em>str</em><em>, </em><em>optional</em>) – Initializer for the weights. Defaults to
+“glorot_uniform”.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility. Defaults to None.</p></li>
+<li><p><strong>l1_reg</strong> (<em>float</em><em>, </em><em>optional</em>) – L1 regularization for the weights. Defaults to 0.0.</p></li>
+<li><p><strong>l2_reg</strong> (<em>float</em><em>, </em><em>optional</em>) – L2 regularization for the weights. Defaults to 0.0.</p></li>
+<li><p><strong>num_mixtures</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of mixtures for density networks. Defaults
+to 0.</p></li>
+<li><p><strong>node_list</strong> (<em>list</em><em>, </em><em>optional</em>) – Numbers of nodes to alternately define layers.
+Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.compile">
+<span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.compile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.compile" title="Link to this definition"></a></dt>
+<dd><p>Compile the model with the appropriate loss function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.compute_jacobian">
+<span class="sig-name descname"><span class="pre">compute_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.compute_jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.compute_jacobian" title="Link to this definition"></a></dt>
+<dd><p>Compute the Jacobian of the model outputs with respect to inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.create_dropout_layers">
+<span class="sig-name descname"><span class="pre">create_dropout_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.create_dropout_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.create_dropout_layers" title="Link to this definition"></a></dt>
+<dd><p>Create the dropout layers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.create_output_layer">
+<span class="sig-name descname"><span class="pre">create_output_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.create_output_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.create_output_layer" title="Link to this definition"></a></dt>
+<dd><p>Create the output layer based on the number of mixtures.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.create_regularizer">
+<span class="sig-name descname"><span class="pre">create_regularizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.create_regularizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.create_regularizer" title="Link to this definition"></a></dt>
+<dd><p>Create the regularizer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.from_config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.from_config" title="Link to this definition"></a></dt>
+<dd><p>Create a model from a config dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.initialize_layers">
+<span class="sig-name descname"><span class="pre">initialize_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.initialize_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.initialize_layers" title="Link to this definition"></a></dt>
+<dd><p>Initialize the layers of the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.MELTModel.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#MELTModel.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.MELTModel.summary" title="Link to this definition"></a></dt>
+<dd><p>Print a summary of the model that includes sub-layers.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tfmelt.models.ResidualNeuralNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tfmelt.models.</span></span><span class="sig-name descname"><span class="pre">ResidualNeuralNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ResidualNeuralNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ResidualNeuralNetwork" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tfmelt.models.MELTModel" title="tfmelt.models.MELTModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">MELTModel</span></code></a></p>
+<p>Residual Neural Network model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layers_per_block</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of layers in each block. Defaults to 2.</p></li>
+<li><p><strong>pre_activation</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use pre-activation in residual
+blocks. Defaults to True.</p></li>
+<li><p><strong>post_add_activation</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to apply activation after adding
+the residual connection. Defaults to
+False.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ResidualNeuralNetwork.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ResidualNeuralNetwork.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ResidualNeuralNetwork.build" title="Link to this definition"></a></dt>
+<dd><p>Build the ResNet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ResidualNeuralNetwork.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ResidualNeuralNetwork.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ResidualNeuralNetwork.call" title="Link to this definition"></a></dt>
+<dd><p>Call the ResNet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ResidualNeuralNetwork.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ResidualNeuralNetwork.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ResidualNeuralNetwork.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get the config dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tfmelt.models.ResidualNeuralNetwork.initialize_layers">
+<span class="sig-name descname"><span class="pre">initialize_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfmelt/models.html#ResidualNeuralNetwork.initialize_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tfmelt.models.ResidualNeuralNetwork.initialize_layers" title="Link to this definition"></a></dt>
+<dd><p>Initialize the layers of the ResNet.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="subpackages">
+<span id="tfmelt-subpackages"></span><h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<p>In addition to the main modules, there are subpackages that contain various utility
+functions that are used in the main modules. The subpackages are:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference internal" href="tfmelt.utils.html#tfmelt-utils"><span class="std std-ref">TF-MELT Utilities</span></a><span class="classifier">Contains utility functions that are used in the main modules. These</span></dt><dd><p>functions contain routines for data processing, model evaluation, visualization, and
+other general-purpose functions.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tfmelt.utils.html">TF-MELT Utilities Subpackage</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="tf-melt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tfmelt.utils.html" class="btn btn-neutral float-right" title="TF-MELT Utilities Subpackage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Alliance for Sustainable Energy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
