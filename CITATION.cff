@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+title: TF-MELT (TensorFlow Machine Learning Toolbox
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - given-names: Nicholas
+    family-names: Wimer
+    email: nwimer@nrel.gov
+    affiliation: National Renewable Energy Laboratory
+    orcid: 'https://orcid.org/0000-0001-5083-0799'
+identifiers:
+  - type: other
+    value: SWR-23-99
+    description: NREL Software Record Number
+repository-code: 'https://github.com/NREL/tf-melt'
+url: 'https://nrel.github.io/tf-melt/'
+abstract: >-
+  TF-MELT (TensorFlow Machine Learning Toolbox) is a
+  collection of architectures, processing, and utilities
+  that are transferable over a range of ML applications.
+keywords:
+  - machine learning
+  - TensorFlow
+  - toolbox
+  - tfmelt
+license: BSD-3-Clause
+version: 0.4.4
